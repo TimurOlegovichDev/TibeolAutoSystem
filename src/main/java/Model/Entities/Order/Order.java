@@ -2,9 +2,7 @@ package Model.Entities.Order;
 
 import Model.Entities.Car.Car;
 import Model.Entities.Message;
-import Model.Entities.Users.Client;
-import Model.Entities.Users.Manager;
-import Model.Entities.Users.User;
+import Model.Entities.Users.*;
 import Model.Exceptions.InvalidCommandException;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +22,7 @@ public class Order {
     @Setter
     private String orderText;
 
-    Order(OrderTypes orderType,
+    public Order(OrderTypes orderType,
           Client owner,
           String orderText,
           Car car){

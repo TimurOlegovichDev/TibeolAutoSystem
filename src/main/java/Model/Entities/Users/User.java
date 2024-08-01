@@ -8,17 +8,17 @@ import java.util.UUID;
 @Getter
 public abstract class User {
 
-    private final UserParameters userData;
+    private final UserParameters userParameters;
     @Setter
     private AccessLevels accessLevel;
     User(String name, String password){
-        this.userData = new UserParameters(name, password);
+        this.userParameters = new UserParameters(name, password);
     }
 
-    public void setUserData(String name,
+    public void setUserParameters(String name,
                             String password){
-        userData.setName(name);
-        userData.setPassword(password);
+        userParameters.setName(name);
+        userParameters.setPassword(password);
     }
 
     public void exit(){

@@ -1,5 +1,7 @@
 package Model.Entities.Car;
 
+import Model.DataBase.DealerCarData;
+import Model.Entities.Users.Id;
 import Model.Entities.Users.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +18,7 @@ public class Car {
     @Nullable
     private String registrationNumber;
 
-    private final UUID ID = UUID.randomUUID();
+    private final int ID = Id.getUniqueId(DealerCarData.getCarData());
 
     @Setter
     @Getter

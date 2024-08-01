@@ -9,14 +9,14 @@ import lombok.Getter;
 @Getter
 public enum AccessLevels {
 
-    ADMINISTRATOR(3),
-    MANAGER(2),
-    CLIENT(1);
+    ADMINISTRATOR("Администратор"),
+    MANAGER("Менеджер"),
+    CLIENT("Клиент");
 
-    private final int level;
+    private final String value;
 
-    AccessLevels(int level) {
-        this.level = level;
+    AccessLevels(String value) {
+        this.value = value;
     }
 
 }
