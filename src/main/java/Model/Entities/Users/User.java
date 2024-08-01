@@ -5,13 +5,27 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.UUID;
-@Setter
 @Getter
 public abstract class User {
-    private UserData userData;
+
+    private final UserParameters userData;
+    @Setter
     private AccessLevels accessLevel;
     User(String name, String password){
-        this.userData = new UserData(name, password);
+        this.userData = new UserParameters(name, password);
     }
 
+    public void setUserData(String name,
+                            String password){
+        userData.setName(name);
+        userData.setPassword(password);
+    }
+
+    public void exit(){
+        //todo
+    }
+
+    public void delete(){
+        //todo
+    }
 }

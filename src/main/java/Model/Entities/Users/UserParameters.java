@@ -15,7 +15,7 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class UserData {
+public class UserParameters {
     /**
      * Уникальный номер каждого пользователя.
      */
@@ -27,7 +27,8 @@ public class UserData {
     private String password;
     private String name;
 
-    public UserData(String name, String password) {
+    public UserParameters(String name,
+                          String password) {
         try {
             this.password = Encryptor.encrypt(password);
         } catch (Exception e) {
@@ -36,7 +37,8 @@ public class UserData {
         }
         this.name = name;
     }
-    private UserData(){}
+
+    private UserParameters(){}
 
     public void setPassword(String password) {
         try {

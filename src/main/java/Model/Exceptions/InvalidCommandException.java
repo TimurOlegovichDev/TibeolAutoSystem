@@ -1,4 +1,4 @@
-package Model.Entities.Order.Exceptions;
+package Model.Exceptions;
 
 public class InvalidCommandException extends Exception{
 }

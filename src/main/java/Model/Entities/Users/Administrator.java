@@ -1,4 +1,8 @@
 package Model.Entities.Users;
 
-public class Administrator extends User{
+public final class Administrator extends User{
+    Administrator(String name, String password){
+        super(name, password);
+        setAccessLevel(AccessLevels.ADMINISTRATOR);
+    }
 }
