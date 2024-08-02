@@ -1,6 +1,9 @@
 package ui.messageSrc;
 
 import lombok.Getter;
+import ui.messageSrc.commands.AdminCommands;
+import ui.messageSrc.commands.ClientCommands;
+import ui.messageSrc.commands.ManagerCommands;
 
 @Getter
 public enum StringCommands {
@@ -10,34 +13,17 @@ public enum StringCommands {
             "Менеджер",
             "Клиент"
     }),
+
     REG_OR_AUTORIZE(new String[]{
             "Войти",
             "Зарегистрироваться"}
     ),
-    CLIENT_COMMANDS(new String[]{
-            "Мои заказы",
-            "Мои автомобили",
-            "Автосалон",
-            "Обслуживание",
-            "Добавить машину",
-            "Выйти из аккаунта",}),
-    MANAGER_COMMANDS(new String[]{
-            "Активные заказы",
-            "Архив заказов",
-            "Автосалон",
-            "",
-            "",
-            "",
-            "",}),
-    ADMIN_COMMANDS(new String[]{
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",}
-    );
+
+    CLIENT_COMMANDS(ClientCommands.getStringArray()),
+
+    MANAGER_COMMANDS(ManagerCommands.getStringArray()),
+
+    ADMIN_COMMANDS(AdminCommands.getStringArray());
 
 
     private final String[] commands;

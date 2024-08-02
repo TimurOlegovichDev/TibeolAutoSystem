@@ -2,7 +2,7 @@ package ui.out;
 
 public abstract class TextFormatter {
 
-    private static final int WIDTH = 80;
+    private static final int WIDTH = Printer.getLine().length();
 
     public static String formatText(String ... textArray) {
 

@@ -4,10 +4,12 @@ package ui.messageSrc.commands;
 import lombok.Getter;
 
 @Getter
-public enum ManagerCommands implements Commandable {
+public enum ManagerCommands {
     VIEW_ACTIVE_ORDERS("Просмотр активных заказов"),
     VIEW_ARCHIVED_ORDERS("Мои автомобили"),
-    GO_TO_SHOWROOM("Услуги автосалона");
+    GO_TO_SHOWROOM("Услуги автосалона"),
+    SETUP_MY_PROFILE("Изменить личные данные"),
+    EXIT_FROM_ACCOUNT("Выйти из аккаунта");
 
     private final String command;
     ManagerCommands(String command) {
@@ -29,9 +31,17 @@ public enum ManagerCommands implements Commandable {
         }
     }
 
+    public static String[] getStringArray(){
+        String[] strings = new String[ManagerCommands.values().length];
+        int index = 0;
+        for(ManagerCommands command : ManagerCommands.values())
+            strings[index++] = command.getCommand();
+        return strings;
+    }
+
 
     @Getter
-    enum CommandsInActiveOrderList {
+    public enum CommandsInActiveOrderList {
 
         SET_STATUS("Изменить статус заказа"),
         DISMISS("Отклонить заказ"),
@@ -41,6 +51,14 @@ public enum ManagerCommands implements Commandable {
         private final String command;
         CommandsInActiveOrderList(String command) {
             this.command = command;
+        }
+
+        public static String[] getStringArray(){
+            String[] strings = new String[CommandsInActiveOrderList.values().length];
+            int index = 0;
+            for(CommandsInActiveOrderList command : CommandsInActiveOrderList.values())
+                strings[index++] = command.getCommand();
+            return strings;
         }
     }
 }
