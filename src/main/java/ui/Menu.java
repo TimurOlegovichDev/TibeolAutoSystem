@@ -1,9 +1,10 @@
-package ui.in;
+package ui;
 
 import Model.Entities.Users.AccessLevels;
 import Model.Entities.Users.PhoneNumber;
 import Model.Exceptions.InvalidInputException;
 import Model.UserManagement.Encryptor;
+import ui.in.Validator;
 import ui.out.Printer;
 import ui.messageSrc.StringCommands;
 import ui.messageSrc.Messages;
@@ -65,6 +66,39 @@ public abstract class Menu {
                 Printer.print(Messages.INVALID_COMMAND.getMessage());
             } catch (Exception e) {
                 Printer.print(Messages.ERROR.getMessage());
+            }
+        }
+    }
+
+    public static String clientChoosingAction(){
+        Printer.printCommands(StringCommands.CLIENT_COMMANDS.getCommands());
+        while(true){
+            try{
+                return Validator.validCommand(scanner.nextLine(), StringCommands.CLIENT_COMMANDS.getCommands());
+            } catch (InvalidInputException e){
+                Printer.print(Messages.INVALID_COMMAND.getMessage());
+            }
+        }
+    }
+
+    public static String managerChoosingAction(){
+        Printer.printCommands(StringCommands.MANAGER_COMMANDS.getCommands());
+        while(true){
+            try{
+                return Validator.validCommand(scanner.nextLine(), StringCommands.MANAGER_COMMANDS.getCommands());
+            } catch (InvalidInputException e){
+                Printer.print(Messages.INVALID_COMMAND.getMessage());
+            }
+        }
+    }
+
+    public static String adminChoosingAction(){
+        Printer.printCommands(StringCommands.ADMIN_COMMANDS.getCommands());
+        while(true){
+            try{
+                return Validator.validCommand(scanner.nextLine(), StringCommands.ADMIN_COMMANDS.getCommands());
+            } catch (InvalidInputException e){
+                Printer.print(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }

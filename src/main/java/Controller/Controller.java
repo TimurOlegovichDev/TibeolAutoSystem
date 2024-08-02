@@ -1,6 +1,5 @@
 package Controller;
 
-import Model.DataBase.UserData;
 import Model.Entities.Users.User;
 import Model.Exceptions.InvalidPasswordException;
 import Model.Exceptions.NoSuchUserException;
@@ -8,7 +7,8 @@ import Model.Exceptions.RegistrationInterruptException;
 import Model.UserManagement.AuthenticationManager;
 import Model.UserManagement.Encryptor;
 import Model.UserManagement.RegistrationManager;
-import ui.in.Menu;
+import lombok.Setter;
+import ui.Menu;
 import ui.out.Printer;
 import ui.messageSrc.Messages;
 
@@ -16,6 +16,7 @@ public class Controller extends Thread {
 
     private static volatile Controller instance;
 
+    @Setter
     private volatile User currentUser;
 
     public static synchronized Controller getController() {
@@ -40,9 +41,8 @@ public class Controller extends Thread {
                 case AUTHORIZATION -> scene = authorizationHandler();
 
                 case ACTIONS -> {
-                    System.out.println("Здесь потом будет набор функций");
-                    UserData.print();
                     Printer.print("Вы вошли в аккаунт под ID " + currentUser.getUserParameters().getID() + " и именем " + currentUser.getUserParameters().getName());
+
                 }
                 case EXIT_FROM_ACCOUNT -> {
                     continue;
@@ -112,6 +112,22 @@ public class Controller extends Thread {
             Thread.sleep(ms);
         } catch (InterruptedException ignored){
             System.err.println("Задержка прервана");
+        }
+    }
+
+    private static abstract class ActionController {
+        private static void distributeActions(User currentUser){
+            switch (currentUser.getAccessLevel()) {
+                case CLIENT -> actionHandler(Menu.clientChoosingAction());
+                case MANAGER -> actionHandler(Menu.managerChoosingAction());
+                case ADMINISTRATOR -> actionHandler(Menu.adminChoosingAction());
+            }
+        }
+
+        private static void actionHandler(String action){
+            switch (action) {
+
+            }
         }
     }
 
