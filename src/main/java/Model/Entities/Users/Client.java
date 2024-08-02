@@ -22,7 +22,7 @@ public final class Client extends User{
     private List<Order> orderList = new ArrayList<>();
     private Queue<Message> messages = new ArrayDeque<>();
 
-    public Client(String name, String password){
+    public Client(String name, byte[] password){
         super(name, password);
         setAccessLevel(AccessLevels.CLIENT);
     }

@@ -1,11 +1,8 @@
 package Model.UserManagement;
 
 import javax.crypto.*;
-import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -34,10 +31,10 @@ public abstract class Encryptor {
         } catch (NoSuchAlgorithmException ignored) {}
     }
 
-    public static String encrypt(String arg) throws Exception {
+    public static byte[] encrypt(byte[] password) throws Exception {
         prepareSecreteKey("4S$eJ#8dLpR3aGfN2mB");
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-        return Base64.getEncoder().encodeToString(cipher.doFinal(arg.getBytes("UTF-8")));
+        return Base64.getEncoder().encode(cipher.doFinal(password));
     }
 }

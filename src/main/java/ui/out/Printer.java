@@ -1,4 +1,4 @@
-package ui.Out;
+package ui.out;
 
 import java.util.List;
 

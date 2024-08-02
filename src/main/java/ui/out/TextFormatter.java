@@ -1,4 +1,4 @@
-package ui.Out;
+package ui.out;
 
 public abstract class TextFormatter {
 

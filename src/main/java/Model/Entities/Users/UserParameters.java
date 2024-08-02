@@ -20,33 +20,28 @@ public class UserParameters extends UserData {
     /**
      * Уникальный номер каждого пользователя.
      */
-    private final int id = Id.getUniqueId(UserData.getUserData());
+    private final int ID = Id.getUniqueId(UserData.getUserData());
 
     /**
      * Пароль пользователя, который шифруется с помощью {@link Encryptor}.
      */
-    private String password;
+    private byte[] password;
     private String name;
 
     public UserParameters(String name,
-                          String password) {
-        try {
-            this.password = Encryptor.encrypt(password);
-        } catch (Exception e) {
-            System.out.print("Encrypt error!");
-            this.password = String.valueOf(Objects.hashCode(password));
-        }
+                          byte[] password) {
+        setPassword(password);
         this.name = name;
     }
 
     private UserParameters(){}
 
-    public void setPassword(String password) {
+    public void setPassword(byte[] password) {
         try {
             this.password = Encryptor.encrypt(password);
         } catch (Exception e) {
             System.out.print("Encrypt error!");
-            this.password = String.valueOf(Objects.hashCode(password));
+            this.password = String.valueOf(Objects.hashCode(password)).getBytes();
         }
     }
 

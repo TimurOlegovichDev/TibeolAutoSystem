@@ -1,6 +1,5 @@
 package Model.Entities.Users;
 
-import Model.Entities.Car.Car;
 import Model.Entities.Order.Order;
 import Model.Entities.Order.StatusesOfOrder;
 import Model.Exceptions.InvalidCommandException;
@@ -14,7 +13,7 @@ public final class Manager extends User{
     @Nullable
     private PhoneNumber phoneNumber;
 
-    public Manager(String name, String password){
+    public Manager(String name, byte[] password){
         super(name, password);
         setAccessLevel(AccessLevels.MANAGER);
     }

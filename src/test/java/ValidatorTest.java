@@ -1,6 +1,6 @@
 import Model.Exceptions.InvalidInputException;
 import org.junit.jupiter.api.Test;
-import ui.In.Validator;
+import ui.in.Validator;
 
 import static org.junit.jupiter.api.Assertions.*;
 

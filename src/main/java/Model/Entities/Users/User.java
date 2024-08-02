@@ -11,14 +11,16 @@ public abstract class User {
     private final UserParameters userParameters;
     @Setter
     private AccessLevels accessLevel;
-    User(String name, String password){
+    User(String name, byte[] password){
         this.userParameters = new UserParameters(name, password);
     }
 
     public void setUserParameters(String name,
-                            String password){
+                                  byte[] password){
+
         userParameters.setName(name);
         userParameters.setPassword(password);
+
     }
 
     public void exit(){

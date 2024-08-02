@@ -1,14 +1,16 @@
-package ui.In;
+package ui.in;
 
 import Model.Entities.Users.AccessLevels;
+import Model.Entities.Users.PhoneNumber;
 import Model.Exceptions.InvalidInputException;
-import ui.Out.Printer;
-import ui.StringSRC.Commands;
-import ui.StringSRC.Messages;
+import Model.UserManagement.Encryptor;
+import ui.out.Printer;
+import ui.messageSrc.StringCommands;
+import ui.messageSrc.Messages;
 
 import java.util.Scanner;
 
-import static ui.In.Validator.validLevel;
+import static ui.in.Validator.validLevel;
 
 public abstract class Menu {
 
@@ -18,10 +20,10 @@ public abstract class Menu {
         Printer.print(Messages.GREETING.getMessage());
     }
 
-    public static String chooseActionToStart() {
+    public static String chooseRegistrationOrAuth() {
         while (true){
             try {
-                return Validator.validCommand(scanner.nextLine(),Commands.REG_OR_AUTORIZE.getCommands());
+                return Validator.validCommand(scanner.nextLine(), StringCommands.REG_OR_AUTORIZE.getCommands());
             } catch (InvalidInputException e){
                 Printer.print(Messages.INVALID_COMMAND.getMessage());
             }
@@ -32,7 +34,7 @@ public abstract class Menu {
         Printer.print(Messages.CHOOSE_ROLE.getMessage());
         while (true){
             try {
-                return validLevel(Validator.validCommand(scanner.nextLine(), Commands.ROLES.getCommands()));
+                return validLevel(Validator.validCommand(scanner.nextLine(), StringCommands.ROLES.getCommands()));
             } catch (InvalidInputException e){
                 Printer.print(Messages.INVALID_COMMAND.getMessage());
             }
@@ -54,14 +56,20 @@ public abstract class Menu {
         }
     }
 
-    public static String getUserPassword() {
+    public static byte[] getUserPassword() {
         Printer.print(Messages.ENTER_PASSWORD.getMessage());
         while(true){
             try{
-                return Validator.validPassword(scanner.nextLine());
+                return Encryptor.encrypt(Validator.validPassword(scanner.nextLine()).getBytes());
             } catch (InvalidInputException e){
                 Printer.print(Messages.INVALID_COMMAND.getMessage());
+            } catch (Exception e) {
+                Printer.print(Messages.ERROR.getMessage());
             }
         }
+    }
+
+    public static PhoneNumber getUserPhoneNumber(){
+        return null;
     }
 }

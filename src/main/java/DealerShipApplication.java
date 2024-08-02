@@ -1,10 +1,16 @@
 import Controller.Controller;
-import ui.StringSRC.Messages;
+import ui.messageSrc.Messages;
+import ui.out.Printer;
+
+/**
+ * Главный класс для запуска программы. В нем мы создаем экземляр контроллера с помощью синглтона, чтобы предотвратить множество экземляров.
+ */
 
 public class DealerShipApplication {
     public static void main(String[] args) throws InterruptedException {
-        System.out.println(Messages.START);
-        Thread.sleep(1000);
-        Controller.getController().run();
+        Printer.print(Messages.START.getMessage());
+        Controller.getController().start();
+        Controller.getController().join();
+        Printer.print(Messages.END.getMessage());
     }
 }

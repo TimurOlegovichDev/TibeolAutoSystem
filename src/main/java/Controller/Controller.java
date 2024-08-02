@@ -4,15 +4,15 @@ import Model.DataBase.UserData;
 import Model.Entities.Users.User;
 import Model.Exceptions.InvalidPasswordException;
 import Model.Exceptions.NoSuchUserException;
-import Model.Exceptions.RegistrationException;
+import Model.Exceptions.RegistrationInterruptException;
 import Model.UserManagement.AuthenticationManager;
 import Model.UserManagement.Encryptor;
 import Model.UserManagement.RegistrationManager;
-import ui.In.Menu;
-import ui.Out.Printer;
-import ui.StringSRC.Messages;
+import ui.in.Menu;
+import ui.out.Printer;
+import ui.messageSrc.Messages;
 
-public class Controller {
+public class Controller extends Thread {
 
     private static volatile Controller instance;
 
@@ -26,70 +26,93 @@ public class Controller {
     }
 
     public void run() {
-        while (true){
-            Menu.greeting();
-            enterToSystem();
-            UserData.print();
-            Printer.print("Вы вошли в аккаунт под ID " + currentUser.getUserParameters().getId() + " и именем " + currentUser.getUserParameters().getName());
-        }
-    }
 
-    private void enterToSystem(){
-        while(true){
-            try {
-                Printer.print(Messages.ACTIONS_TO_ENTER.getMessage());
-                actionToEnter();
-                break;
-            } catch (Exception ignored){}
-        }
-    }
+        for(Scenes scene = Scenes.GREETING; scene.getNumber() < Scenes.SHUT_DOWN.getNumber();){
+            timeDelay(500);
+            switch (scene){
 
-    private void actionToEnter() throws Exception {
-        if (getActionToSign().equals("Войти")) {
-            Printer.print("Добро пожаловать, чтобы войти в систему,");
-            authorization();
-        } else {
-            Printer.print("Добро пожаловать, для успешной регистрации понадобится некоторые данные, для начала, ");
-            registration();
-        }
-    }
+                case GREETING -> scene = greeting();
 
-    private void registration() {
-        while (true) {
-            try {
-                currentUser = RegistrationManager.registration(
-                        Menu.chooseRole(),
-                        Menu.getUserName(),
-                        Menu.getUserPassword()
-                );
-                return;
-            } catch (RegistrationException e) {
-                Printer.print(Messages.ERROR.getMessage());
+                case CHOOSING_ROLE -> scene = chooseRegistrationOrAuth();
+
+                case REGISTRATION -> scene = registrationHandler();
+
+                case AUTHORIZATION -> scene = authorizationHandler();
+
+                case ACTIONS -> {
+                    System.out.println("Здесь потом будет набор функций");
+                    UserData.print();
+                    Printer.print("Вы вошли в аккаунт под ID " + currentUser.getUserParameters().getID() + " и именем " + currentUser.getUserParameters().getName());
+                }
+                case EXIT_FROM_ACCOUNT -> {
+                    continue;
+                }
+                case SHUT_DOWN -> {
+                    continue;
+                }
             }
+            System.out.println(scene + " NUMBER OF SCENE");
         }
     }
 
-    private void authorization() throws Exception {
+    private Scenes greeting(){
+        Menu.greeting();
+        return Scenes.GREETING.nextStep();
+    }
+
+    private Scenes chooseRegistrationOrAuth(){
+        Printer.print(Messages.ACTIONS_TO_ENTER.getMessage());
+        return (Menu.chooseRegistrationOrAuth().equals("Войти")) ? Scenes.AUTHORIZATION : Scenes.REGISTRATION;
+    }
+
+    private Scenes registrationHandler(){
         try {
-            currentUser = AuthenticationManager.authentication(
-                    Menu.getUserName(),
-                    Encryptor.encrypt(Menu.getUserPassword())
-            );
-            return;
-        } catch (NoSuchUserException NSUE) {
-            Printer.print(Messages.NO_SUCH_USER.getMessage());
-        } catch (InvalidPasswordException IPE) {
-            Printer.print(Messages.INVALID_PASS.getMessage());
+            registration();
+            return Scenes.ACTIONS;
+        } catch (RegistrationInterruptException e) {
+            Printer.print(Messages.ERROR.getMessage());
+            return Scenes.CHOOSING_ROLE;
         }
-        throw new Exception();
     }
 
-    private String getActionToSign() {
-        return Menu.chooseActionToStart();
+    private Scenes authorizationHandler(){
+        try {
+            authorization();
+            return Scenes.ACTIONS;
+        } catch (InvalidPasswordException e){
+            Printer.print(Messages.INVALID_PASS.getMessage());
+        } catch (NoSuchUserException e) {
+            Printer.print(Messages.NO_SUCH_USER.getMessage());
+        } catch (Exception e) {
+            Printer.print(Messages.ERROR.getMessage());
+        }
+        return Scenes.CHOOSING_ROLE;
     }
 
-    private void startChoosingRole() {
-        Menu.chooseRole();
+
+    private void registration() throws RegistrationInterruptException {
+        Printer.print("Добро пожаловать, для успешной регистрации понадобится некоторые данные, для начала, ");
+        currentUser = RegistrationManager.registration(
+                Menu.chooseRole(),
+                Menu.getUserName(),
+                Menu.getUserPassword()
+        );
+    }
+
+    private void authorization() throws Exception, InvalidPasswordException {
+        Printer.print("Добро пожаловать, чтобы войти в систему,");
+        currentUser = AuthenticationManager.authentication(
+                Menu.getUserName(),
+                Encryptor.encrypt(Menu.getUserPassword())
+        );
+    }
+
+    private void timeDelay(int ms){
+        try{
+            Thread.sleep(ms);
+        } catch (InterruptedException ignored){
+            System.err.println("Задержка прервана");
+        }
     }
 
 }

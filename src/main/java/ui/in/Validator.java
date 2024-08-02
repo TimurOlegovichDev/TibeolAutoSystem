@@ -1,4 +1,4 @@
-package ui.In;
+package ui.in;
 
 import Model.Entities.Users.AccessLevels;
 import Model.Exceptions.InvalidInputException;

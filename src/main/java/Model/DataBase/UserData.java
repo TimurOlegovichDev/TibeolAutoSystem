@@ -15,7 +15,7 @@ public abstract class UserData {
     }
 
     public static void add(User user){
-        userData.put(user.getUserParameters().getId(), user);
+        userData.put(user.getUserParameters().getID(), user);
         addCredentials(user);
     }
 
