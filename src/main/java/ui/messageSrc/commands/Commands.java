@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum Commands implements Commandable{
 
-    RETURN("Вернуться"),
+    SETUP_MY_PROFILE("Изменить личные данные"),
     EXIT_FROM_ACCOUNT("Выйти из аккаунта");
 
     private final String command;
