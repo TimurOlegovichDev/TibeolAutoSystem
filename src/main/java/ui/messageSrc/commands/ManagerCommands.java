@@ -5,9 +5,9 @@ import lombok.Getter;
 
 @Getter
 public enum ManagerCommands {
-    VIEW_ACTIVE_ORDERS("Просмотр активных заказов"),
-    VIEW_ARCHIVED_ORDERS("Мои автомобили"),
-    GO_TO_SHOWROOM("Услуги автосалона"),
+    GO_TO_SHOWROOM("Перейти в автосалон"),
+    VIEW_ARCHIVED_ORDERS("Активные заказы"),
+    VIEW_ACTIVE_ORDERS("Заказы в архиве"),
     SETUP_MY_PROFILE("Изменить личные данные"),
     EXIT_FROM_ACCOUNT("Выйти из аккаунта");
 

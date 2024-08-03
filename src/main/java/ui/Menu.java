@@ -1,10 +1,14 @@
 package ui;
 
+import Controller.Scenes;
 import Model.Entities.Users.AccessLevels;
 import Model.Entities.Users.PhoneNumber;
 import Model.Exceptions.InvalidInputException;
 import Model.UserManagement.Encryptor;
 import ui.in.Validator;
+import ui.messageSrc.commands.AdminCommands;
+import ui.messageSrc.commands.ClientCommands;
+import ui.messageSrc.commands.ManagerCommands;
 import ui.out.Printer;
 import ui.messageSrc.StringCommands;
 import ui.messageSrc.Messages;
@@ -32,7 +36,7 @@ public abstract class Menu {
     }
 
     public static AccessLevels chooseRole() {
-        Printer.print(Messages.CHOOSE_ROLE.getMessage());
+        Printer.printAsIs(Messages.CHOOSE_ROLE.getMessage());
         while (true){
             try {
                 return validLevel(Validator.validCommand(scanner.nextLine(), StringCommands.ROLES.getCommands()));
@@ -40,10 +44,6 @@ public abstract class Menu {
                 Printer.print(Messages.INVALID_COMMAND.getMessage());
             }
         }
-    }
-
-    private static AccessLevels getAccessLvl(String level){
-        return AccessLevels.valueOf(level);
     }
 
     public static String getUserName() {
@@ -70,37 +70,60 @@ public abstract class Menu {
         }
     }
 
-    public static String clientChoosingAction(){
+    public static ClientCommands clientChoosingAction(){
         Printer.printCommands(StringCommands.CLIENT_COMMANDS.getCommands());
         while(true){
             try{
-                return Validator.validCommand(scanner.nextLine(), StringCommands.CLIENT_COMMANDS.getCommands());
+                return Validator.validClientAction(scanner.nextLine(), ClientCommands.values());
             } catch (InvalidInputException e){
                 Printer.print(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
 
-    public static String managerChoosingAction(){
+    public static ClientCommands.CommandsInShowRoom clientChoosingActionInShowRoom(){
+        Printer.printCommands(ClientCommands.CommandsInShowRoom.getStringArray());
+        while(true){
+            try{
+                return Validator.validClientInShowRoomAction(scanner.nextLine(), ClientCommands.CommandsInShowRoom.values());
+            } catch (InvalidInputException e){
+                Printer.print(Messages.INVALID_COMMAND.getMessage());
+            }
+        }
+    }
+
+    public static ManagerCommands managerChoosingAction(){
         Printer.printCommands(StringCommands.MANAGER_COMMANDS.getCommands());
         while(true){
             try{
-                return Validator.validCommand(scanner.nextLine(), StringCommands.MANAGER_COMMANDS.getCommands());
+                return Validator.validManagerAction(scanner.nextLine(), ManagerCommands.values());
             } catch (InvalidInputException e){
                 Printer.print(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
 
-    public static String adminChoosingAction(){
+    public static AdminCommands adminChoosingAction(){
         Printer.printCommands(StringCommands.ADMIN_COMMANDS.getCommands());
         while(true){
             try{
-                return Validator.validCommand(scanner.nextLine(), StringCommands.ADMIN_COMMANDS.getCommands());
+                return Validator.validAdminAction(scanner.nextLine(), AdminCommands.values());
             } catch (InvalidInputException e){
                 Printer.print(Messages.INVALID_COMMAND.getMessage());
             }
         }
+    }
+
+    public static boolean areYouSure(String message){
+        Printer.print(message);
+        while(true){
+            try{
+                return Validator.validCommand(scanner.nextLine(), "ДА", "НЕТ") == "ДА";
+            } catch (InvalidInputException e){
+                Printer.print(Messages.INVALID_COMMAND.getMessage());
+            }
+        }
+
     }
 
     public static PhoneNumber getUserPhoneNumber(){

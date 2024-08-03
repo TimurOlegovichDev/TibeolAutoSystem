@@ -20,7 +20,7 @@ public enum Scenes {
         this.number = number;
     }
 
-    public Scenes nextStep(){
+    Scenes nextStep(){
         if(number==8) return Scenes.SHUT_DOWN;
         return Scenes.values()[number];
     }

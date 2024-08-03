@@ -2,6 +2,9 @@ package ui.in;
 
 import Model.Entities.Users.AccessLevels;
 import Model.Exceptions.InvalidInputException;
+import ui.messageSrc.commands.AdminCommands;
+import ui.messageSrc.commands.ClientCommands;
+import ui.messageSrc.commands.ManagerCommands;
 
 public abstract class Validator {
 
@@ -20,9 +23,36 @@ public abstract class Validator {
 
     public static String validCommand(String input, String ... commands) throws InvalidInputException {
         if(input == null) throw new InvalidInputException();
-        input = input.split(" ")[0];
         for(String validCommands : commands)
             if(validCommands.toLowerCase().startsWith(input.toLowerCase())) return validCommands;
+        throw new InvalidInputException();
+    }
+
+    public static ClientCommands validClientAction(String input, ClientCommands ... commands) throws InvalidInputException {
+        if(input == null) throw new InvalidInputException();
+        for(ClientCommands validCommands : commands)
+            if(validCommands.getCommand().toLowerCase().startsWith(input.toLowerCase())) return validCommands;
+        throw new InvalidInputException();
+    }
+
+    public static ClientCommands.CommandsInShowRoom validClientInShowRoomAction(String input, ClientCommands.CommandsInShowRoom ... commands) throws InvalidInputException {
+        if(input == null) throw new InvalidInputException();
+        for( ClientCommands.CommandsInShowRoom validCommands : commands)
+            if(validCommands.getCommand().toLowerCase().startsWith(input.toLowerCase())) return validCommands;
+        throw new InvalidInputException();
+    }
+
+    public static ManagerCommands validManagerAction(String input, ManagerCommands ... commands) throws InvalidInputException {
+        if(input == null) throw new InvalidInputException();
+        for(ManagerCommands validCommands : commands)
+            if(validCommands.getCommand().toLowerCase().startsWith(input.toLowerCase())) return validCommands;
+        throw new InvalidInputException();
+    }
+
+    public static AdminCommands validAdminAction(String input, AdminCommands... commands) throws InvalidInputException {
+        if(input == null) throw new InvalidInputException();
+        for(AdminCommands validCommands : commands)
+            if(validCommands.getCommand().toLowerCase().startsWith(input.toLowerCase())) return validCommands;
         throw new InvalidInputException();
     }
 

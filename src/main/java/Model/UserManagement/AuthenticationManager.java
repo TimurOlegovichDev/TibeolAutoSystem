@@ -1,5 +1,6 @@
 package Model.UserManagement;
 
+import Model.DataBase.DataManager;
 import Model.DataBase.UserData;
 import Model.Entities.Users.AccessLevels;
 import Model.Entities.Users.User;
@@ -21,7 +22,7 @@ public abstract class AuthenticationManager {
 
     abstract static class AuthorizationManager {
         public static User authorization(UserParameters userParameters){
-            return UserData.getUserData().get(userParameters.getID());
+            return DataManager.getUserData().get(userParameters.getID());
         }
     }
 }

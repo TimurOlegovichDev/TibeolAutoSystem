@@ -40,7 +40,7 @@ public enum ClientCommands {
         }
 
         public static String[] getStringArray(){
-            String[] strings = new String[ClientCommands.values().length];
+            String[] strings = new String[ClientCommands.CommandsInShowRoom.values().length];
             int index = 0;
             for(CommandsInShowRoom command : CommandsInShowRoom.values())
                 strings[index++] = command.getCommand();

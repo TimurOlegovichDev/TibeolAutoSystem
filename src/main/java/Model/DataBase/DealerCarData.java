@@ -6,13 +6,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class DealerCarData{
+
     private static Map<Integer, Car> carData = new HashMap<>();
 
-    public static Map<Integer, Car> getCarData(){
+    protected static Map<Integer, Car> getCarData(){
         return new HashMap<>(carData);
     }
 
-    public static void add(Car car){
+    protected static void add(Car car){
         carData.put(car.getID(), car);
     }
 }

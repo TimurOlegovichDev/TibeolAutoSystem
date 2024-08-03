@@ -1,5 +1,6 @@
 package Model.Entities.Users;
 
+import Model.DataBase.DataManager;
 import Model.DataBase.UserData;
 import Model.UserManagement.Encryptor;
 import lombok.Getter;
@@ -16,11 +17,11 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class UserParameters extends UserData {
+public class UserParameters {
     /**
      * Уникальный номер каждого пользователя.
      */
-    private final int ID = Id.getUniqueId(UserData.getUserData());
+    private final int ID = Id.getUniqueId(DataManager.getUserData());
 
     /**
      * Пароль пользователя, который шифруется с помощью {@link Encryptor}.
@@ -28,7 +29,7 @@ public class UserParameters extends UserData {
     private byte[] password;
     private String name;
 
-    public UserParameters(String name,
+    UserParameters(String name,
                           byte[] password) {
         setPassword(password);
         this.name = name;
@@ -36,7 +37,7 @@ public class UserParameters extends UserData {
 
     private UserParameters(){}
 
-    public void setPassword(byte[] password) {
+    void setPassword(byte[] password) {
         try {
             this.password = Encryptor.encrypt(password);
         } catch (Exception e) {

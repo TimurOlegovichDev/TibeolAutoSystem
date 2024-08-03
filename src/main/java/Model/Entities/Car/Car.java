@@ -1,5 +1,6 @@
 package Model.Entities.Car;
 
+import Model.DataBase.DataManager;
 import Model.DataBase.DealerCarData;
 import Model.Entities.Users.Id;
 import Model.Entities.Users.User;
@@ -15,10 +16,8 @@ import java.util.UUID;
 public class Car {
     @Nullable
     private User owner;
-    @Nullable
-    private String registrationNumber;
 
-    private final int ID = Id.getUniqueId(DealerCarData.getCarData());
+    private final int ID = Id.getUniqueId(DataManager.getCarData());
 
     @Setter
     @Getter
@@ -30,4 +29,11 @@ public class Car {
     @Setter
     private Instant yearOfProduction;
 
+    @Override
+    public String toString() {
+        return "| ID: " + ID +
+                " | Производитель: " + brand +
+                " | Модель: " + model +
+                " | Дата выпуска: " + yearOfProduction + " | ";
+    }
 }

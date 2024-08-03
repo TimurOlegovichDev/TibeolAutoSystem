@@ -10,6 +10,8 @@ public abstract class User {
 
     private final UserParameters userParameters;
     @Setter
+    private PhoneNumber phoneNumber;
+    @Setter
     private AccessLevels accessLevel;
     User(String name, byte[] password){
         this.userParameters = new UserParameters(name, password);
@@ -29,5 +31,13 @@ public abstract class User {
 
     public void delete(){
         //todo
+    }
+
+    @Override
+    public String toString() {
+        return "| ID: " + userParameters.getID() +
+                " | Имя: " + userParameters.getName() +
+                " | Контактный номер: " + getPhoneNumber() +
+                " | Роль: " + getAccessLevel().toString() + " | ";
     }
 }

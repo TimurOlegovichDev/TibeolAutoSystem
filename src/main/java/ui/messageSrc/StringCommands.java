@@ -15,6 +15,7 @@ public enum StringCommands {
     }),
 
     REG_OR_AUTORIZE(new String[]{
+            
             "Войти",
             "Зарегистрироваться"}
     ),

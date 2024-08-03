@@ -10,16 +10,16 @@ public abstract class UserData {
     private static final Map<Integer, User> userData = new HashMap<>();
     private static final Map<String, UserParameters> credentials = new HashMap<>();
 
-    public static Map<Integer, User> getUserData(){
+    protected static Map<Integer, User> getUserData(){
         return new HashMap<>(userData);
     }
 
-    public static void add(User user){
+    protected static void add(User user){
         userData.put(user.getUserParameters().getID(), user);
         addCredentials(user);
     }
 
-    public static void remove(Integer id){
+    protected static void remove(Integer id){
         removeCredentials(userData.get(id));
         userData.remove(id);
     }

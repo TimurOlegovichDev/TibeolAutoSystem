@@ -23,7 +23,7 @@ public abstract class OrderData{
 //         return sortedList;
 //    }
 
-    public static void add(Order o){
+    protected static void add(Order o){
         orders.add(o);
     }
 }

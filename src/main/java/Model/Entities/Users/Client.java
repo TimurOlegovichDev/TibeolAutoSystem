@@ -1,10 +1,13 @@
 package Model.Entities.Users;
 
+import Model.DataBase.DataManager;
 import Model.DataBase.DealerCarData;
 import Model.DataBase.OrderData;
+import Model.Entities.Car.Car;
 import Model.Entities.Message;
 import Model.Entities.Order.Order;
 import Model.Entities.Order.OrderTypes;
+import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,11 +18,11 @@ import java.util.Queue;
 
 public final class Client extends User{
 
-    @Setter
-    @Nullable
-    private PhoneNumber phoneNumber;
-
+    @Getter
     private List<Order> orderList = new ArrayList<>();
+    @Getter
+    private List<Car> carList = new ArrayList<>();
+    @Getter
     private Queue<Message> messages = new ArrayDeque<>();
 
     public Client(String name, byte[] password){
@@ -36,10 +39,10 @@ public final class Client extends User{
     }
 
     public void createServiceOrder(String text, int carId){
-        OrderData.add(new Order(OrderTypes.SERVICE, this, text, DealerCarData.getCarData().get(carId)));
+        DataManager.add(new Order(OrderTypes.SERVICE, this, text, DataManager.getCarData().get(carId)));
     }
 
     public void createPurchaseOrder(String text, int carId){
-        OrderData.add(new Order(OrderTypes.PURCHASE, this, text, DealerCarData.getCarData().get(carId)));
+        DataManager.add(new Order(OrderTypes.PURCHASE, this, text, DataManager.getCarData().get(carId)));
     }
 }
