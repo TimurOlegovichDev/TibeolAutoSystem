@@ -3,7 +3,7 @@ package Model.Entities.Order;
 import Model.Entities.Car.Car;
 import Model.Entities.Message;
 import Model.Entities.Users.*;
-import Model.Exceptions.InvalidCommandException;
+import Model.Exceptions.UserExc.InvalidCommandException;
 import lombok.Getter;
 import lombok.Setter;
 

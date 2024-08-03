@@ -1,13 +1,13 @@
 package Model.Entities.Users;
 
-import Model.DataBase.DataManager;
-import Model.DataBase.UserData;
+import Model.DataBase.DataBaseHandler;
+import Model.DataBase.UserDataBase;
 import Model.UserManagement.Encryptor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * Класс для хранения данных пользователя, таких как имя, пароль и идентификационный номер.
@@ -21,13 +21,14 @@ public class UserParameters {
     /**
      * Уникальный номер каждого пользователя.
      */
-    private final int ID = Id.getUniqueId(DataManager.getUserData());
+    private final int ID = Id.getUniqueId(DataBaseHandler.getUserData());
 
     /**
      * Пароль пользователя, который шифруется с помощью {@link Encryptor}.
      */
     private byte[] password;
     private String name;
+
 
     UserParameters(String name,
                           byte[] password) {
@@ -46,4 +47,16 @@ public class UserParameters {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserParameters that = (UserParameters) o;
+        return ID == that.ID && Objects.deepEquals(password, that.password) && Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ID, Arrays.hashCode(password));
+    }
 }

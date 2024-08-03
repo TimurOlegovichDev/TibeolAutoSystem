@@ -3,16 +3,14 @@ package Controller;
 import Model.Entities.Users.AccessLevels;
 import Model.Entities.Users.Client;
 import Model.Entities.Users.User;
-import Model.Exceptions.InvalidPasswordException;
-import Model.Exceptions.NoSuchUserException;
-import Model.Exceptions.NotEnoughRightsException;
-import Model.Exceptions.RegistrationInterruptException;
+import Model.Exceptions.UserExc.InvalidPasswordException;
+import Model.Exceptions.UserExc.NoSuchUserException;
+import Model.Exceptions.UserExc.NotEnoughRightsException;
+import Model.Exceptions.UserExc.RegistrationInterruptException;
 import Model.UserManagement.AuthenticationManager;
 import Model.UserManagement.Encryptor;
 import Model.UserManagement.RegistrationManager;
 
-import lombok.Getter;
-import lombok.Setter;
 import ui.Menu;
 import ui.messageSrc.commands.*;
 import ui.out.Printer;
@@ -149,10 +147,11 @@ public class Controller extends Thread {
             switch (action) {
                 case VIEW_ORDERS -> ActionHandler.viewUserOrders((Client) currentUser);
                 case VIEW_USER_CARS -> ActionHandler.viewUserCars((Client) currentUser);
-                case ADD_USER_CAR -> {}
+                case ADD_USER_CAR -> ActionHandler.addUserCar((Client) currentUser);
                 case GO_TO_SHOWROOM -> ActionHandler.goToShowRoom(currentUser);
-                case SETUP_MY_PROFILE -> {}
+                case SETUP_MY_PROFILE -> nextScene = ActionHandler.setUpUserParameters(currentUser);
                 case EXIT_FROM_ACCOUNT -> nextScene = Scenes.EXIT_FROM_ACCOUNT;
+                case DELETE_ACCOUNT -> nextScene = ActionHandler.removeAccount(currentUser);
                 default -> throw new NotEnoughRightsException();
             }
             return nextScene;
@@ -161,7 +160,12 @@ public class Controller extends Thread {
         private Scenes managerActionHandler(ManagerCommands action) throws NotEnoughRightsException {
             Scenes nextScene = Scenes.ACTIONS;
             switch (action) {
+                case VIEW_ACTIVE_ORDERS -> {}
+                case VIEW_ARCHIVED_ORDERS -> {}
                 case EXIT_FROM_ACCOUNT -> nextScene = Scenes.EXIT_FROM_ACCOUNT;
+                case GO_TO_SHOWROOM -> ActionHandler.goToShowRoom(currentUser);
+                case SETUP_MY_PROFILE -> nextScene = ActionHandler.setUpUserParameters(currentUser);
+                case DELETE_ACCOUNT -> nextScene = ActionHandler.removeAccount(currentUser);
             }
             return nextScene;
         }
@@ -169,7 +173,7 @@ public class Controller extends Thread {
         private Scenes adminActionHandler(AdminCommands action) throws NotEnoughRightsException {
             Scenes nextScene = Scenes.ACTIONS;
             switch (action) {
-                case USER_LIST ->  ActionHandler.viewUsers(currentUser);
+                case USER_LIST ->  ActionHandler.viewUsers();
                 case EXIT_FROM_ACCOUNT -> nextScene = Scenes.EXIT_FROM_ACCOUNT;
                 case SHUT_DOWN -> nextScene = Scenes.SHUT_DOWN;
             }

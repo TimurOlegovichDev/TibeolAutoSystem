@@ -8,7 +8,8 @@ public enum AdminCommands {
     GET_SORTED_LIST("Отсортировать список"),
     SETUP_MY_PROFILE("Изменить личные данные"),
     EXIT_FROM_ACCOUNT("Выйти из аккаунта"),
-    SHUT_DOWN("Завершить работу системы");
+    SHUT_DOWN("Завершить работу системы"),
+    DELETE_ACCOUNT("Удалить аккаунт");
 
     private final String command;
     AdminCommands(String command) {

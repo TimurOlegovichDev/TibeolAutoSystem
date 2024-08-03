@@ -1,9 +1,14 @@
 package Model.Entities.Users;
 
+import Model.DataBase.DataBaseHandler;
+import Model.DataBase.UserDataBase;
+import Model.Entities.Order.Order;
+import Model.Exceptions.UserExc.InvalidInputException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
 import java.util.UUID;
 @Getter
 public abstract class User {
@@ -25,13 +30,13 @@ public abstract class User {
 
     }
 
-    public void exit(){
-        //todo
+    public void setName(String newName) throws InvalidInputException {
+        UserDataBase.updateName(this.getUserParameters().getName(), newName);
+        this.getUserParameters().setName(newName);
     }
 
-    public void delete(){
-        //todo
-    }
+    public abstract void removeAccount();
+
 
     @Override
     public String toString() {
@@ -39,5 +44,18 @@ public abstract class User {
                 " | Имя: " + userParameters.getName() +
                 " | Контактный номер: " + getPhoneNumber() +
                 " | Роль: " + getAccessLevel().toString() + " | ";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(userParameters, user.userParameters) && accessLevel == user.accessLevel;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userParameters, accessLevel);
     }
 }

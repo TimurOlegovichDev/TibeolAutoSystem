@@ -1,28 +1,22 @@
 package Model.Entities.Users;
 
-import Model.DataBase.DataManager;
-import Model.DataBase.DealerCarData;
-import Model.DataBase.OrderData;
+import Model.DataBase.DataBaseHandler;
 import Model.Entities.Car.Car;
 import Model.Entities.Message;
 import Model.Entities.Order.Order;
 import Model.Entities.Order.OrderTypes;
+import Model.Entities.Order.StatusesOfOrder;
+import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
-import org.jetbrains.annotations.Nullable;
+import ui.out.Printer;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
+@Getter
 public final class Client extends User{
 
-    @Getter
     private List<Order> orderList = new ArrayList<>();
-    @Getter
-    private List<Car> carList = new ArrayList<>();
-    @Getter
+    private final Map<Integer, Car> carData = new HashMap<>();
     private Queue<Message> messages = new ArrayDeque<>();
 
     public Client(String name, byte[] password){
@@ -30,8 +24,21 @@ public final class Client extends User{
         setAccessLevel(AccessLevels.CLIENT);
     }
 
+    @Override
+    public void removeAccount(){
+        for(Order order : orderList){
+            if(!order.getStatus().equals(StatusesOfOrder.ARCHIVED))
+                DataBaseHandler.remove(order);
+        }
+        DataBaseHandler.remove(this);
+    }
+
+
+
     public void readMessage(){
-        //todo
+        Message message = messages.poll();
+        if(message != null)
+            Printer.print(message.toString());
     }
 
     public void receiveMessage(Message message){
@@ -39,10 +46,17 @@ public final class Client extends User{
     }
 
     public void createServiceOrder(String text, int carId){
-        DataManager.add(new Order(OrderTypes.SERVICE, this, text, DataManager.getCarData().get(carId)));
+        DataBaseHandler.add(new Order(OrderTypes.SERVICE, this, text, DataBaseHandler.getCarData().get(carId)));
     }
 
     public void createPurchaseOrder(String text, int carId){
-        DataManager.add(new Order(OrderTypes.PURCHASE, this, text, DataManager.getCarData().get(carId)));
+        DataBaseHandler.add(new Order(OrderTypes.PURCHASE, this, text, DataBaseHandler.getCarData().get(carId)));
+    }
+    public void addCar(Car car){
+        carData.put(car.getID(), car);
+        receiveMessage(new Message(null, "Поздравляем с приобретением автомобиля!!!"));
+    }
+    public void removeCar(Integer id) {
+        carData.remove(id);
     }
 }

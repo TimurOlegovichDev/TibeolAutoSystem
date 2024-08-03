@@ -8,10 +8,11 @@ public enum ClientCommands {
     VIEW_ORDERS("Просмотр моих заказов"),
     VIEW_USER_CARS("Мои автомобили"),
     ADD_USER_CAR("Добавить автомобиль"),
-    GO_TO_SHOWROOM("Услуги автосалона"),
+    REMOVE_USER_CAR("Удалить автомобиль"),
+    GO_TO_SHOWROOM("Автосалон"),
     SETUP_MY_PROFILE("Изменить личные данные"),
-    EXIT_FROM_ACCOUNT("Выйти из аккаунта");
-
+    EXIT_FROM_ACCOUNT("Выйти из аккаунта"),
+    DELETE_ACCOUNT("Удалить аккаунт");
     private final String command;
     ClientCommands(String command) {
         this.command = command;
