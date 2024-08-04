@@ -4,10 +4,7 @@
 
 ## Содержание
 
-* [Задание 1](/task1.md)
-* [Задание 2](/task2.md)
-* [Задание 3](/task3.md)
-
+* [Задание 1](/)
 ## Автор
 
 * [TimurOlegovichDev](https://github.com/TimurOlegovichDev)
