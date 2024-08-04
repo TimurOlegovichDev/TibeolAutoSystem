@@ -16,7 +16,7 @@ public abstract class Encryptor {
      * @return шифрованные данные в формате Base64
      * @throws Exception если произошла ошибка при шифровании
      */
-    private static SecretKeySpec secretKey;
+    public static SecretKeySpec secretKey;
     private static byte[] key;
     private static final String ALGORITHM = "AES";
 

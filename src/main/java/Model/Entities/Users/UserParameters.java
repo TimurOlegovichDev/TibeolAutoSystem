@@ -30,7 +30,7 @@ public class UserParameters {
     private String name;
 
 
-    UserParameters(String name,
+    public UserParameters(String name,
                           byte[] password) {
         setPassword(password);
         this.name = name;
@@ -38,7 +38,7 @@ public class UserParameters {
 
     private UserParameters(){}
 
-    void setPassword(byte[] password) {
+    public void setPassword(byte[] password) {
         try {
             this.password = Encryptor.encrypt(password);
         } catch (Exception e) {

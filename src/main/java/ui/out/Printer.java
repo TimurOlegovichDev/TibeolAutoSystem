@@ -1,20 +1,27 @@
 package ui.out;
 
 import Model.Entities.Car.Car;
-import Model.Entities.Order.Order;
 import lombok.Getter;
 import ui.messageSrc.Messages;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Stream;
+
+/**
+ * Главный класс вывода в программе, весь ввод форматируется с помощью класса TextFormatter
+ * @see TextFormatter
+ */
 
 public abstract class Printer {
 
+    /**
+     * Линии для разделения вывода программы и ввода пользователя
+     */
+
     @Getter
-    private static final String line = "======================================================================================================================\n";
-    private static final String bottomLine = "\n======================================================================================================================\n";
+    private static final String line = "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n";
+    private static final String bottomLine = "\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n";
 
     public static void print(String text){
         System.out.println(line + TextFormatter.formatText(text.split(" ")) + bottomLine);
@@ -38,11 +45,11 @@ public abstract class Printer {
         System.out.print(bottomLine);
     }
 
-    public static void print(String[] text){
+    public static void print(String ... text){
         System.out.println(line + TextFormatter.formatText(text) + bottomLine);
     }
 
-    public static void printCommands(String[] commands){
+    public static void printCommands(String ... commands){
         System.out.println(line + Messages.CHOOSE_U_ACTION.getMessage());
         for(String command : commands)
             System.out.println(TextFormatter.formatText("- " + command));
@@ -83,6 +90,12 @@ public abstract class Printer {
     }
 
     public static void printDealerCars(Map<Integer, Car> carData) {
+        System.out.print(line);
+        System.out.println(TextFormatter.formatForm(carData));
+        System.out.print(bottomLine);
+    }
+
+    public static void printDealerCars(List<Map.Entry<Integer, Car>> carData) {
         System.out.print(line);
         System.out.println(TextFormatter.formatForm(carData));
         System.out.print(bottomLine);

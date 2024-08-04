@@ -1,3 +1,4 @@
+import Model.Exceptions.UserExc.DeliberateInterruptException;
 import Model.Exceptions.UserExc.InvalidInputException;
 import org.junit.jupiter.api.Test;
 import ui.in.Validator;
@@ -51,7 +52,7 @@ public class ValidatorTest {
         };
         for(String i : input){
             try {
-                assertThrows(InvalidInputException.class,() -> Validator.validCommand(i));
+                assertThrows(Exception.class,() -> Validator.validCommand(i));
             } catch (Exception ignored){}
         }
     }

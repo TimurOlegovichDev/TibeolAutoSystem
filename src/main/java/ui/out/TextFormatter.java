@@ -4,13 +4,20 @@ import Model.Entities.Car.Car;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Stream;
+
+
+/**
+ * Класс, позволяющий аккуратно выводит любой вид информации, имеется множество перегруженных методов для удобства
+ */
+
 
 public abstract class TextFormatter {
 
+    /**
+     * Класс подстраивается под ширину линии в классе Printer, чтобы вывод был равномерный и ровный
+     * @see Printer
+     */
     private static final int WIDTH = Printer.getLine().length();
-    private static final String listIsEmpty = "Список пуст";
 
     static String formatText(String ... textArray) {
 
@@ -58,6 +65,15 @@ public abstract class TextFormatter {
             return centerText("Список пуст");
         StringBuilder stringBuilder = new StringBuilder();
         for(Map.Entry<?,Car> entry : map.entrySet())
+            stringBuilder.append(formatText(entry.getValue().getForm().split(" "))).append("\n");
+        return stringBuilder.toString();
+    }
+
+    static String formatForm(List<Map.Entry<Integer, Car>> list) {
+        if(list.isEmpty())
+            return centerText("Список пуст");
+        StringBuilder stringBuilder = new StringBuilder();
+        for(Map.Entry<?,Car> entry : list)
             stringBuilder.append(formatText(entry.getValue().getForm().split(" "))).append("\n");
         return stringBuilder.toString();
     }

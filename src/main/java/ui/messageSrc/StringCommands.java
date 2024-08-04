@@ -5,6 +5,10 @@ import ui.messageSrc.commands.AdminCommands;
 import ui.messageSrc.commands.ClientCommands;
 import ui.messageSrc.commands.ManagerCommands;
 
+/**
+ * Класс, перечисляющий команды, используется в начале программы, для удобства
+ */
+
 @Getter
 public enum StringCommands {
 

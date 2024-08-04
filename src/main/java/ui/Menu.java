@@ -12,8 +12,14 @@ import ui.messageSrc.commands.*;
 import ui.out.Printer;
 import ui.messageSrc.*;
 import java.util.Scanner;
-
 import static ui.in.Validator.validLevel;
+
+
+/**
+ * Главный класс взаимодействия пользователя с программой, именно с помощью интерфейса меню происходит отправка ввода в логику программы и отправка вывода для пользователя.
+ * В нем содежится большое количество методов для взаимодействия с пользователем и получения от него информации
+ */
+
 
 public abstract class Menu {
 
@@ -114,6 +120,17 @@ public abstract class Menu {
         while (true) {
             try {
                 return Validator.validManagerInOrderListAction(scanner.nextLine(), ManagerCommands.CommandsInOrderList.values());
+            } catch (InvalidInputException e) {
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
+            }
+        }
+    }
+
+    public static AdminCommands.CommandsInUserList adminChoosingActionInUserList() {
+        Printer.printCommands(AdminCommands.CommandsInUserList.getStringArray());
+        while (true) {
+            try {
+                return Validator.validAdminCommandInUserList(scanner.nextLine(), AdminCommands.CommandsInUserList.values());
             } catch (InvalidInputException e) {
                 Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
@@ -254,6 +271,10 @@ public abstract class Menu {
         }
     }
 
+    public static String getInput() throws DeliberateInterruptException {
+        return scanner.nextLine();
+    }
+
     public static Integer getNumberGreaterZero(int maxValue) throws DeliberateInterruptException {
         Printer.print("Введите число: ");
         while (true) {
@@ -302,4 +323,13 @@ public abstract class Menu {
             }
         }
     }
+
+    public static String getPath() throws DeliberateInterruptException {
+        Printer.print("Введите путь к директории, где нужно создать файл и в конце пути укажите его название, в случае, если вы не укажете путь, файл будет сохранен в папке проекта (для отмены операции, введите \"Назад\"");
+        String input = scanner.nextLine();
+        if("назад".startsWith(input.toLowerCase())) throw new DeliberateInterruptException();
+        return input;
+    }
+
+
 }

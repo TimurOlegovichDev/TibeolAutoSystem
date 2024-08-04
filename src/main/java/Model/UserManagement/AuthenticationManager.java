@@ -9,6 +9,11 @@ import Model.Exceptions.UserExc.NoSuchUserException;
 
 import java.util.Arrays;
 
+/**
+ * Данный класс служит для входа в систему, он сравнивает введенные данные с существующими. Пароль передается уже зашифрованным
+ */
+
+
 public abstract class AuthenticationManager {
     public static User authentication(String name, byte[] cryptoPass) throws InvalidPasswordException, NoSuchUserException {
         if(!UserDataBase.getCredentials().containsKey(name))
@@ -19,7 +24,7 @@ public abstract class AuthenticationManager {
     }
 
 
-    abstract static class AuthorizationManager {
+    protected abstract static class AuthorizationManager {
         public static User authorization(UserParameters userParameters){
             return DataBaseHandler.getUserData().get(userParameters.getID());
         }
