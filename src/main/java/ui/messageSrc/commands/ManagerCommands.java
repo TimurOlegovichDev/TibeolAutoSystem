@@ -5,30 +5,15 @@ import lombok.Getter;
 
 @Getter
 public enum ManagerCommands {
-    VIEW_ACTIVE_ORDERS("Просмотр активных заказов"),
-    VIEW_ARCHIVED_ORDERS("Мои автомобили"),
-    GO_TO_SHOWROOM("Услуги автосалона"),
+    GO_TO_SHOWROOM("Перейти в автосалон"),
+    ORDERS("К заказам"),
     SETUP_MY_PROFILE("Изменить личные данные"),
-    EXIT_FROM_ACCOUNT("Выйти из аккаунта");
+    EXIT_FROM_ACCOUNT("Выйти из аккаунта"),
+    DELETE_ACCOUNT("Удалить аккаунт");
 
     private final String command;
     ManagerCommands(String command) {
         this.command = command;
-    }
-
-    @Getter
-    enum CommandsInShowRoom {
-
-        VIEW_ALL_CARS("Автомобили в продаже"),
-        CREATE_PURCHASE_ORDER("Купить авто"),
-        CREATE_SERVICE_ORDER("Обслужить авто"),
-        SEARCH_CAR("Поиск автомобиля"),
-        BACK("Назад");
-
-        private final String command;
-        CommandsInShowRoom(String command) {
-            this.command = command;
-        }
     }
 
     public static String[] getStringArray(){
@@ -41,22 +26,50 @@ public enum ManagerCommands {
 
 
     @Getter
-    public enum CommandsInActiveOrderList {
+    public enum CommandsInShowRoom {
 
+        VIEW_ALL_CARS("Автомобили в продаже"),
+        ADD_CAR("Добавить автомобиль"),
+        REMOVE_CAR("Удалить автомобиль"),
+        SEARCH_CAR("Поиск автомобиля"),
+        SETUP_CAR("Настроить автомобиль"),
+        BACK("Назад");
+
+        private final String command;
+        CommandsInShowRoom(String command) {
+            this.command = command;
+        }
+
+
+        public static String[] getStringArray(){
+            String[] strings = new String[ManagerCommands.CommandsInShowRoom.values().length];
+            int index = 0;
+            for(CommandsInShowRoom command : CommandsInShowRoom.values())
+                strings[index++] = command.getCommand();
+            return strings;
+        }
+
+    }
+
+    @Getter
+    public enum CommandsInOrderList {
+
+        VIEW_ARCHIVED_ORDERS("Активные заказы"),
+        VIEW_ACTIVE_ORDERS("Заказы в архиве"),
         SET_STATUS("Изменить статус заказа"),
-        DISMISS("Отклонить заказ"),
+        //DISMISS("Отклонить заказ"),
         SEARCH_ORDERS("Поиск заказов"),
         BACK("Назад");
 
         private final String command;
-        CommandsInActiveOrderList(String command) {
+        CommandsInOrderList(String command) {
             this.command = command;
         }
 
         public static String[] getStringArray(){
-            String[] strings = new String[CommandsInActiveOrderList.values().length];
+            String[] strings = new String[CommandsInOrderList.values().length];
             int index = 0;
-            for(CommandsInActiveOrderList command : CommandsInActiveOrderList.values())
+            for(CommandsInOrderList command : CommandsInOrderList.values())
                 strings[index++] = command.getCommand();
             return strings;
         }

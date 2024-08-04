@@ -1,4 +1,4 @@
-import Model.Exceptions.InvalidInputException;
+import Model.Exceptions.UserExc.InvalidInputException;
 import org.junit.jupiter.api.Test;
 import ui.in.Validator;
 

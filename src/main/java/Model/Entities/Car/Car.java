@@ -1,33 +1,100 @@
 package Model.Entities.Car;
 
-import Model.DataBase.DealerCarData;
+import Model.DataBase.DataBaseHandler;
+import Model.Entities.Users.Client;
 import Model.Entities.Users.Id;
 import Model.Entities.Users.User;
+import Model.Exceptions.CarExc.InvalidContractException;
+import Model.Exceptions.CarExc.NoSuchCarException;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.time.Instant;
-import java.util.UUID;
+import java.util.Objects;
 
 
+@Setter
 @Getter
 public class Car {
+
     @Nullable
     private User owner;
-    @Nullable
-    private String registrationNumber;
 
-    private final int ID = Id.getUniqueId(DealerCarData.getCarData());
-
-    @Setter
     @Getter
+    private final int ID = Id.getUniqueId(DataBaseHandler.getCarData());
+
     private String model;
-    @Setter
-    @Getter
     private String brand;
 
-    @Setter
-    private Instant yearOfProduction;
+    @Nullable
+    private Integer yearOfProduction;
 
+    private String color;
+
+    @Nullable
+    private Integer price;
+
+    @Nullable
+    private Integer mileAge;
+
+    @Nullable
+    private String description;
+
+    private boolean booked = false;
+
+    private String getBookText(){
+        if(!booked)
+            return "Есть в наличии";
+        return "Забронирована";
+    }
+
+    public Car(@NotNull Client client,
+               @NotNull String brand,
+               @NotNull String model,
+               @NotNull String color)
+    {
+        this.owner = client;
+        this.brand = brand;
+        this.model = model;
+        this.color = color;
+    }
+
+    public Car(
+               @NotNull String brand,
+               @NotNull String model,
+               @NotNull String color,
+               @NotNull Integer yearOfProduction,
+               @NotNull Integer mileAge,
+               @NotNull String description,
+               @NotNull Integer price)
+    {
+        this.brand = brand;
+        this.model = model;
+        this.color = color;
+        this.yearOfProduction = yearOfProduction;
+        this.price = price;
+        this.mileAge = mileAge;
+        this.description = description;
+    }
+
+    private Car(){}
+
+    @Override
+    public String toString() {
+        return "| ID: " + ID +
+                " | Производитель: " + brand +
+                " | Модель: " + model + " | ";
+    }
+
+    public String getForm() {
+        return "| ID: " + ID +
+                " | Производитель: " + brand +
+                " | Модель: " + model +
+                " | Цвет: " + color +
+                " | Пробег: " + mileAge +
+                " | price: " + price +
+                " | " + getBookText() +
+                "\n Описание: " + description;
+    }
 }

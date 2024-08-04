@@ -1,23 +1,24 @@
 package Model.UserManagement;
 
-import Model.DataBase.DataManager;
-import Model.DataBase.UserData;
+import Model.DataBase.DataBaseHandler;
+import Model.DataBase.UserDataBase;
 import Model.Entities.Users.*;
-import Model.Exceptions.RegistrationInterruptException;
+import Model.Exceptions.UserExc.RegistrationInterruptException;
+import Model.Exceptions.UserExc.UserAlreadyExistsException;
 
 
 public class RegistrationManager {
-    public static User registration(AccessLevels accessLevel, String name, byte[] password) throws RegistrationInterruptException {
-        if(UserData.getCredentials().containsKey(name)) throw new RegistrationInterruptException();
+    public static User registration(AccessLevels accessLevel, String name, byte[] password) throws UserAlreadyExistsException, RegistrationInterruptException {
+        if(UserDataBase.getCredentials().containsKey(name)) throw new UserAlreadyExistsException();
         switch (accessLevel){
             case CLIENT -> {
-                return DataManager.add(new Client(name, password));
+                return DataBaseHandler.add(new Client(name, password));
             }
             case MANAGER -> {
-                return DataManager.add(new Manager(name, password));
+                return DataBaseHandler.add(new Manager(name, password));
             }
             case ADMINISTRATOR -> {
-                return DataManager.add(new Administrator(name, password));
+                return DataBaseHandler.add(new Administrator(name, password));
             }
             default -> throw new RegistrationInterruptException();
         }

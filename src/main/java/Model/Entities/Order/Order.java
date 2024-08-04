@@ -3,7 +3,7 @@ package Model.Entities.Order;
 import Model.Entities.Car.Car;
 import Model.Entities.Message;
 import Model.Entities.Users.*;
-import Model.Exceptions.InvalidCommandException;
+import Model.Exceptions.UserExc.InvalidCommandException;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +14,6 @@ import java.util.UUID;
 public class Order {
 
     private final OrderTypes orderType;
-    private final UUID ID = UUID.randomUUID();
     private final Client owner;
     private final Car car;
     private final Instant dateOfCreation;
@@ -36,8 +35,10 @@ public class Order {
     }
 
     public void setStatus(Manager manager,
-                          StatusesOfOrder newStatus) throws InvalidCommandException {
-        checkStatus(newStatus);
+                          StatusesOfOrder newStatus,
+                          boolean isAutomatic
+    ) throws InvalidCommandException {
+        checkStatus(newStatus, isAutomatic);
         if(newStatus.equals(status)) return; // Чтобы не выполнять лишних действий, возвращаем управление в случае того же статуса
         status = newStatus;
         notifyClient(
@@ -45,19 +46,24 @@ public class Order {
 
                 manager,
 
-                "Статус заявки с идентификационным номером " +
-                        ID + "\n"
-                        + "насчет \"" + orderType + car.getBrand() +
+                "Статус заявки на " + orderType + " " + car.getBrand() + " " + car.getModel() +
                         " изменен на " + status + "!"),
                 owner
         );
     }
 
-    private void checkStatus(StatusesOfOrder status) throws InvalidCommandException {
+    private void checkStatus(StatusesOfOrder status, boolean isAutomatic) throws InvalidCommandException {
 
-        if(status.equals(StatusesOfOrder.NEW) || status.equals(StatusesOfOrder.ARCHIVED))
+        if(!isAutomatic && (status.equals(StatusesOfOrder.NEW) || status.equals(StatusesOfOrder.ARCHIVED)))
             throw new InvalidCommandException();
 
+    }
+
+    @Override
+    public String toString() {
+        return "| Тип: " + getOrderType().toString() +
+                " | Текст: " + getOrderText() +
+                " | " + getStatus() + " | ";
     }
 
     private void notifyClient(Message message, Client client){

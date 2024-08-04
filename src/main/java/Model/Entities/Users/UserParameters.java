@@ -1,12 +1,13 @@
 package Model.Entities.Users;
 
-import Model.DataBase.UserData;
+import Model.DataBase.DataBaseHandler;
+import Model.DataBase.UserDataBase;
 import Model.UserManagement.Encryptor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * Класс для хранения данных пользователя, таких как имя, пароль и идентификационный номер.
@@ -16,11 +17,11 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class UserParameters extends UserData {
+public class UserParameters {
     /**
      * Уникальный номер каждого пользователя.
      */
-    private final int ID = Id.getUniqueId(UserData.getUserData());
+    private final int ID = Id.getUniqueId(DataBaseHandler.getUserData());
 
     /**
      * Пароль пользователя, который шифруется с помощью {@link Encryptor}.
@@ -28,7 +29,8 @@ public class UserParameters extends UserData {
     private byte[] password;
     private String name;
 
-    public UserParameters(String name,
+
+    UserParameters(String name,
                           byte[] password) {
         setPassword(password);
         this.name = name;
@@ -36,7 +38,7 @@ public class UserParameters extends UserData {
 
     private UserParameters(){}
 
-    public void setPassword(byte[] password) {
+    void setPassword(byte[] password) {
         try {
             this.password = Encryptor.encrypt(password);
         } catch (Exception e) {
@@ -45,4 +47,16 @@ public class UserParameters extends UserData {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserParameters that = (UserParameters) o;
+        return ID == that.ID && Objects.deepEquals(password, that.password) && Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ID, Arrays.hashCode(password));
+    }
 }
