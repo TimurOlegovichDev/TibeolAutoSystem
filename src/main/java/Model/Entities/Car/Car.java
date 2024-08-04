@@ -4,14 +4,18 @@ import Model.DataBase.DataBaseHandler;
 import Model.Entities.Users.Client;
 import Model.Entities.Users.Id;
 import Model.Entities.Users.User;
-import Model.Exceptions.CarExc.InvalidContractException;
-import Model.Exceptions.CarExc.NoSuchCarException;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
+
+/**
+ * Имеет 2 конструктора, для клиента и менеджера, чтобы не перегружать действиями по регистрации автомобиля обычного пользователя
+ *
+ * @see Id
+ * Идентификационный номер уникальный для базы данных автомобилей
+ */
 
 
 @Setter
@@ -27,15 +31,13 @@ public class Car {
     private String model;
     private String brand;
 
-    @Nullable
+
     private Integer yearOfProduction;
 
     private String color;
 
-    @Nullable
     private Integer price;
 
-    @Nullable
     private Integer mileAge;
 
     @Nullable
@@ -79,6 +81,12 @@ public class Car {
     }
 
     private Car(){}
+
+
+    /**
+     * Методы для показа анкеты автомобиля, пользователю при просмотре своих авто не требуется много информации
+     *
+     */
 
     @Override
     public String toString() {

@@ -2,10 +2,12 @@ package Controller;
 
 import Model.DataBase.DataBaseHandler;
 import Model.Entities.Car.Car;
+import Model.Entities.Car.CarParameters;
 import Model.Entities.Message;
 import Model.Entities.Order.Order;
 import Model.Entities.Order.OrderTypes;
 import Model.Entities.Order.StatusesOfOrder;
+import Model.Entities.Users.Administrator;
 import Model.Entities.Users.Client;
 import Model.Entities.Users.Manager;
 import Model.Entities.Users.User;
@@ -13,15 +15,31 @@ import Model.Exceptions.CarExc.NoSuchCarException;
 import Model.Exceptions.UserExc.DeliberateInterruptException;
 import Model.Exceptions.UserExc.InvalidCommandException;
 import Model.Exceptions.UserExc.InvalidInputException;
+import Model.Exceptions.UserExc.NoSuchUserException;
 import Model.LoggerUtil.LogActions;
 import ui.Menu;
+import ui.in.Validator;
 import ui.messageSrc.Messages;
+import ui.messageSrc.commands.AdminCommands;
 import ui.messageSrc.commands.ClientCommands;
 import ui.messageSrc.commands.ManagerCommands;
 import ui.out.Printer;
 
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.time.Year;
+import java.util.*;
+
+
+/**
+ * Является центральным хабом для обработки различных
+ * действий и взаимодействий в системе управления автосалоном.
+ * Он содержит множество статических методов, которые выполняют различные действия
+ * по распределению действий между ролями.
+ *  @see  ShowRoomActionsHandler
+ *  @see OrderPageActionsHandler
+ *  @see UserListPageHandler
+ *
+ * Данные классы отвечает за переход между страницами и различными действиями
+ */
 
 public abstract class ActionHandler {
 
@@ -88,10 +106,6 @@ public abstract class ActionHandler {
         ShowRoomActionsHandler.chooseAction(user);
     }
 
-    static void viewUsers(){
-        Printer.print(DataBaseHandler.getUserData());
-    }
-
     public static void readMessages(Client currentUser) {
         Printer.printCentered("Выполняется переход на страницу сообщений");
         Printer.print(currentUser.getMessages());
@@ -101,7 +115,12 @@ public abstract class ActionHandler {
 
     public static void gotoOrdersPage(Manager manager) {
         Printer.printCentered("Выполняется переход на страницу заказов");
-        orderPageActionsHandler.managerActionHandler(manager, Menu.managerChoosingActionInOrderList());
+        OrderPageActionsHandler.managerActionHandler(manager, Menu.managerChoosingActionInOrderList());
+    }
+
+    public static void gotoUserListPage(Administrator administrator) {
+        Printer.printCentered("Выполняется переход на страницу списка пользователей");
+        UserListPageHandler.adminActionHandler(administrator, Menu.adminChoosingActionInUserList());
     }
 
     public static void getLogList() {
@@ -128,12 +147,14 @@ public abstract class ActionHandler {
             }
         }
 
+
+
         protected static void clientActionHandler(Client client, ClientCommands.CommandsInShowRoom command){
                 switch (command) {
                     case VIEW_ALL_CARS -> Printer.printDealerCars(DataBaseHandler.getCarData());
                     case CREATE_PURCHASE_ORDER -> createPurchaseOrder(client);
                     case CREATE_SERVICE_ORDER -> createServiceOrder(client);
-                    case SEARCH_CAR -> {}
+                    case SEARCH_CAR -> Printer.printDealerCars(getFilterList(client));
                     case BACK -> {
                         Printer.printCentered("Возврат на предыдущую страницу");
                         return;
@@ -186,8 +207,7 @@ public abstract class ActionHandler {
                 case VIEW_ALL_CARS -> Printer.printDealerCars(DataBaseHandler.getCarData());
                 case ADD_CAR -> addCar(manager);
                 case REMOVE_CAR -> removeCar();
-                case SEARCH_CAR -> {}
-                case SETUP_CAR -> {}
+                case SEARCH_CAR -> Printer.printDealerCars(getFilterList(manager));
                 case BACK -> {
                     Printer.printCentered("Возврат на предыдущую страницу");
                     return;
@@ -196,6 +216,101 @@ public abstract class ActionHandler {
             chooseAction(manager);
         }
 
+        private static List<Map.Entry<Integer, Car>> getFilterList(User user) {
+            while(true) {
+                String command = "";
+                try {
+                    Printer.printCommandsWithCustomQuestion(new String[] {"Марка", "Модель", "Цвет", "Год", "Пробег", "Цена"}, "Введите параметр, по которому будет сортировка");
+                    command = Validator.validCommand(Menu.getInput(), "Марка", "Модель", "Цвет", "Год", "Пробег", "Цена");
+                    return filterList(command);
+                } catch (InvalidInputException e) {
+                    Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
+                } catch (DeliberateInterruptException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        private static List<Map.Entry<Integer, Car>> filterList(String command) throws DeliberateInterruptException, NullPointerException {
+            switch (Objects.requireNonNull(CarParameters.getCarParameterFromString(command))) {
+                case BRAND -> {
+                    String filter = Menu.getText("Введите интересующий брэнд: ");
+                    return DataBaseHandler
+                            .getCarData()
+                            .entrySet()
+                            .stream()
+                            .filter(integerCarEntry -> integerCarEntry
+                                    .getValue()
+                                    .getBrand()
+                                    .toLowerCase()
+                                    .startsWith(filter.toLowerCase()))
+                            .toList();
+                }
+                case MODEL -> {
+                    String filter = Menu.getText("Введите интересующую марку: ");
+                    return DataBaseHandler
+                            .getCarData()
+                            .entrySet()
+                            .stream()
+                            .filter(integerCarEntry -> integerCarEntry
+                                    .getValue()
+                                    .getModel()
+                                    .toLowerCase()
+                                    .startsWith(filter.toLowerCase()))
+                            .toList();
+                }
+                case COLOR -> {
+                    String filter = Menu.getText("Введите интересующий цвет: ");
+                    return DataBaseHandler
+                            .getCarData()
+                            .entrySet()
+                            .stream()
+                            .filter(integerCarEntry -> integerCarEntry
+                                    .getValue()
+                                    .getColor()
+                                    .toLowerCase()
+                                    .startsWith(filter.toLowerCase()))
+                            .toList();
+                }
+                case YEAR -> {
+                    Printer.print("Введите минимальный год");
+                    int filter = Menu.getNumberGreaterZero(Year.now().getValue());
+                    return DataBaseHandler
+                            .getCarData()
+                            .entrySet()
+                            .stream()
+                            .filter(integerCarEntry -> integerCarEntry
+                                    .getValue()
+                                    .getYearOfProduction() >= filter)
+                            .toList();
+                }
+                case MILEAGE -> {
+                    Printer.print("Введите максимальный пробег:");
+                    int filter = Menu.getNumberGreaterZero(Integer.MAX_VALUE);
+                    return DataBaseHandler
+                            .getCarData()
+                            .entrySet()
+                            .stream()
+                            .filter(integerCarEntry -> integerCarEntry
+                                    .getValue()
+                                    .getMileAge() <= filter)
+                            .toList();
+                }
+                case PRICE -> {
+                    Printer.print("Введите максимальную цену:");
+                    int filter = Menu.getNumberGreaterZero(Integer.MAX_VALUE);
+                    return DataBaseHandler
+                            .getCarData()
+                            .entrySet()
+                            .stream()
+                            .filter(integerCarEntry -> integerCarEntry
+                                    .getValue()
+                                    .getPrice() <= filter)
+                            .toList();
+                }
+            }
+            return null;
+        }
 
         private static void addCar(Manager manager){
             try {
@@ -226,7 +341,7 @@ public abstract class ActionHandler {
     }
 
 
-    static class orderPageActionsHandler {
+    static class OrderPageActionsHandler {
 
         protected static void managerActionHandler(Manager manager, ManagerCommands.CommandsInOrderList command)  {
             switch (command) {
@@ -237,11 +352,14 @@ public abstract class ActionHandler {
                         .filter(order -> !order.getStatus().equals(StatusesOfOrder.ARCHIVED))
                         .toList());
                 case SET_STATUS -> setNewStatusOrder(manager);
-                case SEARCH_ORDERS -> {}
-                case BACK -> Printer.printCentered("Возврат на предыдущую страницу");
-
+                case BACK -> {
+                    Printer.printCentered("Возврат на предыдущую страницу");
+                    return;
+                }
             }
+            managerActionHandler(manager, Menu.managerChoosingActionInOrderList());
         }
+
 
         private static void setNewStatusOrder(Manager manager){
             List<Order> list = DataBaseHandler.getOrderStream()
@@ -301,6 +419,119 @@ public abstract class ActionHandler {
                 Printer.print(Messages.INVALID_COMMAND.getMessage());
             }
         }
+    }
+
+    static class UserListPageHandler {
+
+        protected static void adminActionHandler(Administrator administrator, AdminCommands.CommandsInUserList command)  {
+            switch (command) {
+                case USER_LIST -> Printer.print(DataBaseHandler.getUserData());
+                case GET_FILTER_LIST -> {
+                    try {
+                        Printer.print(getFilterList());
+                    } catch (DeliberateInterruptException e) {
+                        Printer.print(Messages.RETURN.getMessage());
+                    }
+                }
+                case SET_USER_PARAM -> setUserParameters(administrator);
+                case DELETE_USER -> deleteUser(administrator);
+                case BACK -> {
+                    Printer.printCentered("Возврат на предыдущую страницу");
+                    return;
+                }
+            }
+            adminActionHandler(administrator, Menu.adminChoosingActionInUserList());
+        }
+
+        private static List<Map.Entry<Integer, User>> getFilterList() throws DeliberateInterruptException {
+            while(true) {
+                String command = "";
+                try {
+                    command = Validator.validCommand(Menu.getText(
+                            """
+                            Введите параметр, по которому будет отсортирован список:            \s
+                            - Имя
+                            - Статус
+                            - Номер телефона"""),
+                            "Имя", "Статус", "Номер телефона");
+                    return filterList(command);
+                } catch (InvalidInputException e) {
+                    Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
+                }
+            }
+        }
+
+        private static List<Map.Entry<Integer, User>> filterList(String command) throws DeliberateInterruptException {
+            switch (command) {
+                case "Имя" -> {
+                    String filter = Menu.getText("Введите имя (или его начало) для сортировки: ");
+                    return DataBaseHandler.getUserData().entrySet().stream().filter(entry -> entry.getValue()
+                                    .getUserParameters()
+                                    .getName()
+                                    .toLowerCase()
+                                    .startsWith(filter))
+                            .toList();
+                }
+                case "Статус" -> {
+                    String filter = Menu.getText("Введите статус пользователя (или его начало) для сортировки: ");
+                    return DataBaseHandler.getUserData().entrySet().stream().filter(entry -> entry.getValue()
+                                    .getAccessLevel()
+                                    .getValue()
+                                    .startsWith(filter))
+                            .toList();
+                }
+                case "Номер телефона" -> {
+                    String filter = Menu.getText("Введите номер телефона (или его начало) для сортировки: ");
+                    return DataBaseHandler.getUserData().entrySet().stream().filter(entry -> entry.getValue()
+                                    .getPhoneNumber()
+                                    .startsWith(filter))
+                            .toList();
+                }
+            }
+            return List.of();
+        }
+
+        private static void setUserParameters(Administrator administrator){
+            try {
+                Printer.print(DataBaseHandler.getUserData());
+                Printer.print("Введите ID пользователя, параметры которого желаете изменить (для отмены введите любое слово): ");
+                int id = Menu.tryGetNumberFromUser();
+                User user = DataBaseHandler.getUserById(id);
+                if(id == administrator.getUserParameters().getID()) {
+                    Printer.printCentered("Нельзя выбрать свой профиль в этом действии!");
+                    return;
+                }
+                else if(!Menu.areYouSure("Вы выбрали пользователя -> " + user + "? (Да/Нет) ")) return;
+                ActionHandler.setUpUserParameters(user);
+                Controller.logger.log(LogActions.USER_SETUP_PROFILE.getText() + user);
+            }  catch (NoSuchElementException | NoSuchUserException e){
+                Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
+            } catch (Exception ignored){
+                Printer.print(Messages.INVALID_COMMAND.getMessage());
+            }
+        }
+
+        private static void deleteUser(Administrator administrator){
+            try {
+                Printer.print(DataBaseHandler.getUserData());
+                Printer.print("Введите ID пользователя, которого желаете удалить (для отмены введите любое слово): ");
+                int id = Menu.tryGetNumberFromUser();
+                User user = DataBaseHandler.getUserById(id);
+                if(id == administrator.getUserParameters().getID()) {
+                    Printer.printCentered("Нельзя выбрать свой профиль в этом действии!");
+                    return;
+                }
+                if(!Menu.areYouSure("Вы точно хотите удалить пользователя? (Да/Нет) ")) return;
+                user.removeAccount();
+                Printer.printCentered("Аккаунт удален");
+                Controller.logger.log(LogActions.USER_DELETE_ACCOUNT.getText() + user);
+            }  catch (NoSuchElementException | NoSuchUserException e){
+                Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
+            } catch (Exception ignored){
+                Printer.print(Messages.INVALID_COMMAND.getMessage());
+            }
+        }
+
     }
 
 }

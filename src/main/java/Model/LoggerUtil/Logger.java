@@ -14,12 +14,7 @@ import java.util.List;
  * Класс для логирования действий
  */
 public class Logger {
-    /**
-     * -- GETTER --
-     *  Возвращает список логов
-     *
-     * @return список логов
-     */
+
     @Getter
     private List<String> logs;
     private final DateTimeFormatter formatter;

@@ -4,6 +4,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+
+/**
+ * Класс, служащий для идентификационного номера в пределах базы данных, переданный в параметре методов
+ * Он стал незаменимым, так как класс UUID генерирует слишком большой ключ, а ID один из главных способов получения данных из хранилищ
+ */
+
 public abstract class Id {
 
     public static int getUniqueId(Map<?, ?> data){

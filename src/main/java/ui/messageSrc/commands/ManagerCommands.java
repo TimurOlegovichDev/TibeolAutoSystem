@@ -3,6 +3,11 @@ package ui.messageSrc.commands;
 
 import lombok.Getter;
 
+
+/**
+ * Набор всех команд пользователя данной роли, вложенный класс используется для разделения между страницами выбора действий
+ */
+
 @Getter
 public enum ManagerCommands {
     GO_TO_SHOWROOM("Перейти в автосалон"),
@@ -57,8 +62,6 @@ public enum ManagerCommands {
         VIEW_ARCHIVED_ORDERS("Активные заказы"),
         VIEW_ACTIVE_ORDERS("Заказы в архиве"),
         SET_STATUS("Изменить статус заказа"),
-        //DISMISS("Отклонить заказ"),
-        SEARCH_ORDERS("Поиск заказов"),
         BACK("Назад");
 
         private final String command;

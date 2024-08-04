@@ -1,9 +1,6 @@
 package Controller;
 
-import Model.Entities.Users.AccessLevels;
-import Model.Entities.Users.Client;
-import Model.Entities.Users.Manager;
-import Model.Entities.Users.User;
+import Model.Entities.Users.*;
 import Model.Exceptions.UserExc.*;
 import Model.LoggerUtil.LogActions;
 import Model.LoggerUtil.Logger;
@@ -16,9 +13,19 @@ import ui.messageSrc.commands.*;
 import ui.out.Printer;
 import ui.messageSrc.Messages;
 
+/**
+ * Главный класс, который отвечает за переключение и контроль сцен.
+ * @see Scenes
+ * Контроллер взаимодействует с классом Menu для отображения меню и подсказок пользователю.
+ */
+
 public class Controller extends Thread {
 
     public static final Logger logger = new Logger();
+
+    /**
+     * Реализация синглтона, для предотвращения множества различных объектов контроллера
+     */
 
     private static volatile Controller instance;
 
@@ -29,16 +36,25 @@ public class Controller extends Thread {
     private Controller() {
     }
 
-    private final ActionController actionController = new ActionController();
+    public final ActionController actionController = new ActionController();
 
     volatile User currentUser;
 
-    boolean timeDelayOn = true;
+    /**
+     * Переключатель задержки, она нужна для создания "анимации" и более привычного обращения с программой
+     */
+
+    boolean timeDelayOn = false;
+
+    /**
+     * Основной переключатель, который с помощью сцен переключается между действиями
+     *
+     *
+     */
 
     public void run() {
 
-        for(Scenes scene = Scenes.GREETING; checkSceneCycle(scene);){
-
+        for(Scenes scene = Scenes.GREETING; checkSceneCycle(scene); ){
             timeDelay(300);
             switch (scene) {
 
@@ -54,7 +70,7 @@ public class Controller extends Thread {
 
                 case EXIT_FROM_ACCOUNT -> scene = logOut();
 
-                case SHUT_DOWN -> {}
+                case SHUT_DOWN -> scene = Scenes.ACTIONS;
             }
         }
     }
@@ -63,17 +79,17 @@ public class Controller extends Thread {
         return !(scene.equals(Scenes.SHUT_DOWN) && Menu.areYouSure(Messages.SHUT_DOWN_WARNING.getMessage()));
     }
 
-    private Scenes greeting(){
+    public Scenes greeting(){
         Menu.greeting();
         return Scenes.GREETING.nextStep();
     }
 
-    private Scenes chooseRegistrationOrAuth(){
+    public Scenes chooseRegistrationOrAuth(){
         Printer.print(Messages.ACTIONS_TO_ENTER.getMessage());
         return (Menu.chooseRegistrationOrAuth().equals("Войти")) ? Scenes.AUTHORIZATION : Scenes.REGISTRATION;
     }
 
-    private Scenes registrationHandler(){
+    public Scenes registrationHandler(){
         try {
             registration();
             timeDelay(200);
@@ -88,7 +104,7 @@ public class Controller extends Thread {
         return Scenes.CHOOSING_ROLE;
     }
 
-    private Scenes authorizationHandler(){
+    public Scenes authorizationHandler(){
         try {
             authorization();
             timeDelay(200);
@@ -129,7 +145,7 @@ public class Controller extends Thread {
         );
     }
 
-    private Scenes logOut(){
+    public Scenes logOut(){
         logger.log(LogActions.USER_EXIT.getText() + currentUser.toString());
         currentUser = null;
         return Scenes.CHOOSING_ROLE;
@@ -195,10 +211,11 @@ public class Controller extends Thread {
         private Scenes adminActionHandler(AdminCommands action) throws NotEnoughRightsException {
             Scenes nextScene = Scenes.ACTIONS;
             switch (action) {
-                case USER_LIST ->  ActionHandler.viewUsers();
+                case GO_TO_USER_LIST ->  ActionHandler.gotoUserListPage((Administrator) currentUser);
                 case GET_LOG_LIST -> ActionHandler.getLogList();
                 case SAVE_LOG_LIST -> ActionHandler.saveLogList();
-                case DELETE_ACCOUNT -> ActionHandler.removeAccount(currentUser);
+                case DELETE_ACCOUNT -> nextScene = ActionHandler.removeAccount(currentUser);
+                case SETUP_MY_PROFILE -> nextScene = ActionHandler.setUpUserParameters(currentUser);
                 case EXIT_FROM_ACCOUNT -> nextScene = Scenes.EXIT_FROM_ACCOUNT;
                 case SHUT_DOWN -> nextScene = Scenes.SHUT_DOWN;
             }

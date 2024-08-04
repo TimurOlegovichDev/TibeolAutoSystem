@@ -1,10 +1,7 @@
 package ui.in;
 
-import Model.Entities.Car.Car;
 import Model.Entities.Car.CarParameters;
 import Model.Entities.Users.AccessLevels;
-import Model.Entities.Users.Client;
-import Model.Entities.Users.User;
 import Model.Exceptions.UserExc.DeliberateInterruptException;
 import Model.Exceptions.UserExc.InvalidInputException;
 import ui.messageSrc.Messages;
@@ -12,10 +9,14 @@ import ui.messageSrc.commands.AdminCommands;
 import ui.messageSrc.commands.ClientCommands;
 import ui.messageSrc.commands.ManagerCommands;
 import ui.out.Printer;
-
 import java.io.File;
-import java.time.Instant;
 import java.time.Year;
+
+
+/**
+ * Самый главный класс для проверки данных, весь ввод пользователя проверяется с помощью этого класса. Он обладает множество перегруженных методов, для удобности пользования. Чаще всего, работает совмество с классом Menu
+ * @see ui.Menu
+ */
 
 public abstract class Validator {
 
@@ -123,6 +124,13 @@ public abstract class Validator {
         throw new InvalidInputException();
     }
 
+    public static AdminCommands.CommandsInUserList validAdminCommandInUserList(String input, AdminCommands.CommandsInUserList[] commands) throws InvalidInputException {
+        if(input == null) throw new InvalidInputException();
+        for(AdminCommands.CommandsInUserList validCommands : commands)
+            if(validCommands.getCommand().toLowerCase().startsWith(input.toLowerCase())) return validCommands;
+        throw new InvalidInputException();
+    }
+
     public static AdminCommands validAdminAction(String input, AdminCommands... commands) throws InvalidInputException {
         if(input == null) throw new InvalidInputException();
         for(AdminCommands validCommands : commands)
@@ -157,5 +165,6 @@ public abstract class Validator {
         File file = new File(filePath);
         return file.exists() && file.isFile();
     }
+
 
 }

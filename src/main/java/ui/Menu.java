@@ -11,11 +11,15 @@ import ui.in.Validator;
 import ui.messageSrc.commands.*;
 import ui.out.Printer;
 import ui.messageSrc.*;
-
-import java.nio.file.Path;
 import java.util.Scanner;
-
 import static ui.in.Validator.validLevel;
+
+
+/**
+ * Главный класс взаимодействия пользователя с программой, именно с помощью интерфейса меню происходит отправка ввода в логику программы и отправка вывода для пользователя.
+ * В нем содежится большое количество методов для взаимодействия с пользователем и получения от него информации
+ */
+
 
 public abstract class Menu {
 
@@ -116,6 +120,17 @@ public abstract class Menu {
         while (true) {
             try {
                 return Validator.validManagerInOrderListAction(scanner.nextLine(), ManagerCommands.CommandsInOrderList.values());
+            } catch (InvalidInputException e) {
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
+            }
+        }
+    }
+
+    public static AdminCommands.CommandsInUserList adminChoosingActionInUserList() {
+        Printer.printCommands(AdminCommands.CommandsInUserList.getStringArray());
+        while (true) {
+            try {
+                return Validator.validAdminCommandInUserList(scanner.nextLine(), AdminCommands.CommandsInUserList.values());
             } catch (InvalidInputException e) {
                 Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
@@ -256,6 +271,10 @@ public abstract class Menu {
         }
     }
 
+    public static String getInput() throws DeliberateInterruptException {
+        return scanner.nextLine();
+    }
+
     public static Integer getNumberGreaterZero(int maxValue) throws DeliberateInterruptException {
         Printer.print("Введите число: ");
         while (true) {
@@ -311,4 +330,6 @@ public abstract class Menu {
         if("назад".startsWith(input.toLowerCase())) throw new DeliberateInterruptException();
         return input;
     }
+
+
 }

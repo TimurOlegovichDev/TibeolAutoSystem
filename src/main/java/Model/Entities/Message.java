@@ -8,6 +8,12 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
+
+/**
+ * Позволяет передавать действия менеджера над заказом пользователю.
+ */
+
+
 public class Message {
 
     private User sender;

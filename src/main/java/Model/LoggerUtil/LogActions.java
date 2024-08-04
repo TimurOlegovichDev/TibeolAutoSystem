@@ -2,6 +2,10 @@ package Model.LoggerUtil;
 
 import lombok.Getter;
 
+/**
+ * Основные сообщения логгера
+ */
+
 @Getter
 public enum LogActions {
 
