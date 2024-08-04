@@ -1,8 +1,11 @@
 package ui.out;
 
+import Model.Entities.Car.Car;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public abstract class TextFormatter {
 
@@ -39,6 +42,8 @@ public abstract class TextFormatter {
         return stringBuilder.toString();
     }
 
+
+
     static String formatText(Map<?,?> map) {
         if(map.isEmpty())
             return centerText("Список пуст");
@@ -48,7 +53,16 @@ public abstract class TextFormatter {
         return stringBuilder.toString();
     }
 
-    private static String centerText(String text) {
+    static String formatForm(Map<?, Car> map) {
+        if(map.isEmpty())
+            return centerText("Список пуст");
+        StringBuilder stringBuilder = new StringBuilder();
+        for(Map.Entry<?,Car> entry : map.entrySet())
+            stringBuilder.append(entry.getValue().getForm()).append("\n");
+        return stringBuilder.toString();
+    }
+
+    public static String centerText(String text) {
         int textLength = text.length();
         int padding = (WIDTH - textLength) / 2;
         StringBuilder centeredText = new StringBuilder();

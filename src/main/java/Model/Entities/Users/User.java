@@ -1,10 +1,7 @@
 package Model.Entities.Users;
 
-import Model.DataBase.DataBaseHandler;
 import Model.DataBase.UserDataBase;
-import Model.Entities.Order.Order;
 import Model.Exceptions.UserExc.InvalidInputException;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +12,7 @@ public abstract class User {
 
     private final UserParameters userParameters;
     @Setter
-    private PhoneNumber phoneNumber;
+    private String phoneNumber = "Не указан";
     @Setter
     private AccessLevels accessLevel;
     User(String name, byte[] password){

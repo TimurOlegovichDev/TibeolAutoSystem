@@ -5,7 +5,7 @@ import Model.Entities.Car.CarParameters;
 import Model.Entities.Users.AccessLevels;
 import Model.Entities.Users.Client;
 import Model.Entities.Users.User;
-import Model.Exceptions.UserExc.DeliberateInterruptExeption;
+import Model.Exceptions.UserExc.DeliberateInterruptException;
 import Model.Exceptions.UserExc.InvalidInputException;
 import ui.messageSrc.Messages;
 import ui.messageSrc.commands.AdminCommands;
@@ -31,8 +31,8 @@ public abstract class Validator {
         return password;
     }
 
-    public static Integer validNumber(String input) throws InvalidInputException, DeliberateInterruptExeption {
-        if("назад".startsWith(input.toLowerCase())) throw new DeliberateInterruptExeption();
+    public static Integer validNumber(String input) throws InvalidInputException, DeliberateInterruptException {
+        if("назад".startsWith(input.toLowerCase())) throw new DeliberateInterruptException();
         try {
             return Integer.parseInt(input);
         } catch (NumberFormatException e){
@@ -50,8 +50,8 @@ public abstract class Validator {
         throw new InvalidInputException();
     }
 
-    public static Integer validIntCarParameter(String input, CarParameters carParameter) throws InvalidInputException, DeliberateInterruptExeption {
-        if("назад".startsWith(input.toLowerCase())) throw new DeliberateInterruptExeption();
+    public static Integer validIntCarParameter(String input, CarParameters carParameter) throws InvalidInputException, DeliberateInterruptException {
+        if("назад".startsWith(input.toLowerCase())) throw new DeliberateInterruptException();
         switch (carParameter){
             case MILEAGE, PRICE -> {
                 try {
@@ -69,13 +69,15 @@ public abstract class Validator {
         throw new InvalidInputException();
     }
 
-    public static String validLength(String input, int validLen) throws InvalidInputException {
+    public static String validLength(String input, int validLen) throws InvalidInputException, DeliberateInterruptException {
         if(input == null || input.length() > validLen) throw new InvalidInputException();
+        if("назад".startsWith(input.toLowerCase())) throw new DeliberateInterruptException();
         return input;
     }
 
-    public static String validCommand(String input, String ... commands) throws InvalidInputException {
+    public static String validCommand(String input, String ... commands) throws InvalidInputException, DeliberateInterruptException {
         if(input == null) throw new InvalidInputException();
+        if("назад".startsWith(input.toLowerCase()) && input.length() <= 5) throw new DeliberateInterruptException();
         for(String validCommands : commands)
             if(validCommands.toLowerCase().startsWith(input.toLowerCase())) return validCommands;
         throw new InvalidInputException();
@@ -102,9 +104,20 @@ public abstract class Validator {
         throw new InvalidInputException();
     }
 
-    public static ManagerCommands.CommandsInShowRoom validManagerInShowRoomAction(String input, ManagerCommands.CommandsInShowRoom ... commands) throws InvalidInputException {
+    public static ManagerCommands.CommandsInShowRoom validManagerInShowRoomAction(String input,
+                                                                                  ManagerCommands.CommandsInShowRoom ... commands)
+            throws InvalidInputException {
+
         if(input == null) throw new InvalidInputException();
         for( ManagerCommands.CommandsInShowRoom validCommands : commands)
+            if(validCommands.getCommand().toLowerCase().startsWith(input.toLowerCase())) return validCommands;
+        throw new InvalidInputException();
+    }
+
+    public static ManagerCommands.CommandsInOrderList validManagerInOrderListAction(String input,
+                                                                                    ManagerCommands.CommandsInOrderList[] commands) throws InvalidInputException {
+        if(input == null) throw new InvalidInputException();
+        for(ManagerCommands.CommandsInOrderList validCommands : commands)
             if(validCommands.getCommand().toLowerCase().startsWith(input.toLowerCase())) return validCommands;
         throw new InvalidInputException();
     }
@@ -130,4 +143,6 @@ public abstract class Validator {
         }
         throw new InvalidInputException();
     }
+
+
 }

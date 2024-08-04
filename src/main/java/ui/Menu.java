@@ -1,21 +1,16 @@
 package ui;
 
-import Model.DataBase.DataBaseHandler;
-import Model.Entities.Car.Car;
-import Model.Entities.Car.CarParameters;
+import Model.Entities.Car.*;
+import Model.Entities.Order.*;
 import Model.Entities.Users.*;
-import Model.Exceptions.UserExc.DeliberateInterruptExeption;
-import Model.Exceptions.UserExc.InvalidInputException;
+import Model.Exceptions.UserExc.*;
 import Model.UserManagement.Encryptor;
+import org.jetbrains.annotations.NotNull;
+import ui.in.PhoneNumberValidator;
 import ui.in.Validator;
-import ui.messageSrc.commands.AdminCommands;
-import ui.messageSrc.commands.ClientCommands;
-import ui.messageSrc.commands.ManagerCommands;
+import ui.messageSrc.commands.*;
 import ui.out.Printer;
-import ui.messageSrc.StringCommands;
-import ui.messageSrc.Messages;
-
-import java.util.Map;
+import ui.messageSrc.*;
 import java.util.Scanner;
 
 import static ui.in.Validator.validLevel;
@@ -32,7 +27,7 @@ public abstract class Menu {
         while (true) {
             try {
                 return Validator.validCommand(scanner.nextLine(), StringCommands.REG_OR_AUTORIZE.getCommands());
-            } catch (InvalidInputException e) {
+            } catch (InvalidInputException | DeliberateInterruptException e) {
                 Printer.print(Messages.INVALID_COMMAND.getMessage());
             }
         }
@@ -43,7 +38,7 @@ public abstract class Menu {
         while (true) {
             try {
                 return validLevel(Validator.validCommand(scanner.nextLine(), StringCommands.ROLES.getCommands()));
-            } catch (InvalidInputException e) {
+            } catch (InvalidInputException | DeliberateInterruptException e) {
                 Printer.print(Messages.INVALID_COMMAND.getMessage());
             }
         }
@@ -71,6 +66,14 @@ public abstract class Menu {
                 Printer.print(Messages.ERROR.getMessage());
             }
         }
+    }
+
+    public static @NotNull String getDismissMessage(){
+        Printer.print(Messages.ENTER_MESSAGE.getMessage());
+        String text = scanner.nextLine();
+        if(text == null || text.trim().isEmpty())
+            return "Текст сообщения отсутствует";
+        return text;
     }
 
     public static ClientCommands clientChoosingAction() {
@@ -106,6 +109,17 @@ public abstract class Menu {
         }
     }
 
+    public static ManagerCommands.CommandsInOrderList managerChoosingActionInOrderList() {
+        Printer.printCommands(ManagerCommands.CommandsInOrderList.getStringArray());
+        while (true) {
+            try {
+                return Validator.validManagerInOrderListAction(scanner.nextLine(), ManagerCommands.CommandsInOrderList.values());
+            } catch (InvalidInputException e) {
+                Printer.print(Messages.INVALID_COMMAND.getMessage());
+            }
+        }
+    }
+
     public static ManagerCommands managerChoosingAction() {
         Printer.printCommands(StringCommands.MANAGER_COMMANDS.getCommands());
         while (true) {
@@ -132,21 +146,22 @@ public abstract class Menu {
         Printer.print(message);
         while (true) {
             try {
-                return Validator.validCommand(scanner.nextLine(), "ДА", "НЕТ").equals("ДА");
-            } catch (InvalidInputException e) {
+                return Validator.validCommand(scanner.nextLine(), "да", "нет").equals("да");
+            } catch (InvalidInputException | DeliberateInterruptException e) {
                 Printer.print(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
 
-    public static Car getCar(User user) throws DeliberateInterruptExeption {
+    public static Car getCar(User user) throws DeliberateInterruptException {
+        Printer.print("Переход на страницу добавление автомобиля, для отмены, можете ввести команду \"Назад\" в любой момент.");
         if(user.getAccessLevel().equals(AccessLevels.CLIENT))
             return createUserCar((Client) user);
         else
             return createDealerCar();
     }
 
-    private static Car createUserCar(Client client) throws DeliberateInterruptExeption {
+    private static Car createUserCar(Client client) throws DeliberateInterruptException {
         return new Car(
                 client,
                 getBrand(),
@@ -155,19 +170,20 @@ public abstract class Menu {
         );
     }
 
-    private static Car createDealerCar() throws DeliberateInterruptExeption {
+    private static Car createDealerCar() throws DeliberateInterruptException {
         return new Car(
                 getBrand(),
                 getModel(),
                 getColor(),
                 getYearOfProduction(),
-                getPrice(),
-                getMileAge()
+                getMileAge(),
+                getText("Введите описание автомобиля (до 10000 символов): "),
+                getPrice()
         );
     }
 
-    private static String getBrand() throws DeliberateInterruptExeption {
-        Printer.print("Введите название марки:");
+    private static String getBrand() throws DeliberateInterruptException {
+        Printer.print("Введите маркy автомобиля:");
         while (true) {
             try {
                 return Validator.validLength(scanner.nextLine(), 15);
@@ -176,7 +192,7 @@ public abstract class Menu {
             }
         }
     }
-    private static String getModel() throws DeliberateInterruptExeption {
+    private static String getModel() throws DeliberateInterruptException {
         Printer.print("Введите модель:");
         while (true) {
             try {
@@ -186,7 +202,7 @@ public abstract class Menu {
             }
         }
     }
-    private static String getColor() throws DeliberateInterruptExeption {
+    private static String getColor() throws DeliberateInterruptException{
         Printer.print("Введите цвет:");
         while (true) {
             try {
@@ -196,7 +212,7 @@ public abstract class Menu {
             }
         }
     }
-    private static Integer getYearOfProduction() throws DeliberateInterruptExeption {
+    private static Integer getYearOfProduction() throws DeliberateInterruptException {
         Printer.print("Введите год производства:");
         while (true) {
             try {
@@ -206,7 +222,7 @@ public abstract class Menu {
             }
         }
     }
-    private static Integer getPrice() throws DeliberateInterruptExeption {
+    private static Integer getPrice() throws DeliberateInterruptException {
         Printer.print("Введите цену:");
         while (true) {
             try {
@@ -216,7 +232,7 @@ public abstract class Menu {
             }
         }
     }
-    private static Integer getMileAge() throws DeliberateInterruptExeption {
+    private static Integer getMileAge() throws DeliberateInterruptException {
         Printer.print("Введите пробег:");
         while (true) {
             try {
@@ -227,8 +243,19 @@ public abstract class Menu {
         }
     }
 
-    public static Integer getNumberGreaterZero(int maxValue) throws DeliberateInterruptExeption {
-        Printer.print("Введите номер параметра, который вы хотите изменить: ");
+    public static String getText(String message) throws DeliberateInterruptException {
+        Printer.print(message);
+        while (true) {
+            try {
+                return Validator.validLength(scanner.nextLine(), 1000);
+            } catch (InvalidInputException e) {
+                Printer.print(Messages.INVALID_COMMAND.getMessage());
+            }
+        }
+    }
+
+    public static Integer getNumberGreaterZero(int maxValue) throws DeliberateInterruptException {
+        Printer.print("Введите число: ");
         while (true) {
             try {
                 int value =  Validator.validNumber(scanner.nextLine());
@@ -239,11 +266,38 @@ public abstract class Menu {
         }
     }
 
-    public static PhoneNumber getUserPhoneNumber() {
-        return null;
+    public static String getNewOrderStatus(Order order) throws DeliberateInterruptException{
+        Printer.printCommandsWithCustomQuestion(StatusesOfOrder.getStringArray(order.getOrderType()), "Какой статус заказа вы желаете установить?");
+        while (true) {
+            try {
+                return Validator.validCommand(scanner.nextLine(), StatusesOfOrder.getStringArray(order.getOrderType()));
+            } catch (InvalidInputException e) {
+                Printer.print(Messages.INVALID_COMMAND.getMessage());
+            }
+        }
+    }
+
+    public static String getUserPhoneNumber() {
+        Printer.print("Введите ваш контактный номер телефона (например, 89998887766 или 8(999)888-77-66): ");
+        String number;
+        do {
+            number = scanner.nextLine();
+        } while (!PhoneNumberValidator.isValidPhoneNumber(number));
+        return number;
     }
 
     public static int tryGetNumberFromUser() throws InvalidInputException {
         return Validator.isNumber(scanner.nextLine());
+    }
+
+    public static String getSetParameterName(String[] commands) throws DeliberateInterruptException {
+        Printer.printCommandsWithCustomQuestion(commands, "Какой параметр вы хотите изменить? (Введите \"Назад\" для отмены действия)");
+        while (true) {
+            try {
+                return Validator.validCommand(scanner.nextLine(), commands);
+            } catch (InvalidInputException e) {
+                Printer.print(Messages.INVALID_COMMAND.getMessage());
+            }
+        }
     }
 }

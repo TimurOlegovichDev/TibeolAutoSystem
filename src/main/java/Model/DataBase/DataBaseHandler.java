@@ -2,11 +2,15 @@ package Model.DataBase;
 
 import Model.Entities.Car.Car;
 import Model.Entities.Order.Order;
+import Model.Entities.Order.StatusesOfOrder;
 import Model.Entities.Users.User;
 import Model.Exceptions.CarExc.NoSuchCarException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public abstract class DataBaseHandler {
 
@@ -38,13 +42,16 @@ public abstract class DataBaseHandler {
         return OrderDataBase.getOrders();
     }
 
+    public static Stream<Order> getOrderStream() {
+        return OrderDataBase.getOrders().stream();
+    }
 
     public static Car add(Car car){
         DealerCarData.add(car);
         return car;
     }
 
-    public static Car getCar(int id) throws NoSuchCarException {
+    public static Car getCar(int id) throws NoSuchCarException, NoSuchElementException {
         Car car = DealerCarData.getCarData().get(id);
         if(car == null) throw new NoSuchCarException();
         return car;
@@ -62,6 +69,5 @@ public abstract class DataBaseHandler {
     public static void addCar(Car car){
         DealerCarData.add(car);
     }
-
 
 }

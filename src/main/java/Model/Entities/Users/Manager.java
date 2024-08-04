@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 public final class Manager extends User{
 
     @Nullable
-    private PhoneNumber phoneNumber;
+    private String phoneNumber;
 
     public Manager(String name, byte[] password){
         super(name, password);
@@ -27,6 +27,6 @@ public final class Manager extends User{
 
     public void changeOrderStatus(@NotNull Order order,
                                   StatusesOfOrder newStatus) throws InvalidCommandException {
-        order.setStatus(this, newStatus);
+        order.setStatus(this, newStatus, false);
     }
 }

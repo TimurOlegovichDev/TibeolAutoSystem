@@ -26,8 +26,9 @@ public abstract class UserDataBase {
     }
 
     public static void updateName(String name, String newName) throws InvalidInputException {
-        if(credentials.containsKey(newName)) throw new InvalidInputException();
-        credentials.get(name).setName(newName);
+        UserParameters parameters = credentials.remove(name);
+        parameters.setName(newName);
+        credentials.put(parameters.getName(), parameters);
     }
 
     private static void addCredentials(User user){

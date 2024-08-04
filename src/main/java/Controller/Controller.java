@@ -2,11 +2,9 @@ package Controller;
 
 import Model.Entities.Users.AccessLevels;
 import Model.Entities.Users.Client;
+import Model.Entities.Users.Manager;
 import Model.Entities.Users.User;
-import Model.Exceptions.UserExc.InvalidPasswordException;
-import Model.Exceptions.UserExc.NoSuchUserException;
-import Model.Exceptions.UserExc.NotEnoughRightsException;
-import Model.Exceptions.UserExc.RegistrationInterruptException;
+import Model.Exceptions.UserExc.*;
 import Model.UserManagement.AuthenticationManager;
 import Model.UserManagement.Encryptor;
 import Model.UserManagement.RegistrationManager;
@@ -31,10 +29,13 @@ public class Controller extends Thread {
 
     volatile User currentUser;
 
+    boolean timeDelayOn = true;
+
     public void run() {
 
         for(Scenes scene = Scenes.GREETING; checkSceneCycle(scene);){
 
+            timeDelay(300);
             switch (scene) {
 
                 case GREETING -> scene = greeting();
@@ -71,18 +72,24 @@ public class Controller extends Thread {
     private Scenes registrationHandler(){
         try {
             registration();
+            timeDelay(200);
             Printer.print("Вы успешно зарегистрировались под ID " + currentUser.getUserParameters().getID() + " и именем " + currentUser.getUserParameters().getName());
             return Scenes.ACTIONS;
         } catch (RegistrationInterruptException e) {
             Printer.print(Messages.ERROR.getMessage());
-            return Scenes.CHOOSING_ROLE;
+        } catch (UserAlreadyExistsException e) {
+            Printer.print(Messages.USER_ALREADY_EXISTS.getMessage());
         }
+        return Scenes.CHOOSING_ROLE;
     }
 
     private Scenes authorizationHandler(){
         try {
             authorization();
+            timeDelay(200);
             Printer.print("Вы вошли в аккаунт под ID " + currentUser.getUserParameters().getID() + " и именем " + currentUser.getUserParameters().getName());
+            timeDelay(200);
+            userNotification();
             return Scenes.ACTIONS;
         } catch (InvalidPasswordException e){
             Printer.print(Messages.INVALID_PASS.getMessage());
@@ -94,16 +101,23 @@ public class Controller extends Thread {
         return Scenes.CHOOSING_ROLE;
     }
 
-    private void registration() throws RegistrationInterruptException {
+    private void userNotification(){
+        if(currentUser instanceof Client && !((Client) currentUser).getMessages().isEmpty())
+           Printer.notify(((Client) currentUser).getMessages().size());
+    }
+
+    private void registration() throws RegistrationInterruptException, UserAlreadyExistsException {
         currentUser = RegistrationManager.registration(
                 Menu.chooseRole(),
                 Menu.getUserName(),
                 Menu.getUserPassword()
         );
+        if(currentUser instanceof Client || currentUser instanceof Manager)
+            currentUser.setPhoneNumber(Menu.getUserPhoneNumber());
     }
 
     private void authorization() throws Exception, InvalidPasswordException {
-        Printer.print("Добро пожаловать, чтобы войти в систему,");
+        Printer.printCentered("Добро пожаловать!");
         currentUser = AuthenticationManager.authentication(
                 Menu.getUserName(),
                 Encryptor.encrypt(Menu.getUserPassword())
@@ -116,6 +130,7 @@ public class Controller extends Thread {
     }
 
     private void timeDelay(int ms){
+        if(!timeDelayOn) return;
         try{
             Thread.sleep(ms);
         } catch (InterruptedException ignored){
@@ -149,6 +164,7 @@ public class Controller extends Thread {
                 case VIEW_USER_CARS -> ActionHandler.viewUserCars((Client) currentUser);
                 case ADD_USER_CAR -> ActionHandler.addUserCar((Client) currentUser);
                 case GO_TO_SHOWROOM -> ActionHandler.goToShowRoom(currentUser);
+                case VIEW_MESSAGES -> ActionHandler.readMessages((Client) currentUser);
                 case SETUP_MY_PROFILE -> nextScene = ActionHandler.setUpUserParameters(currentUser);
                 case EXIT_FROM_ACCOUNT -> nextScene = Scenes.EXIT_FROM_ACCOUNT;
                 case DELETE_ACCOUNT -> nextScene = ActionHandler.removeAccount(currentUser);
@@ -160,8 +176,7 @@ public class Controller extends Thread {
         private Scenes managerActionHandler(ManagerCommands action) throws NotEnoughRightsException {
             Scenes nextScene = Scenes.ACTIONS;
             switch (action) {
-                case VIEW_ACTIVE_ORDERS -> {}
-                case VIEW_ARCHIVED_ORDERS -> {}
+                case ORDERS -> ActionHandler.gotoOrdersPage((Manager) currentUser);
                 case EXIT_FROM_ACCOUNT -> nextScene = Scenes.EXIT_FROM_ACCOUNT;
                 case GO_TO_SHOWROOM -> ActionHandler.goToShowRoom(currentUser);
                 case SETUP_MY_PROFILE -> nextScene = ActionHandler.setUpUserParameters(currentUser);

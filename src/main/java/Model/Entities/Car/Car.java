@@ -38,6 +38,9 @@ public class Car {
     @Nullable
     private Integer mileAge;
 
+    @Nullable
+    private String description;
+
     private boolean booked = false;
 
     public Car(@NotNull Client client,
@@ -51,12 +54,14 @@ public class Car {
         this.color = color;
     }
 
-    public Car(@NotNull String model,
+    public Car(
                @NotNull String brand,
+               @NotNull String model,
                @NotNull String color,
                @NotNull Integer yearOfProduction,
-               @NotNull Integer price,
-               @NotNull Integer mileAge)
+               @NotNull Integer mileAge,
+               @NotNull String description,
+               @NotNull Integer price)
     {
         this.model = model;
         this.brand = brand;
@@ -64,6 +69,7 @@ public class Car {
         this.yearOfProduction = yearOfProduction;
         this.price = price;
         this.mileAge = mileAge;
+        this.description = description;
     }
 
     private Car(){}
@@ -72,8 +78,17 @@ public class Car {
     public String toString() {
         return "| ID: " + ID +
                 " | Производитель: " + brand +
+                " | Модель: " + model + " | ";
+    }
+
+    public String getForm() {
+        return "| ID: " + ID +
+                " | Производитель: " + brand +
                 " | Модель: " + model +
-                " | Дата выпуска: " + yearOfProduction + " | ";
+                " | Цвет: " + brand +
+                " | Пробег: " + brand +
+                " | Модель: " + model +
+                "\n Описание: " + description;
     }
 
     public void purchase(Client newOwner) throws NoSuchCarException, InvalidContractException {
