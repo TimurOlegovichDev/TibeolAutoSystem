@@ -78,7 +78,7 @@ public class Controller extends Thread {
             registration();
             timeDelay(200);
             Printer.print("Вы создали аккаунт с ID " + currentUser.getUserParameters().getID() + " и именем " + currentUser.getUserParameters().getName() + " Ваша роль: " + currentUser.getAccessLevel().getValue());
-            logger.log(LogActions.USER_REGISTERED.getText());
+            logger.log(LogActions.USER_REGISTERED.getText() + currentUser.toString());
             return Scenes.ACTIONS;
         } catch (RegistrationInterruptException e) {
             Printer.print(Messages.ERROR.getMessage());
@@ -94,7 +94,7 @@ public class Controller extends Thread {
             timeDelay(200);
             Printer.print("Вы вошли в аккаунт под ID " + currentUser.getUserParameters().getID() + " и именем " + currentUser.getUserParameters().getName() + " Ваша роль: " + currentUser.getAccessLevel().getValue());
             userNotification();
-            logger.log(LogActions.USER_AUTHORIZED.getText());
+            logger.log(LogActions.USER_AUTHORIZED.getText() + currentUser.toString());
             return Scenes.ACTIONS;
         } catch (InvalidPasswordException e){
             Printer.print(Messages.INVALID_PASS.getMessage());
@@ -130,8 +130,8 @@ public class Controller extends Thread {
     }
 
     private Scenes logOut(){
+        logger.log(LogActions.USER_EXIT.getText() + currentUser.toString());
         currentUser = null;
-        logger.log(LogActions.USER_EXIT.getText());
         return Scenes.CHOOSING_ROLE;
     }
 

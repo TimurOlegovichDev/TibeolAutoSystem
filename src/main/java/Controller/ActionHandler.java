@@ -4,6 +4,7 @@ import Model.DataBase.DataBaseHandler;
 import Model.Entities.Car.Car;
 import Model.Entities.Message;
 import Model.Entities.Order.Order;
+import Model.Entities.Order.OrderTypes;
 import Model.Entities.Order.StatusesOfOrder;
 import Model.Entities.Users.Client;
 import Model.Entities.Users.Manager;
@@ -48,8 +49,9 @@ public abstract class ActionHandler {
 
     static void addUserCar(Client client)  {
         try {
-            client.addCar(Menu.getCar(client));
-            Controller.logger.log(LogActions.CLIENT_ADD_CAR.getText());
+            Car car = Menu.getCar(client);
+            client.addCar(car);
+            Controller.logger.log(LogActions.CLIENT_ADD_CAR.getText() + car);
         }
         catch (DeliberateInterruptException ignored){
             Printer.print("Операция отменена");
@@ -60,7 +62,7 @@ public abstract class ActionHandler {
         if(Menu.areYouSure(Messages.DELETE_ACCOUNT_WARNING.getMessage())) {
             user.removeAccount();
             System.out.println("Аккаунт удален!");
-            Controller.logger.log(LogActions.USER_DELETE_ACCOUNT.getText());
+            Controller.logger.log(LogActions.USER_DELETE_ACCOUNT.getText() + user);
             return Scenes.CHOOSING_ROLE;
         }
         else return Scenes.ACTIONS;
@@ -72,7 +74,7 @@ public abstract class ActionHandler {
                 case "Имя" -> user.setName(Menu.getUserName());
                 case "Номер телефона" -> user.setPhoneNumber(Menu.getUserPhoneNumber());
             }
-            Controller.logger.log(LogActions.USER_SETUP_PROFILE.getText());
+            Controller.logger.log(LogActions.USER_SETUP_PROFILE.getText() + user);
         } catch (DeliberateInterruptException ignored){
             Printer.print(Messages.RETURN.getMessage());
         } catch (InvalidInputException e) {
@@ -111,8 +113,8 @@ public abstract class ActionHandler {
         Printer.printCentered("Сохранение событий программы: ");
         try {
             Controller.logger.saveLogsToFile(Menu.getPath());
-        } catch (InvalidInputException e) {
-            Printer.print(Messages.INVALID_COMMAND.getMessage());
+        } catch (DeliberateInterruptException e) {
+            Printer.print(Messages.RETURN.getMessage());
         }
     }
 
@@ -151,7 +153,7 @@ public abstract class ActionHandler {
                     createServiceOrder(client);
                 client.createServiceOrder(Menu.getText("Сообщите, по какой причине вы хотите обслужить авто: ") + car, car.getID());
                 Printer.print("Заказ на обслуживание успешно создан и передан в автосалон");
-                Controller.logger.log(LogActions.NEW_SERVICE_ORDER.getText());
+                Controller.logger.log(LogActions.NEW_SERVICE_ORDER.getText() + OrderTypes.SERVICE + " " + car);
             } catch (InvalidInputException | DeliberateInterruptException e) {
                 Printer.print(Messages.RETURN.getMessage());
             } catch (NoSuchCarException e) {
@@ -170,7 +172,7 @@ public abstract class ActionHandler {
                     createPurchaseOrder(client);
                 client.createPurchaseOrder("Желаю приобрести автомобиль " + car, idNewCar);
                 Printer.print("Заказ на покупку успешно создан и передан в автосалон");
-                Controller.logger.log(LogActions.NEW_PURCHASE_ORDER.getText());
+                Controller.logger.log(LogActions.NEW_PURCHASE_ORDER.getText() + OrderTypes.PURCHASE + " " + car);
             } catch (InvalidInputException e) {
                 Printer.print(Messages.RETURN.getMessage());
             } catch (NoSuchCarException | NoSuchElementException e) {
@@ -197,8 +199,9 @@ public abstract class ActionHandler {
 
         private static void addCar(Manager manager){
             try {
-                DataBaseHandler.add(Menu.getCar(manager));
-                Controller.logger.log(LogActions.NEW_CAR_IN_DEALER.getText());
+                Car car = Menu.getCar(manager);
+                DataBaseHandler.add(car);
+                Controller.logger.log(LogActions.NEW_CAR_IN_DEALER.getText() + car);
             } catch (DeliberateInterruptException e){
                 Printer.print(Messages.RETURN.getMessage());
             }
@@ -213,7 +216,7 @@ public abstract class ActionHandler {
                 Car car = DataBaseHandler.getCar(id);
                 if(!Menu.areYouSure("Вы точно хотите удалить? (Да/Нет) ")) return;
                 DataBaseHandler.remove(car);
-                Controller.logger.log(LogActions.CAR_DELETED.getText());
+                Controller.logger.log(LogActions.CAR_DELETED.getText() + car);
             }  catch (NoSuchElementException | NoSuchCarException e){
                 Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
             } catch (Exception ignored){
@@ -256,7 +259,7 @@ public abstract class ActionHandler {
                             " насчет автомобиля " + currentOrder.getCar().getBrand() + " " + currentOrder.getCar().getModel() +
                             " верно? (Да/Нет)")) continue;
                     chooseNewStatus(manager, currentOrder);
-                    Controller.logger.log(LogActions.ORDER_STATUS_CHANGED.getText());
+                    Controller.logger.log(LogActions.ORDER_STATUS_CHANGED.getText() + currentOrder);
                     return;
                 } catch(NoSuchElementException e) {
                     Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());

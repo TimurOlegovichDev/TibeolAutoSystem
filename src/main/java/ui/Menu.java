@@ -305,11 +305,10 @@ public abstract class Menu {
         }
     }
 
-    public static String getPath() throws InvalidInputException {
-        Printer.print("Введите путь к директории, где будет сохранен файл");
+    public static String getPath() throws DeliberateInterruptException {
+        Printer.print("Введите путь к директории, где нужно создать файл и в конце пути укажите его название, в случае, если вы не укажете путь, файл будет сохранен в папке проекта (для отмены операции, введите \"Назад\"");
         String input = scanner.nextLine();
-        if(!Validator.isValidFilePath(input))
-            return input;
-        throw new InvalidInputException();
+        if("назад".startsWith(input.toLowerCase())) throw new DeliberateInterruptException();
+        return input;
     }
 }
