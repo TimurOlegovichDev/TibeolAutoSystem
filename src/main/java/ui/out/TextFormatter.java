@@ -58,7 +58,7 @@ public abstract class TextFormatter {
             return centerText("Список пуст");
         StringBuilder stringBuilder = new StringBuilder();
         for(Map.Entry<?,Car> entry : map.entrySet())
-            stringBuilder.append(entry.getValue().getForm()).append("\n");
+            stringBuilder.append(formatText(entry.getValue().getForm().split(" "))).append("\n");
         return stringBuilder.toString();
     }
 
@@ -66,17 +66,9 @@ public abstract class TextFormatter {
         int textLength = text.length();
         int padding = (WIDTH - textLength) / 2;
         StringBuilder centeredText = new StringBuilder();
-
-        for (int i = 0; i < padding; i++)
-            centeredText.append(" ");
-
-
+        centeredText.append(" ".repeat(Math.max(0, padding)));
         centeredText.append(text);
-
-        for (int i = 0; i < padding; i++)
-            centeredText.append(" ");
-
-
+        centeredText.append(" ".repeat(Math.max(0, padding)));
         return centeredText.toString();
     }
 }

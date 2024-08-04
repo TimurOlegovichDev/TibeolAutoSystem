@@ -43,14 +43,20 @@ public class Car {
 
     private boolean booked = false;
 
+    private String getBookText(){
+        if(!booked)
+            return "Есть в наличии";
+        return "Забронирована";
+    }
+
     public Car(@NotNull Client client,
-               @NotNull String model,
                @NotNull String brand,
+               @NotNull String model,
                @NotNull String color)
     {
         this.owner = client;
-        this.model = model;
         this.brand = brand;
+        this.model = model;
         this.color = color;
     }
 
@@ -63,8 +69,8 @@ public class Car {
                @NotNull String description,
                @NotNull Integer price)
     {
-        this.model = model;
         this.brand = brand;
+        this.model = model;
         this.color = color;
         this.yearOfProduction = yearOfProduction;
         this.price = price;
@@ -85,16 +91,10 @@ public class Car {
         return "| ID: " + ID +
                 " | Производитель: " + brand +
                 " | Модель: " + model +
-                " | Цвет: " + brand +
-                " | Пробег: " + brand +
-                " | Модель: " + model +
+                " | Цвет: " + color +
+                " | Пробег: " + mileAge +
+                " | price: " + price +
+                " | " + getBookText() +
                 "\n Описание: " + description;
-    }
-
-    public void purchase(Client newOwner) throws NoSuchCarException, InvalidContractException {
-        if(!DataBaseHandler.getCarData().containsKey(getID())) throw new NoSuchCarException();
-        if(Objects.equals(owner, newOwner)) throw new InvalidContractException();
-        owner = newOwner;
-        DataBaseHandler.remove(this);
     }
 }

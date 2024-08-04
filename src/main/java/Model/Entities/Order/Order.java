@@ -46,7 +46,7 @@ public class Order {
 
                 manager,
 
-                "Статус заявки на " + orderType + car.getBrand() + car.getModel() +
+                "Статус заявки на " + orderType + " " + car.getBrand() + " " + car.getModel() +
                         " изменен на " + status + "!"),
                 owner
         );
@@ -63,7 +63,7 @@ public class Order {
     public String toString() {
         return "| Тип: " + getOrderType().toString() +
                 " | Текст: " + getOrderText() +
-                " | Статус: " + getStatus() + " | ";
+                " | " + getStatus() + " | ";
     }
 
     private void notifyClient(Message message, Client client){

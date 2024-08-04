@@ -31,6 +31,20 @@ public abstract class ActionHandler {
         Printer.print(client.getCarData());
     }
 
+    public static void removeUserCar(Client client){
+        try {
+            Printer.print(client.getCarData());
+            int id = Menu.tryGetNumberFromUser();
+            if(!client.getCarData().containsKey(id)) throw new NoSuchCarException();
+            if(!Menu.areYouSure("Вы точно хотите удалить? (Да/Нет) ")) return;
+            client.removeCar(id);
+        }  catch (NoSuchElementException | NoSuchCarException e){
+            Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
+        } catch (Exception ignored){
+            Printer.print(Messages.INVALID_COMMAND.getMessage());
+        }
+    }
+
     static void addUserCar(Client client)  {
         try {client.addCar(Menu.getCar(client));}
         catch (DeliberateInterruptException ignored){
@@ -62,7 +76,7 @@ public abstract class ActionHandler {
     }
 
     static void goToShowRoom(User user){
-        Printer.print("Выполняется переход на страницу автосалона");
+        Printer.printCentered("Выполняется переход на страницу автосалона");
         ShowRoomActionsHandler.chooseAction(user);
     }
 
@@ -71,14 +85,14 @@ public abstract class ActionHandler {
     }
 
     public static void readMessages(Client currentUser) {
-        Printer.print("Ваши новые сообщения: ");
+        Printer.printCentered("Выполняется переход на страницу сообщений");
         Printer.print(currentUser.getMessages());
         currentUser.getMessages().clear();
         currentUser.checkOrderToArchive();
     }
 
     public static void gotoOrdersPage(Manager manager) {
-        Printer.print("Выполняется переход на страницу заказов");
+        Printer.printCentered("Выполняется переход на страницу заказов");
         orderPageActionsHandler.managerActionHandler(manager, Menu.managerChoosingActionInOrderList());
     }
 
@@ -100,7 +114,7 @@ public abstract class ActionHandler {
                     case CREATE_SERVICE_ORDER -> createServiceOrder(client);
                     case SEARCH_CAR -> {}
                     case BACK -> {
-                        Printer.print("Возврат на предыдущую страницу");
+                        Printer.printCentered("Возврат на предыдущую страницу");
                         return;
                     }
                 }
@@ -116,7 +130,7 @@ public abstract class ActionHandler {
                 if(car == null) throw new NoSuchCarException();
                 if(!Menu.areYouSure("Вы выбрали автомобиль " + car.getBrand() + " " + car.getModel() + "?"))
                     createServiceOrder(client);
-                client.createServiceOrder(Menu.getText("Сообщите, по какой причине вы хотите обслужить авто: "), id);
+                client.createServiceOrder(Menu.getText("Сообщите, по какой причине вы хотите обслужить авто: ") + car, car.getID());
             } catch (InvalidInputException | DeliberateInterruptException e) {
                 Printer.print(Messages.RETURN.getMessage());
             } catch (NoSuchCarException e) {
@@ -131,7 +145,7 @@ public abstract class ActionHandler {
                 Printer.print("Введите ID интересующего вас автомобиля (для отмены введите любое слово): ");
                 int idNewCar = Menu.tryGetNumberFromUser();
                 Car car = DataBaseHandler.getCar(idNewCar);
-                if(!Menu.areYouSure("Вы хотите сделать заказ на автомобиль " + car.getBrand() + " " + car.getModel() + "?"))
+                if(!Menu.areYouSure("Вы хотите сделать заказ на автомобиль " + car.getBrand() + " " + car.getModel() + " стоимостью " + car.getPrice() + "?"))
                     createPurchaseOrder(client);
                 client.createPurchaseOrder("Желаю приобрести автомобиль " + car, idNewCar);
             } catch (InvalidInputException e) {
@@ -150,7 +164,7 @@ public abstract class ActionHandler {
                 case SEARCH_CAR -> {}
                 case SETUP_CAR -> {}
                 case BACK -> {
-                    Printer.print("Возврат на предыдущую страницу");
+                    Printer.printCentered("Возврат на предыдущую страницу");
                     return;
                 }
             }
@@ -168,6 +182,8 @@ public abstract class ActionHandler {
 
         private static void removeCar(){
             try {
+                Printer.print(DataBaseHandler.getCarData());
+                Printer.print("Введите ID автомобиля подлежащего удалению (для отмены введите любое слово): ");
                 int id = Menu.tryGetNumberFromUser();
                 if(!DataBaseHandler.getCarData().containsKey(id)) throw new NoSuchCarException();
                 Car car = DataBaseHandler.getCar(id);
@@ -193,9 +209,9 @@ public abstract class ActionHandler {
                         .filter(order -> !order.getStatus().equals(StatusesOfOrder.ARCHIVED))
                         .toList());
                 case SET_STATUS -> setNewStatusOrder(manager);
-                case DISMISS -> dismissOrder(manager);
+                //case DISMISS -> dismissOrder(manager);
                 case SEARCH_ORDERS -> {}
-                case BACK -> Printer.print("Возврат на предыдущую страницу");
+                case BACK -> Printer.printCentered("Возврат на предыдущую страницу");
 
             }
         }
@@ -211,9 +227,9 @@ public abstract class ActionHandler {
                     int index = Menu.getNumberGreaterZero(list.size());
                     Order currentOrder = list.get(index-1);
                     currentOrder.setStatus(manager, StatusesOfOrder.CHECKED, false);
-                    if(!Menu.areYouSure("Вы выбрали заказ на " + currentOrder.getOrderType() + "от клиента "
+                    if(!Menu.areYouSure("Вы выбрали заказ на " + currentOrder.getOrderType() + " от клиента "
                             + currentOrder.getOwner().getUserParameters().getName() +
-                            " насчет автомобиля " + currentOrder.getCar().getBrand() + currentOrder.getCar().getModel() +
+                            " насчет автомобиля " + currentOrder.getCar().getBrand() + " " + currentOrder.getCar().getModel() +
                             " верно? (Да/Нет)")) continue;
                     chooseNewStatus(manager, currentOrder);
                     return;
@@ -231,20 +247,26 @@ public abstract class ActionHandler {
         private static void chooseNewStatus(Manager manager, Order order) throws DeliberateInterruptException, InvalidCommandException {
             switch (Menu.getNewOrderStatus(order)){
                 case "Выполняется" -> order.setStatus(manager, StatusesOfOrder.EXECUTING, false);
-                case "Завершено" -> order.setStatus(manager, StatusesOfOrder.COMPLETED, false);
-                case "Отклонено" -> order.setStatus(manager, StatusesOfOrder.DISMISSED, false);
-                case "Одобрено" -> order.setStatus(manager, StatusesOfOrder.AGREED, false);
+                case "Завершено" -> {
+                    order.setStatus(manager, StatusesOfOrder.COMPLETED, false);
+                    order.getCar().setBooked(false);
+                }
+                case "Отклонено" -> dismissOrder(manager, order);
+                case "Одобрено" -> {
+                    DataBaseHandler.remove(order.getCar());
+                    order.setStatus(manager, StatusesOfOrder.AGREED, false);
+                    order.getOwner().buyCar(order.getCar());
+                }
             }
         }
 
-        private static void dismissOrder(Manager manager){
+        private static void dismissOrder(Manager manager, Order order){
             try {
-                int id = Menu.tryGetNumberFromUser();
-                Order order = DataBaseHandler.getOrderData().get(id);
-                Printer.print("Удаляемый заказ: " + order.toString());
-                if(!Menu.areYouSure("Вы точно хотите удалить? (Да/Нет) ")) return;
-                DataBaseHandler.remove(order);
+                Printer.print("Отклоняемый заказ: " + order.toString());
+                if(!Menu.areYouSure("Вы точно хотите отклонить? (Да/Нет) ")) return;
+                order.setStatus(manager, StatusesOfOrder.DISMISSED, false);
                 order.getOwner().receiveMessage(new Message(manager, Menu.getDismissMessage()));
+                order.getCar().setBooked(false);
             }  catch (NoSuchElementException e){
                 Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
             } catch (Exception ignored){

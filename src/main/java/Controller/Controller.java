@@ -73,7 +73,7 @@ public class Controller extends Thread {
         try {
             registration();
             timeDelay(200);
-            Printer.print("Вы успешно зарегистрировались под ID " + currentUser.getUserParameters().getID() + " и именем " + currentUser.getUserParameters().getName());
+            Printer.print("Вы вошли в аккаунт под ID " + currentUser.getUserParameters().getID() + " и именем " + currentUser.getUserParameters().getName() + " ваша роль: " + currentUser.getAccessLevel().getValue());
             return Scenes.ACTIONS;
         } catch (RegistrationInterruptException e) {
             Printer.print(Messages.ERROR.getMessage());
@@ -87,8 +87,7 @@ public class Controller extends Thread {
         try {
             authorization();
             timeDelay(200);
-            Printer.print("Вы вошли в аккаунт под ID " + currentUser.getUserParameters().getID() + " и именем " + currentUser.getUserParameters().getName());
-            timeDelay(200);
+            Printer.print("Вы вошли в аккаунт под ID " + currentUser.getUserParameters().getID() + " и именем " + currentUser.getUserParameters().getName() + " ваша роль: " + currentUser.getAccessLevel().getValue());
             userNotification();
             return Scenes.ACTIONS;
         } catch (InvalidPasswordException e){
@@ -163,6 +162,7 @@ public class Controller extends Thread {
                 case VIEW_ORDERS -> ActionHandler.viewUserOrders((Client) currentUser);
                 case VIEW_USER_CARS -> ActionHandler.viewUserCars((Client) currentUser);
                 case ADD_USER_CAR -> ActionHandler.addUserCar((Client) currentUser);
+                case REMOVE_USER_CAR -> ActionHandler.removeUserCar((Client) currentUser);
                 case GO_TO_SHOWROOM -> ActionHandler.goToShowRoom(currentUser);
                 case VIEW_MESSAGES -> ActionHandler.readMessages((Client) currentUser);
                 case SETUP_MY_PROFILE -> nextScene = ActionHandler.setUpUserParameters(currentUser);

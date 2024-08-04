@@ -57,7 +57,7 @@ public enum ManagerCommands {
         VIEW_ARCHIVED_ORDERS("Активные заказы"),
         VIEW_ACTIVE_ORDERS("Заказы в архиве"),
         SET_STATUS("Изменить статус заказа"),
-        DISMISS("Отклонить заказ"),
+        //DISMISS("Отклонить заказ"),
         SEARCH_ORDERS("Поиск заказов"),
         BACK("Назад");
 

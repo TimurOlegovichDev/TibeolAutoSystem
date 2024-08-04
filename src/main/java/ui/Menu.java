@@ -28,7 +28,7 @@ public abstract class Menu {
             try {
                 return Validator.validCommand(scanner.nextLine(), StringCommands.REG_OR_AUTORIZE.getCommands());
             } catch (InvalidInputException | DeliberateInterruptException e) {
-                Printer.print(Messages.INVALID_COMMAND.getMessage());
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
@@ -39,7 +39,7 @@ public abstract class Menu {
             try {
                 return validLevel(Validator.validCommand(scanner.nextLine(), StringCommands.ROLES.getCommands()));
             } catch (InvalidInputException | DeliberateInterruptException e) {
-                Printer.print(Messages.INVALID_COMMAND.getMessage());
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
@@ -50,7 +50,7 @@ public abstract class Menu {
             try {
                 return Validator.validName(scanner.nextLine());
             } catch (InvalidInputException e) {
-                Printer.print(Messages.INVALID_COMMAND.getMessage());
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
@@ -63,7 +63,7 @@ public abstract class Menu {
             } catch (InvalidInputException e) {
                 Printer.print(Messages.INVALID_COMMAND.getMessage());
             } catch (Exception e) {
-                Printer.print(Messages.ERROR.getMessage());
+                Printer.printCentered(Messages.ERROR.getMessage());
             }
         }
     }
@@ -82,7 +82,7 @@ public abstract class Menu {
             try {
                 return Validator.validClientAction(scanner.nextLine(), ClientCommands.values());
             } catch (InvalidInputException e) {
-                Printer.print(Messages.INVALID_COMMAND.getMessage());
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
@@ -93,7 +93,7 @@ public abstract class Menu {
             try {
                 return Validator.validClientInShowRoomAction(scanner.nextLine(), ClientCommands.CommandsInShowRoom.values());
             } catch (InvalidInputException e) {
-                Printer.print(Messages.INVALID_COMMAND.getMessage());
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
@@ -104,7 +104,7 @@ public abstract class Menu {
             try {
                 return Validator.validManagerInShowRoomAction(scanner.nextLine(), ManagerCommands.CommandsInShowRoom.values());
             } catch (InvalidInputException e) {
-                Printer.print(Messages.INVALID_COMMAND.getMessage());
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
@@ -115,7 +115,7 @@ public abstract class Menu {
             try {
                 return Validator.validManagerInOrderListAction(scanner.nextLine(), ManagerCommands.CommandsInOrderList.values());
             } catch (InvalidInputException e) {
-                Printer.print(Messages.INVALID_COMMAND.getMessage());
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
@@ -126,7 +126,7 @@ public abstract class Menu {
             try {
                 return Validator.validManagerAction(scanner.nextLine(), ManagerCommands.values());
             } catch (InvalidInputException e) {
-                Printer.print(Messages.INVALID_COMMAND.getMessage());
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
@@ -137,7 +137,7 @@ public abstract class Menu {
             try {
                 return Validator.validAdminAction(scanner.nextLine(), AdminCommands.values());
             } catch (InvalidInputException e) {
-                Printer.print(Messages.INVALID_COMMAND.getMessage());
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
@@ -148,7 +148,7 @@ public abstract class Menu {
             try {
                 return Validator.validCommand(scanner.nextLine(), "да", "нет").equals("да");
             } catch (InvalidInputException | DeliberateInterruptException e) {
-                Printer.print(Messages.INVALID_COMMAND.getMessage());
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
@@ -188,7 +188,7 @@ public abstract class Menu {
             try {
                 return Validator.validLength(scanner.nextLine(), 15);
             } catch (InvalidInputException e) {
-                Printer.print(Messages.INVALID_COMMAND.getMessage());
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
@@ -198,7 +198,7 @@ public abstract class Menu {
             try {
                 return Validator.validLength(scanner.nextLine(), 15);
             } catch (InvalidInputException e) {
-                Printer.print(Messages.INVALID_COMMAND.getMessage());
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
@@ -208,7 +208,7 @@ public abstract class Menu {
             try {
                 return Validator.validLength(scanner.nextLine(), 15);
             } catch (InvalidInputException e) {
-                Printer.print(Messages.INVALID_COMMAND.getMessage());
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
@@ -218,7 +218,7 @@ public abstract class Menu {
             try {
                 return Validator.validIntCarParameter(scanner.nextLine(), CarParameters.YEAR);
             } catch (InvalidInputException e) {
-                Printer.print(Messages.INVALID_COMMAND.getMessage());
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
@@ -228,7 +228,7 @@ public abstract class Menu {
             try {
                 return Validator.validIntCarParameter(scanner.nextLine(), CarParameters.PRICE);
             } catch (InvalidInputException e) {
-                Printer.print(Messages.INVALID_COMMAND.getMessage());
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
@@ -238,7 +238,7 @@ public abstract class Menu {
             try {
                 return Validator.validIntCarParameter(scanner.nextLine(), CarParameters.MILEAGE);
             } catch (InvalidInputException e) {
-                Printer.print(Messages.INVALID_COMMAND.getMessage());
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
@@ -249,7 +249,7 @@ public abstract class Menu {
             try {
                 return Validator.validLength(scanner.nextLine(), 1000);
             } catch (InvalidInputException e) {
-                Printer.print(Messages.INVALID_COMMAND.getMessage());
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
@@ -259,9 +259,9 @@ public abstract class Menu {
         while (true) {
             try {
                 int value =  Validator.validNumber(scanner.nextLine());
-                if(value < maxValue && value > 0) return value;
+                if(value <= maxValue && value > 0) return value;
             } catch (InvalidInputException e) {
-                Printer.print(Messages.INVALID_COMMAND.getMessage());
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
@@ -272,7 +272,7 @@ public abstract class Menu {
             try {
                 return Validator.validCommand(scanner.nextLine(), StatusesOfOrder.getStringArray(order.getOrderType()));
             } catch (InvalidInputException e) {
-                Printer.print(Messages.INVALID_COMMAND.getMessage());
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
@@ -282,8 +282,10 @@ public abstract class Menu {
         String number;
         do {
             number = scanner.nextLine();
-        } while (!PhoneNumberValidator.isValidPhoneNumber(number));
-        return number;
+            if(!PhoneNumberValidator.isValidPhoneNumber(number))
+                Printer.printCentered("Неверно введен номер, попробуйте снова ");
+            else return number;
+        } while (true);
     }
 
     public static int tryGetNumberFromUser() throws InvalidInputException {
@@ -296,7 +298,7 @@ public abstract class Menu {
             try {
                 return Validator.validCommand(scanner.nextLine(), commands);
             } catch (InvalidInputException e) {
-                Printer.print(Messages.INVALID_COMMAND.getMessage());
+                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }

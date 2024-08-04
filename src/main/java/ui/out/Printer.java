@@ -13,8 +13,8 @@ import java.util.stream.Stream;
 public abstract class Printer {
 
     @Getter
-    private static final String line = "╭────────────────────────────────────────────────────────────────────────────────╮\n";
-    private static final String bottomLine = "\n╰────────────────────────────────────────────────────────────────────────────────╯\n";
+    private static final String line = "╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮\n";
+    private static final String bottomLine = "\n╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯\n";
 
     public static void print(String text){
         System.out.println(line + TextFormatter.formatText(text.split(" ")) + bottomLine);
@@ -73,7 +73,7 @@ public abstract class Printer {
         else {
             int index = 1;
             for(Object o : list){
-                print( " " + index++ + ".  ||| " + o.toString());
+                print( " " + index++ + ".  | " + o.toString());
             }
         }
     }

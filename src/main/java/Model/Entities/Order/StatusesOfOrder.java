@@ -24,7 +24,12 @@ public enum StatusesOfOrder {
 
     public static String[] getStringArray(OrderTypes orderTypes){
         if(orderTypes.equals(OrderTypes.PURCHASE))
-            return new String[]{EXECUTING.getCommand(), COMPLETED.getCommand()};
-        return new String[]{COMPLETED.getCommand(), DISMISSED.getCommand()};
+            return new String[]{AGREED.getCommand(), DISMISSED.getCommand()};
+        return new String[]{EXECUTING.getCommand(), COMPLETED.getCommand()};
+    }
+
+    @Override
+    public String toString() {
+        return command;
     }
 }
