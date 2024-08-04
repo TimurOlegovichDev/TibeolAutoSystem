@@ -5,6 +5,8 @@ import Model.Entities.Users.Client;
 import Model.Entities.Users.Manager;
 import Model.Entities.Users.User;
 import Model.Exceptions.UserExc.*;
+import Model.LoggerUtil.LogActions;
+import Model.LoggerUtil.Logger;
 import Model.UserManagement.AuthenticationManager;
 import Model.UserManagement.Encryptor;
 import Model.UserManagement.RegistrationManager;
@@ -15,6 +17,8 @@ import ui.out.Printer;
 import ui.messageSrc.Messages;
 
 public class Controller extends Thread {
+
+    public static final Logger logger = new Logger();
 
     private static volatile Controller instance;
 
@@ -73,7 +77,8 @@ public class Controller extends Thread {
         try {
             registration();
             timeDelay(200);
-            Printer.print("Вы вошли в аккаунт под ID " + currentUser.getUserParameters().getID() + " и именем " + currentUser.getUserParameters().getName() + " ваша роль: " + currentUser.getAccessLevel().getValue());
+            Printer.print("Вы создали аккаунт с ID " + currentUser.getUserParameters().getID() + " и именем " + currentUser.getUserParameters().getName() + " Ваша роль: " + currentUser.getAccessLevel().getValue());
+            logger.log(LogActions.USER_REGISTERED.getText());
             return Scenes.ACTIONS;
         } catch (RegistrationInterruptException e) {
             Printer.print(Messages.ERROR.getMessage());
@@ -87,8 +92,9 @@ public class Controller extends Thread {
         try {
             authorization();
             timeDelay(200);
-            Printer.print("Вы вошли в аккаунт под ID " + currentUser.getUserParameters().getID() + " и именем " + currentUser.getUserParameters().getName() + " ваша роль: " + currentUser.getAccessLevel().getValue());
+            Printer.print("Вы вошли в аккаунт под ID " + currentUser.getUserParameters().getID() + " и именем " + currentUser.getUserParameters().getName() + " Ваша роль: " + currentUser.getAccessLevel().getValue());
             userNotification();
+            logger.log(LogActions.USER_AUTHORIZED.getText());
             return Scenes.ACTIONS;
         } catch (InvalidPasswordException e){
             Printer.print(Messages.INVALID_PASS.getMessage());
@@ -125,6 +131,7 @@ public class Controller extends Thread {
 
     private Scenes logOut(){
         currentUser = null;
+        logger.log(LogActions.USER_EXIT.getText());
         return Scenes.CHOOSING_ROLE;
     }
 
@@ -189,6 +196,9 @@ public class Controller extends Thread {
             Scenes nextScene = Scenes.ACTIONS;
             switch (action) {
                 case USER_LIST ->  ActionHandler.viewUsers();
+                case GET_LOG_LIST -> ActionHandler.getLogList();
+                case SAVE_LOG_LIST -> ActionHandler.saveLogList();
+                case DELETE_ACCOUNT -> ActionHandler.removeAccount(currentUser);
                 case EXIT_FROM_ACCOUNT -> nextScene = Scenes.EXIT_FROM_ACCOUNT;
                 case SHUT_DOWN -> nextScene = Scenes.SHUT_DOWN;
             }

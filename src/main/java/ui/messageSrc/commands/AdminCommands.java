@@ -5,10 +5,12 @@ import lombok.Getter;
 @Getter
 public enum AdminCommands {
     USER_LIST("Список пользователей"),
-    GET_SORTED_LIST("Отсортировать список"),
+    GET_FILTER_LIST("Фильтровать список"),
     SETUP_MY_PROFILE("Изменить личные данные"),
     EXIT_FROM_ACCOUNT("Выйти из аккаунта"),
     SHUT_DOWN("Завершить работу системы"),
+    GET_LOG_LIST("Вывести логи"),
+    SAVE_LOG_LIST("Сохранить логи в файл"),
     DELETE_ACCOUNT("Удалить аккаунт");
 
     private final String command;
@@ -28,7 +30,6 @@ public enum AdminCommands {
     @Getter
     public enum CommandsInUserList {
 
-        SETUP_USER("Настроить пользователя"),
         DELETE_USER("Удалить пользователя"),
         BACK("Назад");
 
@@ -37,7 +38,7 @@ public enum AdminCommands {
             this.command = command;
         }
         public static String[] getStringArray(){
-            String[] strings = new String[ManagerCommands.values().length];
+            String[] strings = new String[CommandsInUserList.values().length];
             int index = 0;
             for(ManagerCommands command : ManagerCommands.values())
                 strings[index++] = command.getCommand();

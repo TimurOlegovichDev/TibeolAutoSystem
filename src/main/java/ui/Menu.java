@@ -11,6 +11,8 @@ import ui.in.Validator;
 import ui.messageSrc.commands.*;
 import ui.out.Printer;
 import ui.messageSrc.*;
+
+import java.nio.file.Path;
 import java.util.Scanner;
 
 import static ui.in.Validator.validLevel;
@@ -301,5 +303,13 @@ public abstract class Menu {
                 Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
+    }
+
+    public static String getPath() throws InvalidInputException {
+        Printer.print("Введите путь к директории, где будет сохранен файл");
+        String input = scanner.nextLine();
+        if(!Validator.isValidFilePath(input))
+            return input;
+        throw new InvalidInputException();
     }
 }

@@ -13,6 +13,7 @@ import ui.messageSrc.commands.ClientCommands;
 import ui.messageSrc.commands.ManagerCommands;
 import ui.out.Printer;
 
+import java.io.File;
 import java.time.Instant;
 import java.time.Year;
 
@@ -144,5 +145,17 @@ public abstract class Validator {
         throw new InvalidInputException();
     }
 
+    /**
+     * Функция проверки валидности пути к файлу
+     *
+     * @param filePath путь к файлу
+     * @return true, если путь к файлу валиден, false иначе
+     */
+    public static boolean isValidFilePath(String filePath) {
+        if (filePath == null || filePath.isEmpty())
+            return false;
+        File file = new File(filePath);
+        return file.exists() && file.isFile();
+    }
 
 }
