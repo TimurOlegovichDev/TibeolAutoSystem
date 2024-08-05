@@ -2,10 +2,9 @@ package Model.Entities.Order;
 
 
 import lombok.Getter;
+import ui.messageSrc.commands.ClientCommands;
 
-/**
- * Все возможные статусы заявлений, ВАЖНО, заказы о покупке могут быть либо ОДОБРЕНЫ, либо ОТКЛОНЕНЫ, заказы об обслуживании могут либо ВЫПОЛНЯТЬСЯ, либо ЗАВЕРШЕНО
- */
+import java.util.Arrays;
 @Getter
 public enum StatusesOfOrder {
     NEW("Не просмотрено"),

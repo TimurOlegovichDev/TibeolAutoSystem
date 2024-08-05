@@ -4,12 +4,9 @@ import Model.DataBase.UserDataBase;
 import Model.Exceptions.UserExc.InvalidInputException;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.Objects;
-
-/**
- * Хранит в себе основные методы и поля пользователей, номер телефона не указан, чтобы избежать NPE, так как администратору он не требуется для создания аккаунта
- */
-
+import java.util.UUID;
 @Getter
 public abstract class User {
 
@@ -20,6 +17,14 @@ public abstract class User {
     private AccessLevels accessLevel;
     User(String name, byte[] password){
         this.userParameters = new UserParameters(name, password);
+    }
+
+    public void setUserParameters(String name,
+                                  byte[] password){
+
+        userParameters.setName(name);
+        userParameters.setPassword(password);
+
     }
 
     public void setName(String newName) throws InvalidInputException {
