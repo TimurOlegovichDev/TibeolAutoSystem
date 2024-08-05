@@ -2,22 +2,15 @@ package Model.DataBase;
 
 import Model.Entities.Car.Car;
 import Model.Entities.Order.Order;
+import Model.Entities.Order.StatusesOfOrder;
 import Model.Entities.Users.User;
 import Model.Exceptions.CarExc.NoSuchCarException;
-import Model.Exceptions.UserExc.NoSuchUserException;
+
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
-
-
-/**
- * Предоставляет статические методы для работы с данными в базе данных.
- * Он сделан для удобства, чтобы не требовалось обращаться к другим абстрактным классам, который работают с базами данных
- * @see OrderDataBase
- * @see UserDataBase
- * @see DealerCarData
- */
 
 public abstract class DataBaseHandler {
 
@@ -26,8 +19,9 @@ public abstract class DataBaseHandler {
         return user;
     }
 
-    public static void remove(User user){
+    public static User remove(User user){
         UserDataBase.remove(user.getUserParameters().getID());
+        return user;
     }
 
     public static Map<Integer, User> getUserData() {
@@ -39,8 +33,9 @@ public abstract class DataBaseHandler {
         return order;
     }
 
-    public static void remove(Order order){
+    public static Order remove(Order order){
         OrderDataBase.remove(order);
+        return order;
     }
 
     public static List<Order> getOrderData() {
@@ -62,8 +57,9 @@ public abstract class DataBaseHandler {
         return car;
     }
 
-    public static void remove(Car car){
+    public static Car remove(Car car){
         DealerCarData.remove(car);
+        return car;
     }
 
     public static Map<Integer, Car> getCarData(){
@@ -74,9 +70,4 @@ public abstract class DataBaseHandler {
         DealerCarData.add(car);
     }
 
-    public static User getUserById(int id) throws NoSuchUserException {
-        if(!UserDataBase.getUserData().containsKey(id))
-            throw new NoSuchUserException();
-        return UserDataBase.getUserData().get(id);
-    }
 }

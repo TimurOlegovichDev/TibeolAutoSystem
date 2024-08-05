@@ -10,15 +10,6 @@ import lombok.Setter;
 import java.time.Instant;
 import java.util.UUID;
 
-/**
- * Класс заказа, он позволяет оформлять покупку иди обслуживание автомобиля,
- * Клиент способен создавать их, а менеджеры отвечать на них.
- * Все действия менеджеров на заказом дублируются в виде сообщений пользоватю.
- * @see Message
- * @see Client
- */
-
-
 @Getter
 public class Order {
 
@@ -43,13 +34,6 @@ public class Order {
 
     }
 
-    /**
-     * @param manager - используется для получения отправителя, чтобы пользователь знал, от кого пришел ответ
-     * @param newStatus - новый статус, который будет установлен на заказе
-     * @param isAutomatic - позволяет отключить выбрасывание отключений при автоматическом изменении статуса на "архивировано"
-     * @see StatusesOfOrder
-     */
-
     public void setStatus(Manager manager,
                           StatusesOfOrder newStatus,
                           boolean isAutomatic
@@ -68,11 +52,6 @@ public class Order {
         );
     }
 
-    /**
-     * Не позволяет вручную ставь статус заказа "акхивировано" или "новое", так как заказы пребывают в таком состоянии только после полного выполнения или наоборот, после самого отправления
-     *
-     */
-
     private void checkStatus(StatusesOfOrder status, boolean isAutomatic) throws InvalidCommandException {
 
         if(!isAutomatic && (status.equals(StatusesOfOrder.NEW) || status.equals(StatusesOfOrder.ARCHIVED)))
@@ -84,11 +63,10 @@ public class Order {
     public String toString() {
         return "| Тип: " + getOrderType().toString() +
                 " | Текст: " + getOrderText() +
-                " | " + getStatus() +
-                " | Получено: " + getDateOfCreation() + " | ";
+                " | " + getStatus() + " | ";
     }
 
-    public void notifyClient(Message message, Client client){
+    private void notifyClient(Message message, Client client){
         client.receiveMessage(message);
     }
 }
