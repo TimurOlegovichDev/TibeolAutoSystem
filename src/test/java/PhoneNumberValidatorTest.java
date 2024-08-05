@@ -11,12 +11,14 @@ public class PhoneNumberValidatorTest {
         assertTrue(PhoneNumberValidator.isValidPhoneNumber("+7 (123) 456-78-90"));
         assertTrue(PhoneNumberValidator.isValidPhoneNumber("7 (123) 456-78-90"));
         assertTrue(PhoneNumberValidator.isValidPhoneNumber("8 (123) 456-78-90"));
+        assertTrue(PhoneNumberValidator.isValidPhoneNumber("+7 123 456 78 90"));
         assertTrue(PhoneNumberValidator.isValidPhoneNumber("7 123 456 78 90"));
         assertTrue(PhoneNumberValidator.isValidPhoneNumber("8 123 456 78 90"));
     }
 
     @Test
     void testInvalidPhoneNumber() {
+        assertTrue(PhoneNumberValidator.isValidPhoneNumber("1234567890"));
         assertFalse(PhoneNumberValidator.isValidPhoneNumber("(123) 4567890"));
         assertTrue(PhoneNumberValidator.isValidPhoneNumber("123-456-7890"));
         assertFalse(PhoneNumberValidator.isValidPhoneNumber("123.456.7890"));

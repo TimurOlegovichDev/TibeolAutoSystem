@@ -2,10 +2,6 @@ package ui.messageSrc.commands;
 
 import lombok.Getter;
 
-/**
- * Набор всех команд пользователя данной роли, вложенный класс используется для разделения между страницами выбора действий
- */
-
 @Getter
 public enum ClientCommands {
 

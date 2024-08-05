@@ -2,11 +2,6 @@ package Controller;
 
 import lombok.Getter;
 
-/**
- *  Представляет собой перечисление (enum) в Java, которое определяет различные сцены или состояния в приложении. Каждая сцена имеет уникальный номер
- */
-
-
 public enum Scenes {
 
     GREETING(1),
