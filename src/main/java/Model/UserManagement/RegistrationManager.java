@@ -7,14 +7,9 @@ import Model.Exceptions.UserExc.RegistrationInterruptException;
 import Model.Exceptions.UserExc.UserAlreadyExistsException;
 
 
-/**
- * Служит для регистрации новых пользователей, он проверяет наличие имени в базе данных, пароль также передается уже зашифрованным
- */
-
 public class RegistrationManager {
     public static User registration(AccessLevels accessLevel, String name, byte[] password) throws UserAlreadyExistsException, RegistrationInterruptException {
         if(UserDataBase.getCredentials().containsKey(name)) throw new UserAlreadyExistsException();
-        if(accessLevel == null || name == null || password == null) throw new RegistrationInterruptException();
         switch (accessLevel){
             case CLIENT -> {
                 return DataBaseHandler.add(new Client(name, password));

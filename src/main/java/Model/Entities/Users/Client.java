@@ -13,11 +13,6 @@ import ui.out.Printer;
 
 import java.util.*;
 
-
-/** Класс, обладающий обширными возможностями, такие как получение сообщений от менеджеров, оформление различных заказов.
- *
- */
-
 @Getter
 public final class Client extends User {
 

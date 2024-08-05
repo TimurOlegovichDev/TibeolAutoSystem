@@ -24,4 +24,9 @@ public final class Manager extends User{
     public void removeAccount() {
         DataBaseHandler.remove(this);
     }
+
+    public void changeOrderStatus(@NotNull Order order,
+                                  StatusesOfOrder newStatus) throws InvalidCommandException {
+        order.setStatus(this, newStatus, false);
+    }
 }
