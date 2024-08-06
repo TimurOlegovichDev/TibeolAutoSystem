@@ -1,22 +1,22 @@
 package Model.Entities.Users;
 
+import lombok.Getter;
+
 /**
  * Перечисление уровней доступа, он определяет, может ли пользователь выполнить ту или иную функцию
  */
 
+@Getter
 public enum AccessLevels {
 
-    ADMINISTRATOR(3),
-    MANAGER(2),
-    CLIENT(1);
+    ADMINISTRATOR("Администратор"),
+    MANAGER("Менеджер"),
+    CLIENT("Клиент");
 
-    private final int level;
+    private final String value;
 
-    AccessLevels(int level) {
-        this.level = level;
+    AccessLevels(String value) {
+        this.value = value;
     }
 
-    public int getLevel() {
-        return level;
-    }
 }

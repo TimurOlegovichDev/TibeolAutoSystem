@@ -1,4 +1,15 @@
 package Model.Entities.Users;
 
-public class Administrator extends User{
+import Model.DataBase.DataBaseHandler;
+
+public final class Administrator extends User{
+    public Administrator(String name, byte[] password){
+        super(name, password);
+        setAccessLevel(AccessLevels.ADMINISTRATOR);
+    }
+
+    @Override
+    public void removeAccount() {
+        DataBaseHandler.remove(this);
+    }
 }
