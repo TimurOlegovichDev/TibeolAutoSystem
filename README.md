@@ -17,4 +17,4 @@ Maven 3.5.8
 * [Задание 1](/)
 ## Автор
 
-* [TimurOlegovichDev](https://github.com/TimurOlegovichDev)
+* [TimurOlegovichDev]([https://github.com/TimurOlegovichDev](https://github.com/TimurOlegovichDev/Y_LAB_HW_TIMBEZH/pull/7)
