@@ -2,6 +2,7 @@ import Controller.Controller;
 import ui.messageSrc.Messages;
 import ui.out.Printer;
 
+
 /**
  * Точка входа в программу. В нем мы создаем экземляр контроллера с помощью синглтона, чтобы предотвратить множество экземляров.
  */

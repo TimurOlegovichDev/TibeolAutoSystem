@@ -1,6 +1,7 @@
 package Model.Entities.Order;
 
 public enum OrderTypes {
+
     PURCHASE("Покупку"),
     SERVICE("Обслуживание");
 

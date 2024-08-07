@@ -29,7 +29,6 @@ public abstract class User {
 
     public abstract void removeAccount();
 
-
     @Override
     public String toString() {
         return "| ID: " + userParameters.getID() +

@@ -6,6 +6,7 @@ import lombok.Getter;
 /**
  * Перечисление крупных сообщений, сделано для удобства и лаконичности кода
  */
+
 @Getter
 public enum Messages {
 

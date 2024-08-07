@@ -1,15 +1,12 @@
 package ui.out;
 
 import Model.Entities.Car.Car;
-
 import java.util.List;
 import java.util.Map;
-
 
 /**
  * Класс, позволяющий аккуратно выводит любой вид информации, имеется множество перегруженных методов для удобства
  */
-
 
 public abstract class TextFormatter {
 
@@ -17,6 +14,7 @@ public abstract class TextFormatter {
      * Класс подстраивается под ширину линии в классе Printer, чтобы вывод был равномерный и ровный
      * @see Printer
      */
+
     private static final int WIDTH = Printer.getLine().length();
 
     static String formatText(String ... textArray) {
@@ -48,8 +46,6 @@ public abstract class TextFormatter {
             stringBuilder.append(object.toString()).append("\n");
         return stringBuilder.toString();
     }
-
-
 
     static String formatText(Map<?,?> map) {
         if(map.isEmpty())

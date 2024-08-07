@@ -1,5 +1,6 @@
 import Model.Exceptions.UserExc.DeliberateInterruptException;
 import Model.Exceptions.UserExc.InvalidInputException;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ui.in.Validator;
 
@@ -7,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ValidatorTest {
     @Test
+    @DisplayName("Тестирование валидации имени")
     public void testNameInput() {
         String[] input = new String[]{
                 "Name",
@@ -15,14 +17,11 @@ public class ValidatorTest {
                 "",
                 null,
         };
-        for(String i : input){
-                try {
-                    assertThrows(InvalidInputException.class,() -> Validator.validName(i));
-                } catch (Exception ignored){}
-        }
-
+        for(String i : input)
+            assertThrows(InvalidInputException.class,() -> Validator.validName(i));
     }
     @Test
+    @DisplayName("Тестирование валидации пароля")
     public void testPassInput() {
         String[] input = new String[]{
                 "passwor",
@@ -31,13 +30,11 @@ public class ValidatorTest {
                 "",
                 null,
         };
-        for(String i : input){
-            try {
-                assertThrows(InvalidInputException.class,() -> Validator.validPassword(i));
-            } catch (Exception ignored){}
-        }
+        for(String i : input)
+            assertThrows(InvalidInputException.class,() -> Validator.validPassword(i));
     }
     @Test
+    @DisplayName("Тестирование ошибки выбора роли")
     public void testCommandInputOnStart() {
         String[] input = new String[]{
                 "",
@@ -50,10 +47,7 @@ public class ValidatorTest {
                 "Клиетны",
                 null,
         };
-        for(String i : input){
-            try {
-                assertThrows(Exception.class,() -> Validator.validCommand(i));
-            } catch (Exception ignored){}
-        }
+        for(String i : input)
+            assertThrows(Exception.class,() -> Validator.validCommand(i));
     }
 }

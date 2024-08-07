@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 
 /**
  * Имеет 2 конструктора, для клиента и менеджера, чтобы не перегружать действиями по регистрации автомобиля обычного пользователя
@@ -16,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
  * @see Id
  * Идентификационный номер уникальный для базы данных автомобилей
  */
-
 
 @Setter
 @Getter
@@ -30,7 +30,6 @@ public class Car {
 
     private String model;
     private String brand;
-
 
     private Integer yearOfProduction;
 
@@ -82,10 +81,8 @@ public class Car {
 
     private Car(){}
 
-
     /**
      * Методы для показа анкеты автомобиля, пользователю при просмотре своих авто не требуется много информации
-     *
      */
 
     @Override
@@ -104,5 +101,18 @@ public class Car {
                 " | price: " + price +
                 " | " + getBookText() +
                 "\n Описание: " + description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Car car = (Car) o;
+        return ID == car.ID;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(ID);
     }
 }

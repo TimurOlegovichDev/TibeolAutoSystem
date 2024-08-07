@@ -17,7 +17,6 @@ public enum Scenes {
     EXIT_FROM_ACCOUNT(6),
     SHUT_DOWN(7);
 
-
     @Getter
     private int number;
 
@@ -29,5 +28,4 @@ public enum Scenes {
         if(number==8) return Scenes.SHUT_DOWN;
         return Scenes.values()[number];
     }
-
 }

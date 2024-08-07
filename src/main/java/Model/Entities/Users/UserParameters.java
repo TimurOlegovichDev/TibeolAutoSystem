@@ -1,7 +1,6 @@
 package Model.Entities.Users;
 
 import Model.DataBase.DataBaseHandler;
-import Model.DataBase.UserDataBase;
 import Model.UserManagement.Encryptor;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +14,7 @@ import java.util.Objects;
  * @see #ID
  * @see #password
  */
+
 @Getter
 @Setter
 public class UserParameters {
@@ -26,6 +26,7 @@ public class UserParameters {
     /**
      * Пароль пользователя, который шифруется с помощью {@link Encryptor}.
      */
+
     private byte[] password;
     private String name;
 

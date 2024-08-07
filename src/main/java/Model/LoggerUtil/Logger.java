@@ -29,6 +29,7 @@ public class Logger {
      *
      * @param message сообщение для логирования
      */
+
     public void log(String message) {
         String log = String.format("[%s] %s", LocalDateTime.now().format(formatter), message);
         logs.add(log);
@@ -39,6 +40,7 @@ public class Logger {
      *
      * @param filePath путь к файлу
      */
+
     public void saveLogsToFile(String filePath) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
             for (String log : logs) {

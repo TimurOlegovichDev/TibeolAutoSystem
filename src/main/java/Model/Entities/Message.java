@@ -1,18 +1,13 @@
 package Model.Entities;
 
 import Model.Entities.Users.User;
-import lombok.AllArgsConstructor;
-
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-
 
 /**
  * Позволяет передавать действия менеджера над заказом пользователю.
  */
-
 
 public class Message {
 
