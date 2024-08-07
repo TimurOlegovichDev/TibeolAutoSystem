@@ -18,7 +18,7 @@ public class UserParametersTest {
     }
 
     @Test
-    public void testSetPasswordSuccessful() throws Exception {
+    public void testSetPasswordSuccessful() {
         String name = "testUser";
         byte[] password = "testPassword".getBytes();
         UserParameters userParameters = new UserParameters(name, password);
@@ -35,7 +35,7 @@ public class UserParametersTest {
         byte[] password = "testPassword".getBytes();
         UserParameters userParameters1 = new UserParameters(name1, password);
         UserParameters userParameters2 = new UserParameters(name2, password);
-        assertFalse(userParameters1.equals(userParameters2));
+        assertNotEquals(userParameters1, userParameters2);
     }
 
 }

@@ -6,9 +6,7 @@ import Model.Entities.Users.*;
 import Model.Exceptions.UserExc.InvalidCommandException;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.time.Instant;
-import java.util.UUID;
 
 /**
  * Класс заказа, он позволяет оформлять покупку иди обслуживание автомобиля,
@@ -17,7 +15,6 @@ import java.util.UUID;
  * @see Message
  * @see Client
  */
-
 
 @Getter
 public class Order {
@@ -70,7 +67,6 @@ public class Order {
 
     /**
      * Не позволяет вручную ставь статус заказа "акхивировано" или "новое", так как заказы пребывают в таком состоянии только после полного выполнения или наоборот, после самого отправления
-     *
      */
 
     private void checkStatus(StatusesOfOrder status, boolean isAutomatic) throws InvalidCommandException {

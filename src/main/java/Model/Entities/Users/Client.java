@@ -6,16 +6,13 @@ import Model.Entities.Message;
 import Model.Entities.Order.Order;
 import Model.Entities.Order.OrderTypes;
 import Model.Entities.Order.StatusesOfOrder;
-import Model.Exceptions.CarExc.NoSuchCarException;
 import Model.Exceptions.UserExc.InvalidCommandException;
 import lombok.Getter;
 import ui.out.Printer;
 
 import java.util.*;
 
-
 /** Класс, обладающий обширными возможностями, такие как получение сообщений от менеджеров, оформление различных заказов.
- *
  */
 
 @Getter

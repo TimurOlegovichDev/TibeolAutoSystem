@@ -6,6 +6,7 @@ import lombok.Getter;
 /**
  * Все возможные статусы заявлений, ВАЖНО, заказы о покупке могут быть либо ОДОБРЕНЫ, либо ОТКЛОНЕНЫ, заказы об обслуживании могут либо ВЫПОЛНЯТЬСЯ, либо ЗАВЕРШЕНО
  */
+
 @Getter
 public enum StatusesOfOrder {
     NEW("Не просмотрено"),
@@ -15,7 +16,6 @@ public enum StatusesOfOrder {
     DISMISSED("Отклонено"),
     AGREED("Одобрено"),
     ARCHIVED("Архивировано");
-
 
     private final String command;
 

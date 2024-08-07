@@ -7,7 +7,6 @@ import Model.LoggerUtil.Logger;
 import Model.UserManagement.AuthenticationManager;
 import Model.UserManagement.Encryptor;
 import Model.UserManagement.RegistrationManager;
-
 import ui.Menu;
 import ui.messageSrc.commands.*;
 import ui.out.Printer;

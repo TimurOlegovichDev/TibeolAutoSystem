@@ -1,12 +1,7 @@
 package Model.Entities.Users;
 
 import Model.DataBase.DataBaseHandler;
-import Model.Entities.Order.Order;
-import Model.Entities.Order.StatusesOfOrder;
-import Model.Exceptions.UserExc.InvalidCommandException;
-import lombok.Data;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Setter

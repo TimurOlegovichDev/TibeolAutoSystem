@@ -13,7 +13,6 @@ import java.util.Arrays;
  * Данный класс служит для входа в систему, он сравнивает введенные данные с существующими. Пароль передается уже зашифрованным
  */
 
-
 public abstract class AuthenticationManager {
     public static User authentication(String name, byte[] cryptoPass) throws InvalidPasswordException, NoSuchUserException {
         if(!UserDataBase.getCredentials().containsKey(name))

@@ -2,14 +2,12 @@ package ui.messageSrc.commands;
 
 import lombok.Getter;
 
-
 /**
  * Набор всех команд пользователя данной роли, вложенный класс используется для разделения между страницами выбора действий
  */
 
 @Getter
 public enum AdminCommands {
-
 
     GO_TO_USER_LIST("К списку пользователей"),
     GET_LOG_LIST("Показать события"),
@@ -20,6 +18,7 @@ public enum AdminCommands {
     DELETE_ACCOUNT("Удалить аккаунт");
 
     private final String command;
+
     AdminCommands(String command) {
         this.command = command;
     }
@@ -31,7 +30,6 @@ public enum AdminCommands {
             strings[index++] = command.getCommand();
         return strings;
     }
-
 
     @Getter
     public enum CommandsInUserList {

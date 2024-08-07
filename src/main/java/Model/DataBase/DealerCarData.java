@@ -1,7 +1,6 @@
 package Model.DataBase;
 
 import Model.Entities.Car.Car;
-
 import java.util.HashMap;
 import java.util.Map;
 

@@ -18,7 +18,9 @@ public enum ClientCommands {
     SETUP_MY_PROFILE("Изменить личные данные"),
     EXIT_FROM_ACCOUNT("Выйти из аккаунта"),
     DELETE_ACCOUNT("Удалить аккаунт");
+
     private final String command;
+
     ClientCommands(String command) {
         this.command = command;
     }
@@ -41,6 +43,7 @@ public enum ClientCommands {
         BACK("Назад");
 
         private final String command;
+
         CommandsInShowRoom(String command) {
             this.command = command;
         }

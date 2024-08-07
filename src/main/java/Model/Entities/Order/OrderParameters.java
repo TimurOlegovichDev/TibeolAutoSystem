@@ -14,7 +14,6 @@ public enum OrderParameters {
     DATE("Дата"),
     AUTO("Название марки автомобиля");
 
-
     private final String value;
     OrderParameters(String value) {
         this.value = value;

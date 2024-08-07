@@ -10,6 +10,7 @@ import lombok.Getter;
 
 @Getter
 public enum ManagerCommands {
+
     GO_TO_SHOWROOM("Перейти в автосалон"),
     ORDERS("К заказам"),
     SETUP_MY_PROFILE("Изменить личные данные"),
@@ -17,6 +18,7 @@ public enum ManagerCommands {
     DELETE_ACCOUNT("Удалить аккаунт");
 
     private final String command;
+
     ManagerCommands(String command) {
         this.command = command;
     }
@@ -29,7 +31,6 @@ public enum ManagerCommands {
         return strings;
     }
 
-
     @Getter
     public enum CommandsInShowRoom {
 
@@ -41,10 +42,10 @@ public enum ManagerCommands {
         BACK("Назад");
 
         private final String command;
+
         CommandsInShowRoom(String command) {
             this.command = command;
         }
-
 
         public static String[] getStringArray(){
             String[] strings = new String[ManagerCommands.CommandsInShowRoom.values().length];
@@ -65,6 +66,7 @@ public enum ManagerCommands {
         BACK("Назад");
 
         private final String command;
+
         CommandsInOrderList(String command) {
             this.command = command;
         }

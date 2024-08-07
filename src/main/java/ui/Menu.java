@@ -14,12 +14,10 @@ import ui.messageSrc.*;
 import java.util.Scanner;
 import static ui.in.Validator.validLevel;
 
-
 /**
  * Главный класс взаимодействия пользователя с программой, именно с помощью интерфейса меню происходит отправка ввода в логику программы и отправка вывода для пользователя.
  * В нем содежится большое количество методов для взаимодействия с пользователем и получения от него информации
  */
-
 
 public abstract class Menu {
 
@@ -32,7 +30,7 @@ public abstract class Menu {
     public static String chooseRegistrationOrAuth() {
         while (true) {
             try {
-                return Validator.validCommand(scanner.nextLine(), StringCommands.REG_OR_AUTORIZE.getCommands());
+                return Validator.validCommand(scanner.nextLine(), StringCommands.REG_OR_AUTHORIZE.getCommands());
             } catch (InvalidInputException | DeliberateInterruptException e) {
                 Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }

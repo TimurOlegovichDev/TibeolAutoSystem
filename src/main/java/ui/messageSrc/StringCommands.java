@@ -18,7 +18,7 @@ public enum StringCommands {
             "Клиент"
     }),
 
-    REG_OR_AUTORIZE(new String[]{
+    REG_OR_AUTHORIZE(new String[]{
             
             "Войти",
             "Зарегистрироваться"}
@@ -29,7 +29,6 @@ public enum StringCommands {
     MANAGER_COMMANDS(ManagerCommands.getStringArray()),
 
     ADMIN_COMMANDS(AdminCommands.getStringArray());
-
 
     private final String[] commands;
 

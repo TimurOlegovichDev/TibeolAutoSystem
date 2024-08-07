@@ -8,7 +8,6 @@ import Model.Entities.Users.User;
  * @see Car
  */
 
-
 public enum CarParameters {
     OWNER("Владелец"),
     BRAND("Марка"),
