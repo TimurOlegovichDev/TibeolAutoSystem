@@ -30,8 +30,8 @@ public class Logger {
      * @param message сообщение для логирования
      */
 
-    public void log(String message) {
-        String log = String.format("[%s] %s", LocalDateTime.now().format(formatter), message);
+    public void log(String message, Levels level) {
+        String log = String.format("[%s] %s %s", LocalDateTime.now().format(formatter), level.toString(), message);
         logs.add(log);
     }
 

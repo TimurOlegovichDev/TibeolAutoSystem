@@ -1,13 +1,20 @@
 package Model.DataBase;
 
+import Model.DataBase.dbconfig.DataBaseConfiguration;
 import Model.Entities.Car.Car;
 import Model.Entities.Order.Order;
 import Model.Entities.Users.User;
 import Model.Exceptions.CarExc.NoSuchCarException;
 import Model.Exceptions.UserExc.NoSuchUserException;
+import liquibase.structure.core.PrimaryKey;
+import ui.out.Printer;
+
+import javax.swing.plaf.nimbus.State;
+import java.sql.*;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 /**
@@ -20,7 +27,10 @@ import java.util.stream.Stream;
 
 public abstract class DataBaseHandler {
 
+    private static final String carTableName = "dealer-car";
+
     public static User add(User user){
+        executeUpdate("INSERT INTO");
         UserDataBase.add(user);
         return user;
     }
@@ -77,5 +87,43 @@ public abstract class DataBaseHandler {
         if(!UserDataBase.getUserData().containsKey(id))
             throw new NoSuchUserException();
         return UserDataBase.getUserData().get(id);
+    }
+
+    private static ResultSet executeQuery(String query){
+        try (Connection connection = DriverManager.getConnection(DataBaseConfiguration.URL,
+                DataBaseConfiguration.USER_NAME,
+                DataBaseConfiguration.PASSWORD
+        )) {
+            Statement statement = connection.createStatement();
+            return statement.executeQuery(query);
+        } catch (SQLException e) {
+            Printer.print("SQL ERROR EXCEPTION!");
+        }
+        return null;
+    }
+
+    private static void executeUpdate(String query){
+        try (Connection connection = DriverManager.getConnection(DataBaseConfiguration.URL,
+                DataBaseConfiguration.USER_NAME,
+                DataBaseConfiguration.PASSWORD
+        )) {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(query);
+        } catch (SQLException e) {
+            Printer.print("SQL ERROR EXCEPTION!");
+        }
+    }
+
+    private static Object execute(String query){
+        try (Connection connection = DriverManager.getConnection(DataBaseConfiguration.URL,
+                DataBaseConfiguration.USER_NAME,
+                DataBaseConfiguration.PASSWORD
+        )) {
+            Statement statement = connection.createStatement();
+            return statement.execute(query);
+        } catch (SQLException e) {
+            Printer.print("SQL ERROR EXCEPTION!");
+        }
+        return null;
     }
 }

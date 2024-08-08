@@ -7,6 +7,7 @@ import Model.Entities.Order.*;
 import Model.Entities.Users.*;
 import Model.Exceptions.CarExc.NoSuchCarException;
 import Model.Exceptions.UserExc.*;
+import Model.LoggerUtil.Levels;
 import Model.LoggerUtil.LogActions;
 import ui.Menu;
 import ui.in.Validator;
@@ -56,7 +57,7 @@ public abstract class ActionHandler {
         try {
             Car car = Menu.getCar(client);
             client.addCar(car);
-            Controller.logger.log(LogActions.CLIENT_ADD_CAR.getText() + car);
+            Controller.logger.log(LogActions.CLIENT_ADD_CAR.getText() + car, Levels.INFO);
         }
         catch (DeliberateInterruptException ignored){
             Printer.print("Операция отменена");
@@ -67,7 +68,7 @@ public abstract class ActionHandler {
         if(Menu.areYouSure(Messages.DELETE_ACCOUNT_WARNING.getMessage())) {
             user.removeAccount();
             System.out.println("Аккаунт удален!");
-            Controller.logger.log(LogActions.USER_DELETE_ACCOUNT.getText() + user);
+            Controller.logger.log(LogActions.USER_DELETE_ACCOUNT.getText() + user, Levels.INFO);
             return Scenes.CHOOSING_ROLE;
         }
         else return Scenes.ACTIONS;
@@ -79,7 +80,7 @@ public abstract class ActionHandler {
                 case "Имя" -> user.setName(Menu.getUserName());
                 case "Номер телефона" -> user.setPhoneNumber(Menu.getUserPhoneNumber());
             }
-            Controller.logger.log(LogActions.USER_SETUP_PROFILE.getText() + user);
+            Controller.logger.log(LogActions.USER_SETUP_PROFILE.getText() + user, Levels.INFO);
         } catch (DeliberateInterruptException ignored){
             Printer.print(Messages.RETURN.getMessage());
         } catch (InvalidInputException e) {
@@ -161,7 +162,7 @@ public abstract class ActionHandler {
                     createServiceOrder(client);
                 client.createServiceOrder(Menu.getText("Сообщите, по какой причине вы хотите обслужить авто: ") + car, car.getID());
                 Printer.print("Заказ на обслуживание успешно создан и передан в автосалон");
-                Controller.logger.log(LogActions.NEW_SERVICE_ORDER.getText() + OrderTypes.SERVICE + " " + car);
+                Controller.logger.log(LogActions.NEW_SERVICE_ORDER.getText() + OrderTypes.SERVICE + " " + car, Levels.INFO);
             } catch (InvalidInputException | DeliberateInterruptException e) {
                 Printer.print(Messages.RETURN.getMessage());
             } catch (NoSuchCarException e) {
@@ -180,7 +181,7 @@ public abstract class ActionHandler {
                     createPurchaseOrder(client);
                 client.createPurchaseOrder("Желаю приобрести автомобиль " + car, idNewCar);
                 Printer.print("Заказ на покупку успешно создан и передан в автосалон");
-                Controller.logger.log(LogActions.NEW_PURCHASE_ORDER.getText() + OrderTypes.PURCHASE + " " + car);
+                Controller.logger.log(LogActions.NEW_PURCHASE_ORDER.getText() + OrderTypes.PURCHASE + " " + car, Levels.INFO);
             } catch (InvalidInputException e) {
                 Printer.print(Messages.RETURN.getMessage());
             } catch (NoSuchCarException | NoSuchElementException e) {
@@ -303,7 +304,7 @@ public abstract class ActionHandler {
             try {
                 Car car = Menu.getCar(manager);
                 DataBaseHandler.add(car);
-                Controller.logger.log(LogActions.NEW_CAR_IN_DEALER.getText() + car);
+                Controller.logger.log(LogActions.NEW_CAR_IN_DEALER.getText() + car, Levels.INFO);
             } catch (DeliberateInterruptException e){
                 Printer.print(Messages.RETURN.getMessage());
             }
@@ -318,7 +319,7 @@ public abstract class ActionHandler {
                 Car car = DataBaseHandler.getCar(id);
                 if(!Menu.areYouSure("Вы точно хотите удалить? (Да/Нет) ")) return;
                 DataBaseHandler.remove(car);
-                Controller.logger.log(LogActions.CAR_DELETED.getText() + car);
+                Controller.logger.log(LogActions.CAR_DELETED.getText() + car, Levels.INFO);
             }  catch (NoSuchElementException | NoSuchCarException e){
                 Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
             } catch (Exception ignored){
@@ -364,7 +365,7 @@ public abstract class ActionHandler {
                             " насчет автомобиля " + currentOrder.getCar().getBrand() + " " + currentOrder.getCar().getModel() +
                             " верно? (Да/Нет)")) continue;
                     chooseNewStatus(manager, currentOrder);
-                    Controller.logger.log(LogActions.ORDER_STATUS_CHANGED.getText() + currentOrder);
+                    Controller.logger.log(LogActions.ORDER_STATUS_CHANGED.getText() + currentOrder, Levels.INFO);
                     return;
                 } catch(NoSuchElementException e) {
                     Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
@@ -490,7 +491,7 @@ public abstract class ActionHandler {
                 }
                 else if(!Menu.areYouSure("Вы выбрали пользователя -> " + user + "? (Да/Нет) ")) return;
                 ActionHandler.setUpUserParameters(user);
-                Controller.logger.log(LogActions.USER_SETUP_PROFILE.getText() + user);
+                Controller.logger.log(LogActions.USER_SETUP_PROFILE.getText() + user, Levels.INFO);
             }  catch (NoSuchElementException | NoSuchUserException e){
                 Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
             } catch (Exception ignored){
@@ -511,7 +512,7 @@ public abstract class ActionHandler {
                 if(!Menu.areYouSure("Вы точно хотите удалить пользователя? (Да/Нет) ")) return;
                 user.removeAccount();
                 Printer.printCentered("Аккаунт удален");
-                Controller.logger.log(LogActions.USER_DELETE_ACCOUNT.getText() + user);
+                Controller.logger.log(LogActions.USER_DELETE_ACCOUNT.getText() + user, Levels.INFO);
             }  catch (NoSuchElementException | NoSuchUserException e){
                 Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
             } catch (Exception ignored){

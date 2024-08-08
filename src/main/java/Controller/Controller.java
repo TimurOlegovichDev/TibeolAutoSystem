@@ -2,6 +2,7 @@ package Controller;
 
 import Model.Entities.Users.*;
 import Model.Exceptions.UserExc.*;
+import Model.LoggerUtil.Levels;
 import Model.LoggerUtil.LogActions;
 import Model.LoggerUtil.Logger;
 import Model.UserManagement.AuthenticationManager;
@@ -93,7 +94,7 @@ public class Controller extends Thread {
             registration();
             timeDelay(200);
             Printer.print("Вы создали аккаунт с ID " + currentUser.getUserParameters().getID() + " и именем " + currentUser.getUserParameters().getName() + " Ваша роль: " + currentUser.getAccessLevel().getValue());
-            logger.log(LogActions.USER_REGISTERED.getText() + currentUser.toString());
+            logger.log(LogActions.USER_REGISTERED.getText() + currentUser.toString(), Levels.INFO);
             return Scenes.ACTIONS;
         } catch (RegistrationInterruptException e) {
             Printer.print(Messages.ERROR.getMessage());
@@ -109,7 +110,7 @@ public class Controller extends Thread {
             timeDelay(200);
             Printer.print("Вы вошли в аккаунт под ID " + currentUser.getUserParameters().getID() + " и именем " + currentUser.getUserParameters().getName() + " Ваша роль: " + currentUser.getAccessLevel().getValue());
             userNotification();
-            logger.log(LogActions.USER_AUTHORIZED.getText() + currentUser.toString());
+            logger.log(LogActions.USER_AUTHORIZED.getText() + currentUser.toString(), Levels.INFO);
             return Scenes.ACTIONS;
         } catch (InvalidPasswordException e){
             Printer.print(Messages.INVALID_PASS.getMessage());
@@ -145,7 +146,7 @@ public class Controller extends Thread {
     }
 
     public Scenes logOut(){
-        logger.log(LogActions.USER_EXIT.getText() + currentUser.toString());
+        logger.log(LogActions.USER_EXIT.getText() + currentUser.toString(), Levels.INFO);
         currentUser = null;
         return Scenes.CHOOSING_ROLE;
     }
