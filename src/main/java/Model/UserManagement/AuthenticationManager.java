@@ -7,6 +7,7 @@ import Model.Entities.Users.UserParameters;
 import Model.Exceptions.UserExc.InvalidPasswordException;
 import Model.Exceptions.UserExc.NoSuchUserException;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Arrays;
  */
 
 public abstract class AuthenticationManager {
-    public static User authentication(String name, byte[] cryptoPass) throws InvalidPasswordException, NoSuchUserException {
+    public static User authentication(String name, byte[] cryptoPass) throws InvalidPasswordException, NoSuchUserException, SQLException {
         if(!UserDataBase.getCredentials().containsKey(name))
             throw new NoSuchUserException();
         if(!Arrays.equals(UserDataBase.getCredentials().get(name).getPassword(), cryptoPass))
@@ -24,8 +25,8 @@ public abstract class AuthenticationManager {
 
 
     protected abstract static class AuthorizationManager {
-        public static User authorization(UserParameters userParameters){
-            return DataBaseHandler.getUserData().get(userParameters.getID());
+        public static User authorization(UserParameters userParameters) {
+            return null; //todo
         }
     }
 }

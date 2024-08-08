@@ -12,8 +12,9 @@ import Model.Exceptions.UserExc.UserAlreadyExistsException;
 
 public class RegistrationManager {
     public static User registration(AccessLevels accessLevel, String name, byte[] password) throws UserAlreadyExistsException, RegistrationInterruptException {
-        if(UserDataBase.getCredentials().containsKey(name))
-            throw new UserAlreadyExistsException();
+//        if(UserDataBase.getCredentials().containsKey(name))
+//            throw new UserAlreadyExistsException();
+        //todo
         if(accessLevel == null || name == null || password == null)
             throw new RegistrationInterruptException();
         switch (accessLevel){

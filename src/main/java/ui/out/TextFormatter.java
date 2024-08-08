@@ -47,6 +47,15 @@ public abstract class TextFormatter {
         return stringBuilder.toString();
     }
 
+    static String formatList(List<List<Object>> list) {
+        if(list.isEmpty())
+            return centerText("Список пуст");
+        StringBuilder stringBuilder = new StringBuilder();
+        for(List<Object> l : list)
+            stringBuilder.append(formatText(l)).append("\n");
+        return stringBuilder.toString();
+    }
+
     static String formatText(Map<?,?> map) {
         if(map.isEmpty())
             return centerText("Список пуст");

@@ -21,7 +21,7 @@ public class UserParameters {
     /**
      * Уникальный номер каждого пользователя.
      */
-    private final int ID = Id.getUniqueId(DataBaseHandler.getUserData());
+    private final int ID = 1;
 
     /**
      * Пароль пользователя, который шифруется с помощью {@link Encryptor}.

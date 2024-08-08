@@ -33,6 +33,13 @@ public abstract class Printer {
         System.out.print(bottomLine);
     }
 
+    public static void printDoubleList(List<List<Object>> list){
+        System.out.print(line);
+        System.out.println(TextFormatter.formatList(list));
+        System.out.print(bottomLine);
+    }
+
+
     public static void print(Map<?,?> map){
         System.out.print(line);
         System.out.println(TextFormatter.formatText(map));

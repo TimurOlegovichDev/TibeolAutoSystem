@@ -14,6 +14,8 @@ import ui.in.Validator;
 import ui.messageSrc.Messages;
 import ui.messageSrc.commands.*;
 import ui.out.Printer;
+
+import java.sql.SQLException;
 import java.time.Year;
 import java.util.*;
 
@@ -411,9 +413,9 @@ public abstract class ActionHandler {
 
     static class UserListPageHandler {
 
-        protected static void adminActionHandler(Administrator administrator, AdminCommands.CommandsInUserList command)  {
+        protected static void adminActionHandler(Administrator administrator, AdminCommands.CommandsInUserList command) {
             switch (command) {
-                case USER_LIST -> Printer.print(DataBaseHandler.getUserData());
+                case USER_LIST -> Printer.print(DataBaseHandler.getUsers());
                 case GET_FILTER_LIST -> {
                     try {
                         Printer.print(getFilterList());
@@ -452,28 +454,32 @@ public abstract class ActionHandler {
         private static List<Map.Entry<Integer, User>> filterList(String command) throws DeliberateInterruptException {
             switch (command) {
                 case "Имя" -> {
-                    String filter = Menu.getText("Введите имя (или его начало) для сортировки: ");
-                    return DataBaseHandler.getUserData().entrySet().stream().filter(entry -> entry.getValue()
-                                    .getUserParameters()
-                                    .getName()
-                                    .toLowerCase()
-                                    .startsWith(filter))
-                            .toList();
+//                    String filter = Menu.getText("Введите имя (или его начало) для сортировки: ");
+//                    return DataBaseHandler.getUserData().stream().filter(entry -> entry.getValue()
+//                                    .getUserParameters()
+//                                    .getName()
+//                                    .toLowerCase()
+//                                    .startsWith(filter))
+//                            .toList();
+
+                    //todo
                 }
                 case "Статус" -> {
-                    String filter = Menu.getText("Введите статус пользователя (или его начало) для сортировки: ");
-                    return DataBaseHandler.getUserData().entrySet().stream().filter(entry -> entry.getValue()
-                                    .getAccessLevel()
-                                    .getValue()
-                                    .startsWith(filter))
-                            .toList();
+//                    String filter = Menu.getText("Введите статус пользователя (или его начало) для сортировки: ");
+//                    return DataBaseHandler.getUserData().entrySet().stream().filter(entry -> entry.getValue()
+//                                    .getAccessLevel()
+//                                    .getValue()
+//                                    .startsWith(filter))
+//                            .toList();
+                    //todo
                 }
                 case "Номер телефона" -> {
-                    String filter = Menu.getText("Введите номер телефона (или его начало) для сортировки: ");
-                    return DataBaseHandler.getUserData().entrySet().stream().filter(entry -> entry.getValue()
-                                    .getPhoneNumber()
-                                    .startsWith(filter))
-                            .toList();
+//                    String filter = Menu.getText("Введите номер телефона (или его начало) для сортировки: ");
+//                    return DataBaseHandler.getUserData().entrySet().stream().filter(entry -> entry.getValue()
+//                                    .getPhoneNumber()
+//                                    .startsWith(filter))
+//                            .toList();
+                    //todo
                 }
             }
             return List.of();
@@ -481,7 +487,7 @@ public abstract class ActionHandler {
 
         private static void setUserParameters(Administrator administrator){
             try {
-                Printer.print(DataBaseHandler.getUserData());
+                Printer.print(DataBaseHandler.getUsers());
                 Printer.print("Введите ID пользователя, параметры которого желаете изменить (для отмены введите любое слово): ");
                 int id = Menu.tryGetNumberFromUser();
                 User user = DataBaseHandler.getUserById(id);
@@ -501,7 +507,7 @@ public abstract class ActionHandler {
 
         private static void deleteUser(Administrator administrator){
             try {
-                Printer.print(DataBaseHandler.getUserData());
+                Printer.print(DataBaseHandler.getUsers());
                 Printer.print("Введите ID пользователя, которого желаете удалить (для отмены введите любое слово): ");
                 int id = Menu.tryGetNumberFromUser();
                 User user = DataBaseHandler.getUserById(id);

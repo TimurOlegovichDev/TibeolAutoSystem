@@ -6,15 +6,11 @@ import Model.Entities.Order.Order;
 import Model.Entities.Users.User;
 import Model.Exceptions.CarExc.NoSuchCarException;
 import Model.Exceptions.UserExc.NoSuchUserException;
-import liquibase.structure.core.PrimaryKey;
+import org.jetbrains.annotations.Nullable;
 import ui.out.Printer;
 
-import javax.swing.plaf.nimbus.State;
 import java.sql.*;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.logging.Logger;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -27,20 +23,42 @@ import java.util.stream.Stream;
 
 public abstract class DataBaseHandler {
 
-    private static final String carTableName = "dealer-car";
+    private static final String clientsCarTableName = "dealer_schema.client_cars";
+    private static final String clientMessagesTableName = "dealer_schema.clientMessages";
+    private static final String dealerCarTableName = "dealer_schema.dealerCars";
+    private static final String logsTableName = "dealer_schema.logs";
+    private static final String ordersTableName = "dealer_schema.orders";
+    private static final String usersTableName = "dealer_schema.users";
+
 
     public static User add(User user){
-        executeUpdate("INSERT INTO");
-        UserDataBase.add(user);
+        executeUpdate(
+                "INSERT INTO " + usersTableName + " (name, password, phone_number, role) VALUES (?, ?, ?, ?)",
+                user.getUserParameters().getName(),
+                user.getUserParameters().getPassword(),
+                user.getPhoneNumber(),
+                user.getAccessLevel().getValue()
+        );
         return user;
     }
 
     public static void remove(User user){
-        UserDataBase.remove(user.getUserParameters().getID());
+        executeUpdate(
+                "DELETE FROM " + usersTableName + " " +
+                        "WHERE id = " + user.getUserParameters().getID()
+        );
     }
 
-    public static Map<Integer, User> getUserData() {
-        return UserDataBase.getUserData();
+    public static List<List<Object>> getUsers()  {
+        try {
+            return convertResultSetTo2DList(executeQuery(
+                    "SELECT id, name, phone_number, role " +
+                            "FROM " + usersTableName
+            ));
+        } catch (SQLException e){
+            System.out.println("Error");
+        }
+        return null;
     }
 
     public static Order add(Order order){
@@ -89,6 +107,19 @@ public abstract class DataBaseHandler {
         return UserDataBase.getUserData().get(id);
     }
 
+    public static List<List<Object>> convertResultSetTo2DList(@Nullable ResultSet resultSet) throws SQLException {
+        if(resultSet == null) return null;
+        List<List<Object>> list = new ArrayList<>();
+        while (resultSet.next()) {
+            List<Object> row = new ArrayList<>();
+            for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++)
+                row.add(resultSet.getObject(i));
+            list.add(row);
+        }
+        return list;
+    }
+
+
     private static ResultSet executeQuery(String query){
         try (Connection connection = DriverManager.getConnection(DataBaseConfiguration.URL,
                 DataBaseConfiguration.USER_NAME,
@@ -102,15 +133,17 @@ public abstract class DataBaseHandler {
         return null;
     }
 
-    private static void executeUpdate(String query){
+    private static void executeUpdate(String query, Object ... params) {
         try (Connection connection = DriverManager.getConnection(DataBaseConfiguration.URL,
                 DataBaseConfiguration.USER_NAME,
                 DataBaseConfiguration.PASSWORD
         )) {
-            Statement statement = connection.createStatement();
-            statement.executeUpdate(query);
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            for (int i = 0; i < params.length; i++)
+                preparedStatement.setObject(i + 1, params[i]);
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            Printer.print("SQL ERROR EXCEPTION!");
+            System.out.println(e.getMessage());
         }
     }
 

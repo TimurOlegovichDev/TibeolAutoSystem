@@ -2,6 +2,7 @@ package Model.Entities.Users;
 
 import Model.DataBase.UserDataBase;
 import Model.Exceptions.UserExc.InvalidInputException;
+import Model.UserManagement.Encryptor;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.Objects;
@@ -18,6 +19,16 @@ public abstract class User {
     private String phoneNumber = "Не указан";
     @Setter
     private AccessLevels accessLevel;
+    /**
+     * Уникальный номер каждого пользователя.
+     */
+    private final int ID = 1;
+    /**
+     * Пароль пользователя, который шифруется с помощью {@link Encryptor}.
+     */
+    private byte[] password;
+    private String name;
+
     User(String name, byte[] password){
         this.userParameters = new UserParameters(name, password);
     }
