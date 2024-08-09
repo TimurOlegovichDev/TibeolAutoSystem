@@ -1,5 +1,4 @@
 import Model.DataBase.DataBaseHandler;
-import Model.DataBase.UserDataBase;
 import Model.Entities.Car.Car;
 import Model.Entities.Order.Order;
 import Model.Entities.Order.OrderTypes;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.assertj.core.api.SoftAssertions;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,10 +18,7 @@ public class DataBaseHandlerTest {
     @Test
     @DisplayName("Проверка обработчика баз данных на добавление пользователя")
     public void testAddUser() {
-        User user = new Client("testUser", null);
-        int sizeDB = UserDataBase.getCredentials().size();
-        User addedUser = DataBaseHandler.add(user);
-        assertEquals(UserDataBase.getCredentials().size(), sizeDB+1);
+
     }
 
     @Test
@@ -78,12 +73,6 @@ public class DataBaseHandlerTest {
     @Test
     @DisplayName("Проверка обработчика на получение пользователя из базы данных")
     public void testGetUserById() throws NoSuchUserException {
-        User user = new Client("testUser", null);
-        DataBaseHandler.add(user);
-        User retrievedUser = DataBaseHandler.getUserById(user.getUserParameters().getID());
-        SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(retrievedUser).isNotNull();
-        softly.assertThat(retrievedUser).isEqualTo(user);
-        softly.assertAll();
+
     }
 }

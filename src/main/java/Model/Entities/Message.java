@@ -28,7 +28,7 @@ public class Message {
         return (sender == null) ?
                 message + "(Отправлено " + timeCreation + ")"
                 :
-                ("Получено от " + sender.getAccessLevel().getValue() + "а " + sender.getUserParameters().getName()  + " " + message + "(Отправлено " + timeCreation + ") \n");
+                ("Получено от " + sender.getAccessLevel().getValue() + "а " + sender.getName()  + " " + message + "(Отправлено " + timeCreation + ") \n");
     }
 
     public Message(User sender, String message) {

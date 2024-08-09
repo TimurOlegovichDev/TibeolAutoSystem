@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.DataBase.DataBaseHandler;
+import Model.DataBase.UsersDataFields;
 import Model.Entities.Car.*;
 import Model.Entities.Message;
 import Model.Entities.Order.*;
@@ -85,8 +86,6 @@ public abstract class ActionHandler {
             Controller.logger.log(LogActions.USER_SETUP_PROFILE.getText() + user, Levels.INFO);
         } catch (DeliberateInterruptException ignored){
             Printer.print(Messages.RETURN.getMessage());
-        } catch (InvalidInputException e) {
-            Printer.print(Messages.INVALID_COMMAND.getMessage());
         }
         return Scenes.ACTIONS;
     }
@@ -363,7 +362,7 @@ public abstract class ActionHandler {
                     Order currentOrder = list.get(index-1);
                     currentOrder.setStatus(manager, StatusesOfOrder.CHECKED, false);
                     if(!Menu.areYouSure("Вы выбрали заказ на " + currentOrder.getOrderType() + " от клиента "
-                            + currentOrder.getOwner().getUserParameters().getName() +
+                            + currentOrder.getOwner().getName() +
                             " насчет автомобиля " + currentOrder.getCar().getBrand() + " " + currentOrder.getCar().getModel() +
                             " верно? (Да/Нет)")) continue;
                     chooseNewStatus(manager, currentOrder);
@@ -415,7 +414,7 @@ public abstract class ActionHandler {
 
         protected static void adminActionHandler(Administrator administrator, AdminCommands.CommandsInUserList command) {
             switch (command) {
-                case USER_LIST -> Printer.print(DataBaseHandler.getUsers());
+                case USER_LIST -> Printer.print(DataBaseHandler.getUsersData());
                 case GET_FILTER_LIST -> {
                     try {
                         Printer.print(getFilterList());
@@ -487,17 +486,19 @@ public abstract class ActionHandler {
 
         private static void setUserParameters(Administrator administrator){
             try {
-                Printer.print(DataBaseHandler.getUsers());
+                Printer.print(DataBaseHandler.getUsersData());
                 Printer.print("Введите ID пользователя, параметры которого желаете изменить (для отмены введите любое слово): ");
                 int id = Menu.tryGetNumberFromUser();
-                User user = DataBaseHandler.getUserById(id);
-                if(id == administrator.getUserParameters().getID()) {
+                if(id == administrator.getID()) {
                     Printer.printCentered("Нельзя выбрать свой профиль в этом действии!");
                     return;
                 }
-                else if(!Menu.areYouSure("Вы выбрали пользователя -> " + user + "? (Да/Нет) ")) return;
-                ActionHandler.setUpUserParameters(user);
-                Controller.logger.log(LogActions.USER_SETUP_PROFILE.getText() + user, Levels.INFO);
+                else if(!Menu.areYouSure("Вы выбрали пользователя -> " +
+                        DataBaseHandler.getUserParamById(id).get(UsersDataFields.NAME.getIndex()) +
+                        "? (Да/Нет) ")) return;
+                DataBaseHandler.removeUser(id);
+                //ActionHandler.setUpUserParameters(user);
+                Controller.logger.log(LogActions.USER_SETUP_PROFILE.getText() + id, Levels.INFO);
             }  catch (NoSuchElementException | NoSuchUserException e){
                 Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
             } catch (Exception ignored){
@@ -507,18 +508,20 @@ public abstract class ActionHandler {
 
         private static void deleteUser(Administrator administrator){
             try {
-                Printer.print(DataBaseHandler.getUsers());
+                Printer.print(DataBaseHandler.getUsersData());
                 Printer.print("Введите ID пользователя, которого желаете удалить (для отмены введите любое слово): ");
                 int id = Menu.tryGetNumberFromUser();
-                User user = DataBaseHandler.getUserById(id);
-                if(id == administrator.getUserParameters().getID()) {
+                if(id == administrator.getID()) {
                     Printer.printCentered("Нельзя выбрать свой профиль в этом действии!");
                     return;
                 }
-                if(!Menu.areYouSure("Вы точно хотите удалить пользователя? (Да/Нет) ")) return;
-                user.removeAccount();
+                if(!Menu.areYouSure("Вы точно хотите удалить пользователя " +
+                        DataBaseHandler.getUserParamById(id).get(UsersDataFields.NAME.getIndex()) +
+                        "? (Да/Нет) "))
+                    return;
+                DataBaseHandler.removeUser(id);
                 Printer.printCentered("Аккаунт удален");
-                Controller.logger.log(LogActions.USER_DELETE_ACCOUNT.getText() + user, Levels.INFO);
+                Controller.logger.log(LogActions.USER_DELETE_ACCOUNT.getText() + id, Levels.INFO);
             }  catch (NoSuchElementException | NoSuchUserException e){
                 Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
             } catch (Exception ignored){

@@ -55,7 +55,7 @@ public class Controller extends Thread {
     public void run() {
 
         for(Scenes scene = Scenes.GREETING; checkSceneCycle(scene); ){
-            timeDelay(300);
+            timeDelay(3000);
             switch (scene) {
 
                 case GREETING -> scene = greeting();
@@ -93,7 +93,7 @@ public class Controller extends Thread {
         try {
             registration();
             timeDelay(200);
-            Printer.print("Вы создали аккаунт с ID " + currentUser.getUserParameters().getID() + " и именем " + currentUser.getUserParameters().getName() + " Ваша роль: " + currentUser.getAccessLevel().getValue());
+            Printer.print("Вы создали аккаунт с ID " + currentUser.getID() + " и именем " + currentUser.getName() + " Ваша роль: " + currentUser.getAccessLevel().getValue());
             logger.log(LogActions.USER_REGISTERED.getText() + currentUser.toString(), Levels.INFO);
             return Scenes.ACTIONS;
         } catch (RegistrationInterruptException e) {
@@ -107,8 +107,8 @@ public class Controller extends Thread {
     public Scenes authorizationHandler(){
         try {
             authorization();
-            timeDelay(200);
-            Printer.print("Вы вошли в аккаунт под ID " + currentUser.getUserParameters().getID() + " и именем " + currentUser.getUserParameters().getName() + " Ваша роль: " + currentUser.getAccessLevel().getValue());
+            timeDelay(2000);
+            Printer.print("Вы вошли в аккаунт под ID " + currentUser.getID() + " и именем " + currentUser.getName() + " Ваша роль: " + currentUser.getAccessLevel().getValue());
             userNotification();
             logger.log(LogActions.USER_AUTHORIZED.getText() + currentUser.toString(), Levels.INFO);
             return Scenes.ACTIONS;
