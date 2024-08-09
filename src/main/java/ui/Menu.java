@@ -192,7 +192,7 @@ public abstract class Menu {
                 getColor(),
                 getYearOfProduction(),
                 getMileAge(),
-                getText("Введите описание автомобиля (до 10000 символов): "),
+                getText("Введите описание автомобиля (до 1000 символов): "),
                 getPrice()
         );
     }
@@ -297,12 +297,12 @@ public abstract class Menu {
     }
 
     public static String getUserPhoneNumber() {
-        Printer.print("Введите ваш контактный номер телефона (например, 89998887766 или 8(999)888-77-66): ");
+        Printer.print("Введите ваш контактный номер телефона (аналогично 89998887766 без сторонних символов: ");
         String number;
         do {
             number = scanner.nextLine();
             if(!PhoneNumberValidator.isValidPhoneNumber(number))
-                Printer.printCentered("Неверно введен номер, попробуйте снова ");
+                Printer.printCentered("Похоже, что вы совершили ошибку при вводе номера, попробуйте снова: ");
             else return number;
         } while (true);
     }

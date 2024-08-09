@@ -1,5 +1,6 @@
 package Controller;
 
+import Model.DataBase.DataBaseHandler;
 import Model.Entities.Users.*;
 import Model.Exceptions.UserExc.*;
 import Model.LoggerUtil.Levels;
@@ -91,7 +92,7 @@ public class Controller extends Thread {
 
     public Scenes registrationHandler(){
         try {
-            registration();
+            currentUser = registration();
             timeDelay(200);
             Printer.print("Вы создали аккаунт с ID " + currentUser.getID() + " и именем " + currentUser.getName() + " Ваша роль: " + currentUser.getAccessLevel().getValue());
             logger.log(LogActions.USER_REGISTERED.getText() + currentUser.toString(), Levels.INFO);
@@ -127,14 +128,15 @@ public class Controller extends Thread {
            Printer.notify(((Client) currentUser).getMessages().size());
     }
 
-    private void registration() throws RegistrationInterruptException, UserAlreadyExistsException {
-        currentUser = RegistrationManager.registration(
+    private User registration() throws RegistrationInterruptException, UserAlreadyExistsException {
+        User newUser = RegistrationManager.registration(
                 Menu.chooseRole(),
                 Menu.getUserName(),
                 Menu.getUserPassword()
         );
-        if(currentUser instanceof Client || currentUser instanceof Manager)
-            currentUser.setPhoneNumber(Menu.getUserPhoneNumber());
+        if(newUser instanceof Client || newUser instanceof Manager)
+            newUser.setPhoneNumber(Menu.getUserPhoneNumber());
+        return newUser;
     }
 
     private void authorization() throws Exception, InvalidPasswordException {
@@ -188,7 +190,7 @@ public class Controller extends Thread {
                 case REMOVE_USER_CAR -> ActionHandler.removeUserCar((Client) currentUser);
                 case GO_TO_SHOWROOM -> ActionHandler.goToShowRoom(currentUser);
                 case VIEW_MESSAGES -> ActionHandler.readMessages((Client) currentUser);
-                case SETUP_MY_PROFILE -> nextScene = ActionHandler.setUpUserParameters(currentUser);
+                case SETUP_MY_PROFILE -> nextScene = ActionHandler.setUpUserParameters(currentUser.getID());
                 case EXIT_FROM_ACCOUNT -> nextScene = Scenes.EXIT_FROM_ACCOUNT;
                 case DELETE_ACCOUNT -> nextScene = ActionHandler.removeAccount(currentUser);
                 default -> throw new NotEnoughRightsException();
@@ -202,7 +204,7 @@ public class Controller extends Thread {
                 case ORDERS -> ActionHandler.gotoOrdersPage((Manager) currentUser);
                 case EXIT_FROM_ACCOUNT -> nextScene = Scenes.EXIT_FROM_ACCOUNT;
                 case GO_TO_SHOWROOM -> ActionHandler.goToShowRoom(currentUser);
-                case SETUP_MY_PROFILE -> nextScene = ActionHandler.setUpUserParameters(currentUser);
+                case SETUP_MY_PROFILE -> nextScene = ActionHandler.setUpUserParameters(currentUser.getID());
                 case DELETE_ACCOUNT -> nextScene = ActionHandler.removeAccount(currentUser);
             }
             return nextScene;
@@ -215,7 +217,7 @@ public class Controller extends Thread {
                 case GET_LOG_LIST -> ActionHandler.getLogList();
                 case SAVE_LOG_LIST -> ActionHandler.saveLogList();
                 case DELETE_ACCOUNT -> nextScene = ActionHandler.removeAccount(currentUser);
-                case SETUP_MY_PROFILE -> nextScene = ActionHandler.setUpUserParameters(currentUser);
+                case SETUP_MY_PROFILE -> nextScene = ActionHandler.setUpUserParameters(currentUser.getID());
                 case EXIT_FROM_ACCOUNT -> nextScene = Scenes.EXIT_FROM_ACCOUNT;
                 case SHUT_DOWN -> nextScene = Scenes.SHUT_DOWN;
             }

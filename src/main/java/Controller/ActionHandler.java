@@ -77,17 +77,41 @@ public abstract class ActionHandler {
         else return Scenes.ACTIONS;
     }
 
-    static Scenes setUpUserParameters(User user){
+    static Scenes setUpUserParameters(int id){
         try {
             switch (Menu.getSetParameterName(new String[]{"Имя", "Номер телефона"})) {
-                case "Имя" -> user.setName(Menu.getUserName());
-                case "Номер телефона" -> user.setPhoneNumber(Menu.getUserPhoneNumber());
+                case "Имя" -> setName(Menu.getUserName(), id);
+                case "Номер телефона" -> setPhoneNumber(Menu.getUserPhoneNumber(), id);
             }
-            Controller.logger.log(LogActions.USER_SETUP_PROFILE.getText() + user, Levels.INFO);
+            Controller.logger.log(LogActions.USER_SETUP_PROFILE.getText() + id, Levels.INFO);
         } catch (DeliberateInterruptException ignored){
             Printer.print(Messages.RETURN.getMessage());
         }
         return Scenes.ACTIONS;
+    }
+
+    private static void setName(String userName, int id) {
+        DataBaseHandler.setParameterById(
+                UsersDataFields.NAME.getValue(),
+                DataBaseHandler.usersTableName,
+                userName,
+                id
+        );
+    }
+
+    private static void setPhoneNumber(String phoneNumber, int id) {
+        String newPhoneNumber = String.format("+%s (%s) %s-%s-%s",
+                phoneNumber.charAt(0),
+                phoneNumber.substring(1, 4),
+                phoneNumber.substring(4, 7),
+                phoneNumber.substring(7, 9),
+                phoneNumber.substring(9));
+        DataBaseHandler.setParameterById(
+                UsersDataFields.PHONE_NUMBER.getValue(),
+                DataBaseHandler.usersTableName,
+                newPhoneNumber,
+                id
+        );
     }
 
     static void goToShowRoom(User user){
@@ -496,8 +520,7 @@ public abstract class ActionHandler {
                 else if(!Menu.areYouSure("Вы выбрали пользователя -> " +
                         DataBaseHandler.getUserParamById(id).get(UsersDataFields.NAME.getIndex()) +
                         "? (Да/Нет) ")) return;
-                DataBaseHandler.removeUser(id);
-                //ActionHandler.setUpUserParameters(user);
+                ActionHandler.setUpUserParameters(id);
                 Controller.logger.log(LogActions.USER_SETUP_PROFILE.getText() + id, Levels.INFO);
             }  catch (NoSuchElementException | NoSuchUserException e){
                 Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
@@ -519,7 +542,7 @@ public abstract class ActionHandler {
                         DataBaseHandler.getUserParamById(id).get(UsersDataFields.NAME.getIndex()) +
                         "? (Да/Нет) "))
                     return;
-                DataBaseHandler.removeUser(id);
+                DataBaseHandler.removeRowById(DataBaseHandler.usersTableName, id);
                 Printer.printCentered("Аккаунт удален");
                 Controller.logger.log(LogActions.USER_DELETE_ACCOUNT.getText() + id, Levels.INFO);
             }  catch (NoSuchElementException | NoSuchUserException e){

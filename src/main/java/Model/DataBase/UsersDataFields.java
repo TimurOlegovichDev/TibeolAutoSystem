@@ -2,6 +2,7 @@ package Model.DataBase;
 
 import lombok.Getter;
 
+@Getter
 public enum UsersDataFields {
     ID("id",0),
     NAME("name",1),
@@ -11,7 +12,6 @@ public enum UsersDataFields {
 
     private final String value;
 
-    @Getter
     private final int index;
 
     UsersDataFields(String value, int index) {

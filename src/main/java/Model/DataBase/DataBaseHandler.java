@@ -10,6 +10,7 @@ import Model.Exceptions.UserExc.NoSuchUserException;
 import org.jetbrains.annotations.Nullable;
 import ui.out.Printer;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.*;
 import java.util.stream.Stream;
@@ -24,19 +25,19 @@ import java.util.stream.Stream;
 
 public abstract class DataBaseHandler {
 
-    private static final String clientsCarTableName = "dealer_schema.client_cars";
-    private static final String clientMessagesTableName = "dealer_schema.clientMessages";
-    private static final String dealerCarTableName = "dealer_schema.dealerCars";
-    private static final String logsTableName = "dealer_schema.logs";
-    private static final String ordersTableName = "dealer_schema.orders";
-    private static final String usersTableName = "dealer_schema.users";
+    public static final String clientsCarTableName = "dealer_schema.client_cars";
+    public static final String clientMessagesTableName = "dealer_schema.clientMessages";
+    public static final String dealerCarTableName = "dealer_schema.dealerCars";
+    public static final String logsTableName = "dealer_schema.logs";
+    public static final String ordersTableName = "dealer_schema.orders";
+    public static final String usersTableName = "dealer_schema.users";
 
 
     public static User add(User user) {
         executeUpdate(
                 "INSERT INTO " + usersTableName + " (name, password, phone_number, role) VALUES (?, ?, ?, ?)",
                 user.getName(),
-                user.getPassword(),
+                new String(user.getPassword(), StandardCharsets.UTF_8),
                 user.getPhoneNumber(),
                 user.getAccessLevel().getValue()
         );
@@ -46,7 +47,7 @@ public abstract class DataBaseHandler {
                             .get(UsersDataFields.ID.getIndex())
             ));
         } catch (Exception e) {
-            Printer.print("Произошла ошибка при изменении ID пользователя");
+            Printer.print("Произошла ошибка при изменении ID пользователя " + e.getMessage());
         }
         return user;
     }
@@ -59,13 +60,6 @@ public abstract class DataBaseHandler {
             if (list.contains(user.getName()))
                 return list;
         throw new NoSuchUserException();
-    }
-
-    public static void remove(User user) {
-        executeUpdate(
-                "DELETE FROM " + usersTableName + " " +
-                        "WHERE id = " + user.getID()
-        );
     }
 
     public static List<List<String>> getUsersData() {
@@ -87,6 +81,20 @@ public abstract class DataBaseHandler {
         return result;
     }
 
+    public static void setParameterById(String fieldName, String tableName, String newValue, int id){
+        executeUpdate(
+                "UPDATE " + tableName +
+                        " SET " + fieldName + " = " + "'"+ newValue + "'" +
+                        " WHERE id = " + id
+        );
+    }
+
+    public static void removeRowById(String tableName, int id){
+        executeUpdate(
+                "DELETE FROM " + tableName + " " +
+                        "WHERE id = " + id
+        );
+    }
 
     public static Order add(Order order) {
         OrderDataBase.add(order);
@@ -127,19 +135,6 @@ public abstract class DataBaseHandler {
     public static void addCar(Car car) {
         DealerCarData.add(car);
     }
-
-    public static List<List<String>> convertResultSetTo2DList(@Nullable ResultSet resultSet) throws SQLException {
-        if (resultSet == null) return null;
-        List<List<String>> list = new ArrayList<>();
-        while (resultSet.next()) {
-            List<String> row = new ArrayList<>();
-            for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++)
-                row.add(resultSet.getString(i));
-            list.add(row);
-        }
-        return list;
-    }
-
 
     private static List<List<String>> executeQuery(String query) throws SQLException {
         if (query == null || query.isEmpty())
@@ -191,25 +186,6 @@ public abstract class DataBaseHandler {
             Printer.print("SQL ERROR EXCEPTION!");
         }
         return null;
-    }
-
-    public static void removeUser(int id) {
-        executeUpdate(
-                "DELETE FROM " + usersTableName + " " +
-                        "WHERE id = " + id
-        );
-        executeUpdate(
-                "DELETE FROM " + ordersTableName + " " +
-                        "WHERE client_id = " + id
-        );
-        executeUpdate(
-                "DELETE FROM " + clientsCarTableName + " " +
-                        "WHERE client = " + id
-        );
-        executeUpdate(
-                "DELETE FROM " + clientMessagesTableName + " " +
-                        "WHERE receiver_id = " + id
-        );
     }
 
     public static List<String> getUserParamById(int id) throws SQLException, NoSuchUserException {

@@ -4,19 +4,23 @@ import Model.DataBase.DataBaseHandler;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 @Setter
 public final class Manager extends User{
-
-    @Nullable
-    private String phoneNumber;
 
     public Manager(String name, byte[] password){
         super(name, password);
         setAccessLevel(AccessLevels.MANAGER);
     }
 
+    public Manager(List<String> parameters) {
+        super(parameters);
+        setAccessLevel(AccessLevels.MANAGER);
+    }
+
     @Override
     public void removeAccount() {
-        DataBaseHandler.remove(this);
+        DataBaseHandler.removeRowById(DataBaseHandler.usersTableName,getID());
     }
 }

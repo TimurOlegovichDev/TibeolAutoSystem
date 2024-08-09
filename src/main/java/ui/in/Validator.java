@@ -30,12 +30,7 @@ public abstract class Validator {
 
     public static Integer validNumber(String input) throws InvalidInputException, DeliberateInterruptException {
         if("назад".startsWith(input.toLowerCase())) throw new DeliberateInterruptException();
-        try {
-            return Integer.parseInt(input);
-        } catch (NumberFormatException e){
-            Printer.print(Messages.INVALID_COMMAND.getMessage());
-        }
-        throw new InvalidInputException();
+        return isNumber(input);
     }
 
     public static Integer isNumber(String input) throws InvalidInputException {

@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 
 public class PhoneNumberValidator {
 
-    private static final String PHONE_NUMBER_PATTERN = "^((8|\\+7|7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{8,9}$$";
+    private static final String PHONE_NUMBER_PATTERN = "\\d{11}";
 
     public static boolean isValidPhoneNumber(String phoneNumber) {
         phoneNumber = phoneNumber.replace(" ", "");

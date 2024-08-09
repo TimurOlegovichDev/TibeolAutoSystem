@@ -1,6 +1,7 @@
 package Model.Entities.Users;
 
 import Model.DataBase.DataBaseHandler;
+import Model.DataBase.UsersDataFields;
 import Model.Entities.Car.Car;
 import Model.Entities.Message;
 import Model.Entities.Order.Order;
@@ -26,6 +27,10 @@ public final class Client extends User {
         super(name, password);
         setAccessLevel(AccessLevels.CLIENT);
     }
+    public Client(List<String> parameters) {
+        super(parameters);
+        setAccessLevel(AccessLevels.CLIENT);
+    }
 
     @Override
     public void removeAccount() {
@@ -33,7 +38,9 @@ public final class Client extends User {
             if (!order.getStatus().equals(StatusesOfOrder.ARCHIVED))
                 DataBaseHandler.remove(order);
         }
-        DataBaseHandler.remove(this);
+        DataBaseHandler.removeRowById(DataBaseHandler.usersTableName,getID());
+        DataBaseHandler.removeRowById(DataBaseHandler.clientMessagesTableName, getID());
+        DataBaseHandler.removeRowById(DataBaseHandler.ordersTableName, getID());
     }
 
     public void receiveMessage(Message message) {
@@ -49,7 +56,6 @@ public final class Client extends User {
             orderList.add(newOrder);
             carData.get(carId).setBooked(true);
         }
-
     }
 
     public void createPurchaseOrder(String text, int carId) {
