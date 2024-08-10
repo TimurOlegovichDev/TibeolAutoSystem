@@ -75,6 +75,9 @@
             <column name="model" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="color" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
         <createTable tableName="clientMessages" schemaName="dealer_schema">

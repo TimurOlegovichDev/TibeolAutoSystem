@@ -3,20 +3,14 @@ package Model.DataBase;
 import Model.DataBase.dbconfig.DataBaseConfiguration;
 import Model.Entities.Car.Car;
 import Model.Entities.Order.Order;
-import Model.Entities.Order.OrderTypes;
 import Model.Entities.Order.StatusesOfOrder;
-import Model.Entities.Users.Client;
 import Model.Entities.Users.User;
-import Model.Exceptions.CarExc.NoSuchCarException;
-import Model.Exceptions.UserExc.InvalidPasswordException;
 import Model.Exceptions.UserExc.NoSuchUserException;
-import org.jetbrains.annotations.Nullable;
 import ui.out.Printer;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * Предоставляет статические методы для работы с данными в базе данных.
@@ -62,7 +56,19 @@ public abstract class DataBaseHandler {
         return user;
     }
 
-    public static List<List<String>> МgetTableByUser(String tableName, int userId){
+    public static List<List<String>> getTableByFieldAndValue(String tableName, int value, DataFieldImp field) {
+        try {
+            return executeQuery(
+                    "SELECT * FROM " + tableName +
+                            " WHERE " + field.toString() + " = " + value
+            );
+        } catch (SQLException e) {
+            System.out.println("Query canceled, got error" + e.getMessage());
+        }
+        return new ArrayList<>();
+    }
+
+    public static List<List<String>> getTableByUser(String tableName, int userId) {
         try {
             return executeQuery(
                     "SELECT * FROM " + tableName +
@@ -85,19 +91,19 @@ public abstract class DataBaseHandler {
     public static List<String> getColumnByField(String tableName, DataFieldImp field) throws SQLException {
         List<List<String>> lists = executeQuery("SELECT " + field.toString() + " FROM " + tableName);
         List<String> result = new ArrayList<>();
-        for(List<String> list : lists)
+        for (List<String> list : lists)
             result.add(list.get(0));
         return result;
     }
 
-    public static void setParameterById(String fieldName, String tableName, String newValue, int id){
+    public static void setParameterById(String fieldName, String tableName, String newValue, int id) {
         executeUpdate(
                 "UPDATE " + tableName + " SET " + fieldName + " = ? WHERE id = ?",
                 newValue, id
         );
     }
 
-    public static void removeRowById(String tableName, int id){
+    public static void removeRowById(String tableName, int id) {
         executeUpdate(
                 "DELETE FROM " + tableName + " WHERE id = ?",
                 id
@@ -109,13 +115,14 @@ public abstract class DataBaseHandler {
                 "INSERT INTO " + ordersTableName +
                         " (type, client_id, client_car_id, client_phone_number, description, status, created_at) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?) ",
-                order.getOrderType(),
+                order.getOrderType().toString(),
                 order.getCarId(),
                 order.getOwner().getPhoneNumber(),
                 order.getOrderText(),
-                order.getStatus(),
-                order.getDateOfCreation()
+                order.getStatus().getCommand(),
+                Timestamp.from(order.getDateOfCreation()).toString()
         );
+
         return order;
     }
 
@@ -143,7 +150,7 @@ public abstract class DataBaseHandler {
         return new ArrayList<>();
     }
 
-    public static Car addDealerCar(Car car) {
+    public static void addDealerCar(Car car) {
         executeUpdate(
                 "INSERT INTO " + dealerCarTableName +
                         " (brand, model, color, year, price, mile_age, description) " +
@@ -156,17 +163,17 @@ public abstract class DataBaseHandler {
                 car.getMileAge(),
                 car.getDescription()
         );
-        return car;
     }
 
     public static void addClientCar(Car car) {
         executeUpdate(
                 "INSERT INTO " + clientsCarTableName +
-                        " (client, brand, model) " +
-                        "VALUES (?, ?, ?) ",
+                        " (client, brand, model, color) " +
+                        "VALUES (?, ?, ?, ?) ",
                 car.getOwner().getID(),
                 car.getBrand(),
-                car.getModel()
+                car.getModel(),
+                car.getColor()
         );
     }
 
@@ -174,7 +181,7 @@ public abstract class DataBaseHandler {
         List<List<String>> lists = executeQuery(
                 "SELECT * FROM " + tableName +
                         " WHERE id = " + carId);
-        if(lists.size() != 1)
+        if (lists.size() != 1)
             throw new NoSuchElementException();
         return lists.get(0);
     }
@@ -235,20 +242,20 @@ public abstract class DataBaseHandler {
     public static List<String> getUserParamById(int id) throws SQLException, NoSuchUserException {
         List<List<String>> lists = executeQuery(
                 "SELECT * FROM " + usersTableName +
-                " WHERE id = " + id);
-        if(lists.size() != 1)
+                        " WHERE id = " + id);
+        if (lists.size() != 1)
             throw new NoSuchUserException();
         return lists.get(0);
     }
 
     public static void checkOrderAndArchive() {
+        String updateQuery = "UPDATE " + ordersTableName + " SET status = ? WHERE status IN (?, ?, ?)";
         executeUpdate(
-                "UPDATE " + ordersTableName + " SET ? = ? WHERE status IN (?, ?, ?)",
-                OrderDataFields.STATUS,
-                StatusesOfOrder.ARCHIVED,
-                StatusesOfOrder.COMPLETED,
-                StatusesOfOrder.AGREED,
-                StatusesOfOrder.DISMISSED
+                updateQuery,
+                StatusesOfOrder.ARCHIVED.getCommand(),
+                StatusesOfOrder.COMPLETED.getCommand(),
+                StatusesOfOrder.AGREED.getCommand(),
+                StatusesOfOrder.DISMISSED.getCommand()
         );
     }
 }

@@ -35,16 +35,18 @@ import java.util.*;
 public abstract class ActionHandler {
 
     static void viewUserOrders(Client client) {
-        Printer.print(DataBaseHandler.getTableByUser(
+        Printer.print(DataBaseHandler.getTableByFieldAndValue(
                 DataBaseHandler.ordersTableName,
-                client.getID()
+                client.getID(),
+                OrderDataFields.CLIENT_ID
         ));
     }
 
     static void viewUserCars(Client client) {
-        Printer.print(DataBaseHandler.getTableByUser(
+        Printer.print(DataBaseHandler.getTableByFieldAndValue(
                 DataBaseHandler.clientsCarTableName,
-                client.getID()
+                client.getID(),
+                ClientCarDataFields.CLIENT
         ));
     }
 
@@ -129,7 +131,7 @@ public abstract class ActionHandler {
 
     public static void readMessages(Client currentUser) {
         Printer.printCentered("Выполняется переход на страницу сообщений");
-        Printer.print(DataBaseHandler.getTableByUser(DataBaseHandler.clientMessagesTableName, currentUser.getID()));
+        Printer.print(DataBaseHandler.getTableByFieldAndValue(DataBaseHandler.clientMessagesTableName, currentUser.getID(), MessagesDataFields.RECEIVER_ID));
         DataBaseHandler.checkOrderAndArchive();
     }
 
