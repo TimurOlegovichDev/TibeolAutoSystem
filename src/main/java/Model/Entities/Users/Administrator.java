@@ -17,6 +17,6 @@ public final class Administrator extends User{
 
     @Override
     public void removeAccount() {
-        DataBaseHandler.removeRowById(DataBaseHandler.usersTableName,getID());
+        DataBaseHandler.removeRowById(DataBaseHandler.usersTableName, getID());
     }
 }

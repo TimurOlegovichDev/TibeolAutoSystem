@@ -1,5 +1,6 @@
 package Model.Entities.Order;
 
+import Model.DataBase.DataBaseHandler;
 import Model.Entities.Car.Car;
 import Model.Entities.Message;
 import Model.Entities.Users.*;
@@ -19,9 +20,10 @@ import java.time.Instant;
 @Getter
 public class Order {
 
+    @Getter
     private final OrderTypes orderType;
     private final Client owner;
-    private final Car car;
+    private final int carId;
     private final Instant dateOfCreation;
     private StatusesOfOrder status = StatusesOfOrder.NEW;
     @Setter
@@ -30,14 +32,14 @@ public class Order {
     public Order(OrderTypes orderType,
           Client owner,
           String orderText,
-          Car car){
+          int carId){
 
         this.orderType = orderType;
         this.owner = owner;
         this.orderText = orderText;
-        this.car = car;
+        this.carId = carId;
         dateOfCreation = Instant.now();
-
+        DataBaseHandler.add(this);
     }
 
     /**
@@ -54,15 +56,15 @@ public class Order {
         checkStatus(newStatus, isAutomatic);
         if(newStatus.equals(status)) return; // Чтобы не выполнять лишних действий, возвращаем управление в случае того же статуса
         status = newStatus;
-        notifyClient(
-                new Message(
-
-                manager,
-
-                "Статус заявки на " + orderType + " " + car.getBrand() + " " + car.getModel() +
-                        " изменен на " + status + "!"),
-                owner
-        );
+//        notifyClient(
+//                new Message(
+//
+//                manager,
+//
+//                "Статус заявки на " + orderType + " " + car.getBrand() + " " + car.getModel() +
+//                        " изменен на " + status + "!"),
+//                owner
+//        );
     }
 
     /**

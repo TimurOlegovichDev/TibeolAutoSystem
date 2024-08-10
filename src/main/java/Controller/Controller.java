@@ -37,7 +37,7 @@ public class Controller extends Thread {
     private Controller() {
     }
 
-    public final ActionController actionController = new ActionController();
+    private final ActionController actionController = new ActionController();
 
     volatile User currentUser;
 
@@ -124,8 +124,8 @@ public class Controller extends Thread {
     }
 
     private void userNotification(){
-        if(currentUser instanceof Client && !((Client) currentUser).getMessages().isEmpty())
-           Printer.notify(((Client) currentUser).getMessages().size());
+//        if(currentUser instanceof Client && !((Client) currentUser).getMessages().isEmpty())
+//           Printer.notify(((Client) currentUser).getMessages().size());
     }
 
     private User registration() throws RegistrationInterruptException, UserAlreadyExistsException {

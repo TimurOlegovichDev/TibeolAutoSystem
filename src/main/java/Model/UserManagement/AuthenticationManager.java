@@ -16,10 +16,8 @@ import java.util.List;
  */
 
 public abstract class AuthenticationManager {
-    public static User authentication(String name, byte[] cryptoPass) throws InvalidPasswordException, NoSuchUserException, SQLException {
-        List<List<String>> table = DataBaseHandler.getUsersData();
-        if(table == null)
-            throw new SQLException();
+    public static User authentication(String name, byte[] cryptoPass) throws InvalidPasswordException, NoSuchUserException {
+        List<List<String>> table = DataBaseHandler.getData(DataBaseHandler.usersTableName);
         return AuthorizationManager.authorization(name, cryptoPass,  getUserParamIfExists(name, cryptoPass, table));
     }
 

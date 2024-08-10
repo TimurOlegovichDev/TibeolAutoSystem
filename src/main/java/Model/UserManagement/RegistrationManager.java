@@ -15,7 +15,7 @@ import java.sql.SQLException;
 public class RegistrationManager {
     public static User registration(AccessLevels accessLevel, String name, byte[] password) throws UserAlreadyExistsException, RegistrationInterruptException {
         try {
-            if(DataBaseHandler.getUsersColumnByField(UsersDataFields.NAME).contains(name))
+            if(DataBaseHandler.getColumnByField(DataBaseHandler.usersTableName, UsersDataFields.NAME).contains(name))
                 throw new UserAlreadyExistsException();
         } catch (SQLException e) {
             throw new RegistrationInterruptException();

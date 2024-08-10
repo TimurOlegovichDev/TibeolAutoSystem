@@ -47,11 +47,11 @@ public abstract class TextFormatter {
         return stringBuilder.toString();
     }
 
-    static String formatList(List<List<Object>> list) {
+    static String formatList(List<List<String>> list) {
         if(list.isEmpty())
             return centerText("Список пуст");
         StringBuilder stringBuilder = new StringBuilder();
-        for(List<Object> l : list)
+        for(List<String> l : list)
             stringBuilder.append(formatText(l)).append("\n");
         return stringBuilder.toString();
     }

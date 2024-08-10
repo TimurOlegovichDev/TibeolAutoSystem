@@ -285,11 +285,11 @@ public abstract class Menu {
         }
     }
 
-    public static String getNewOrderStatus(Order order) throws DeliberateInterruptException{
-        Printer.printCommandsWithCustomQuestion(StatusesOfOrder.getStringArray(order.getOrderType()), "Какой статус заказа вы желаете установить?");
+    public static String getNewOrderStatus(OrderTypes status) throws DeliberateInterruptException{
+        Printer.printCommandsWithCustomQuestion(StatusesOfOrder.getStringArray(status), "Какой статус заказа вы желаете установить?");
         while (true) {
             try {
-                return Validator.validCommand(scanner.nextLine(), StatusesOfOrder.getStringArray(order.getOrderType()));
+                return Validator.validCommand(scanner.nextLine(), StatusesOfOrder.getStringArray(status));
             } catch (InvalidInputException e) {
                 Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }

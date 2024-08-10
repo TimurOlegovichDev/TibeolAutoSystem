@@ -39,6 +39,7 @@
             <column name="description" type="TEXT">
                 <constraints nullable="true"/>
             </column>
+            <column name="booked" type="BOOLEAN" defaultValue="false"/>
         </createTable>
 
         <createSequence sequenceName="user_seq" schemaName="dealer_schema"/>

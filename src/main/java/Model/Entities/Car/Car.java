@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -26,7 +27,7 @@ public class Car {
     private User owner;
 
     @Getter
-    private final int ID = Id.getUniqueId(DataBaseHandler.getCarData());
+    private final int ID = 0;
 
     private String model;
     private String brand;
@@ -45,9 +46,7 @@ public class Car {
     private boolean booked = false;
 
     private String getBookText(){
-        if(!booked)
-            return "Есть в наличии";
-        return "Забронирована";
+        return booked ? "Забронирована" : "Есть в наличии";
     }
 
     public Car(@NotNull Client client,
