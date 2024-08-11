@@ -110,7 +110,6 @@ public class Controller extends Thread {
             authorization();
             timeDelay(2000);
             Printer.print("Вы вошли в аккаунт под ID " + currentUser.getID() + " и именем " + currentUser.getName() + " Ваша роль: " + currentUser.getAccessLevel().getValue());
-            userNotification();
             logger.log(LogActions.USER_AUTHORIZED.getText() + currentUser.toString(), Levels.INFO);
             return Scenes.ACTIONS;
         } catch (InvalidPasswordException e){
@@ -121,11 +120,6 @@ public class Controller extends Thread {
             Printer.print(Messages.ERROR.getMessage());
         }
         return Scenes.CHOOSING_ROLE;
-    }
-
-    private void userNotification(){
-//        if(currentUser instanceof Client && !((Client) currentUser).getMessages().isEmpty())
-//           Printer.notify(((Client) currentUser).getMessages().size());
     }
 
     private User registration() throws RegistrationInterruptException, UserAlreadyExistsException {

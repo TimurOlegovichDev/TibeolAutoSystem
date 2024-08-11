@@ -207,19 +207,19 @@ public abstract class ActionHandler {
         private static void filterList(String command) throws DeliberateInterruptException, NullPointerException, SQLException {
             switch (Objects.requireNonNull(CarParameters.getCarParameterFromString(command))) {
                 case BRAND -> {
-                    String filter = Menu.getText("Введите интересующий брэнд: ");
-                    Printer.print(executeQuery( "SELECT * FROM " + DataBaseHandler.dealerCarTableName +
-                            " WHERE brand LIKE '" + filter.toLowerCase() + "%'"));
-                }
-                case MODEL -> {
                     String filter = Menu.getText("Введите интересующую марку: ");
                     Printer.print(executeQuery( "SELECT * FROM " + DataBaseHandler.dealerCarTableName +
-                            " WHERE model LIKE '" + filter.toLowerCase() + "%'"));
+                            " WHERE brand LIKE '" + filter + "%'"));
+                }
+                case MODEL -> {
+                    String filter = Menu.getText("Введите интересующую модель: ");
+                    Printer.print(executeQuery( "SELECT * FROM " + DataBaseHandler.dealerCarTableName +
+                            " WHERE model LIKE '" + filter + "%'"));
                 }
                 case COLOR -> {
                     String filter = Menu.getText("Введите интересующий цвет: ");
                     Printer.print(executeQuery( "SELECT * FROM " + DataBaseHandler.dealerCarTableName +
-                            " WHERE color LIKE '" + filter.toLowerCase() + "%'"));
+                            " WHERE color LIKE '" + filter + "%'"));
                 }
             }
         }
@@ -462,8 +462,7 @@ public abstract class ActionHandler {
                                     """
                                     Введите параметр, по которому будет отсортирован список:            \s
                                     - Имя
-                                    - Статус
-                                    - Номер телефона"""),
+                                    - Статус"""),
                             "Имя", "Статус", "Номер телефона");
                     filterList(command);
                     return;
@@ -488,7 +487,7 @@ public abstract class ActionHandler {
                     String filter = Menu.getText("Введите статус пользователя (или его начало) для сортировки: ");
                     Printer.print(executeQuery(
                             "SELECT * FROM " + DataBaseHandler.usersTableName +
-                                    " WHERE status LIKE '" + filter + "%'"
+                                    " WHERE role LIKE '" + filter + "%'"
                     ));
                 }
             }

@@ -6,7 +6,9 @@ import Model.DataBase.DataFields.OrderDataFields;
 import Model.Entities.Car.Car;
 import Model.Entities.Order.Order;
 import Model.Entities.Order.OrderTypes;
+import lombok.Data;
 import lombok.Getter;
+import ui.messageSrc.Messages;
 import ui.out.Printer;
 
 import java.sql.SQLException;
@@ -32,6 +34,13 @@ public final class Client extends User {
     @Override
     public void removeAccount() {
         DataBaseHandler.removeRowById(DataBaseHandler.usersTableName, getID());
+        try {
+            List<String> bookedCarId = DataBaseHandler.getColumnByField(DataBaseHandler.ordersTableName, OrderDataFields.CLIENT_CAR_ID, " WHERE type = 'Покупку' AND status != 'Архивировано'");
+            for(String id : bookedCarId)
+                DataBaseHandler.setParameterById(DealerCarDataFields.BOOKED.getValue(), DataBaseHandler.dealerCarTableName, "false", Integer.parseInt(id));
+        } catch (SQLException e) {
+            Printer.printCentered(Messages.ERROR.getMessage());
+        }
         DataBaseHandler.removeRowByQuery(DataBaseHandler.ordersTableName, "WHERE client_id = " + getID());
         DataBaseHandler.removeRowByQuery(DataBaseHandler.clientsCarTableName, "WHERE client_id = " + getID());
     }

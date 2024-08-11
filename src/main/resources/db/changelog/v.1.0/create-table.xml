@@ -92,7 +92,7 @@
             <column name="client_id"  type="INTEGER">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="client_car_credentials"  type="VARCHAR(255)">
+            <column name="client_car_id"  type="INTEGER">
                 <constraints nullable="false"/>
             </column>
             <column name="client_phone_number" type="VARCHAR(255)">
