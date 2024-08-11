@@ -13,9 +13,9 @@ public abstract class DataBaseConfiguration {
         try {
             fileInputStream = new FileInputStream("src/main/resources/configs/database.properties");
             property.load(fileInputStream);
-            URL = property.getProperty("url");
-            USER_NAME = property.getProperty("username");
-            PASSWORD = property.getProperty("password");
+            URL = "jdbc:" + property.getProperty("DRIVER") + "://localhost:" + property.getProperty("PORT") + "/" + property.getProperty("POSTGRES_DB");
+            USER_NAME = property.getProperty("POSTGRES_USER");
+            PASSWORD = property.getProperty("POSTGRES_PASSWORD");
             fileInputStream.close();
         } catch (IOException e) {
             System.err.println("ОШИБКА: Файл свойств отсуствует или в нем ошибка!");

@@ -1,9 +1,7 @@
 services:
   db:
     image: postgres:latest
-    environment:
-      POSTGRES_DB: dealerdb
-      POSTGRES_USER: dealer
-      POSTGRES_PASSWORD: 84627913
+    env_file:
+      - configs/database.properties
     ports:
-      - 5432:5432
+      - "5432:5432"

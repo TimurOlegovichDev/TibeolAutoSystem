@@ -14,6 +14,7 @@
             CREATE SEQUENCE orders_seq START 1;
             CREATE SEQUENCE client_car_seq START 1;
         </sql>
+
         <createSequence sequenceName="dealers_car_seq" schemaName="dealer_schema"/>
         <createTable tableName="dealer_cars" schemaName="dealer_schema">
             <column name="id" type="INTEGER" defaultValue="NEXTVAL('dealers_car_seq')">
