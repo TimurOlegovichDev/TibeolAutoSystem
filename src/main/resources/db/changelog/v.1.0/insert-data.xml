@@ -68,10 +68,7 @@
         <insert tableName="messages" schemaName="service_schema">
             <column name="id" value="CHOOSE_ROLE"/>
             <column name="message" value="Для успешной регистрации понадобится некоторые данные.
-            Укажите ваш статус:
-            - Администратор
-            - Менеджер
-            - Клиент"/>
+            Укажите ваш статус: | Администратор | Менеджер | Клиент"/>
         </insert>
         <insert tableName="messages" schemaName="service_schema">
             <column name="id" value="CAR_REGISTER"/>
@@ -108,52 +105,6 @@
         <insert tableName="messages" schemaName="service_schema">
             <column name="id" value="END"/>
             <column name="message" value="Выключение"/>
-        </insert>
-
-        <insert tableName="dealer_cars" schemaName="dealer_schema">
-            <column name="brand" value="aaaa"/>
-            <column name="model" value="aaaa"/>
-            <column name="color" value="aaaa"/>
-            <column name="year" value="1231"/>
-            <column name="price" value="123123"/>
-            <column name="mile_age" value="1231313"/>
-            <column name="description" value="1231231"/>
-        </insert>
-        <insert tableName="dealer_cars" schemaName="dealer_schema">
-            <column name="brand" value="a"/>
-            <column name="model" value="a"/>
-            <column name="color" value="a"/>
-            <column name="year" value="1231"/>
-            <column name="price" value="123123"/>
-            <column name="mile_age" value="1231313"/>
-            <column name="description" value="1231231"/>
-        </insert>
-        <insert tableName="dealer_cars" schemaName="dealer_schema">
-            <column name="brand" value="b"/>
-            <column name="model" value="b"/>
-            <column name="color" value="b"/>
-            <column name="year" value="1231"/>
-            <column name="price" value="123123"/>
-            <column name="mile_age" value="1231313"/>
-            <column name="description" value="1231231"/>
-        </insert>
-        <insert tableName="dealer_cars" schemaName="dealer_schema">
-            <column name="brand" value="bbbb"/>
-            <column name="model" value="bbbb"/>
-            <column name="color" value="bbbb"/>
-            <column name="year" value="1231"/>
-            <column name="price" value="123123"/>
-            <column name="mile_age" value="1231313"/>
-            <column name="description" value="1231231"/>
-        </insert>
-        <insert tableName="dealer_cars" schemaName="dealer_schema">
-            <column name="brand" value="cccc"/>
-            <column name="model" value="cccc"/>
-            <column name="color" value="cccc"/>
-            <column name="year" value="1231"/>
-            <column name="price" value="123123"/>
-            <column name="mile_age" value="1231313"/>
-            <column name="description" value="1231231"/>
         </insert>
     </changeSet>
 
