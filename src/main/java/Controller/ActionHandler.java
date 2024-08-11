@@ -45,6 +45,7 @@ public abstract class ActionHandler {
                 OrderDataFields.CLIENT_ID
         ));
         DataBaseHandler.checkOrderAndArchive();
+        Controller.logger.log(Levels.INFO, "Пользователь просматривает свои заказы");
     }
 
     static void viewUserCars(Client client) {
@@ -53,6 +54,7 @@ public abstract class ActionHandler {
                 client.getID(),
                 ClientCarDataFields.CLIENT_ID
         ));
+        Controller.logger.log(Levels.INFO, "Пользователь просматривает свои автомобили");
     }
 
     public static void removeUserCar(Client client) {
@@ -64,6 +66,7 @@ public abstract class ActionHandler {
             if (!Menu.areYouSure("Вы точно хотите удалить автомобиль? (Да/Нет) "))
                 return;
             client.removeCar(id);
+            Controller.logger.log(Levels.INFO, "Пользователь удалил автомобиль с id = " + id);
         } catch (NoSuchElementException | NoSuchCarException e) {
             Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
         } catch (InvalidInputException e) {
@@ -77,7 +80,7 @@ public abstract class ActionHandler {
         try {
             Car car = Menu.getCar(client);
             client.addCar(car);
-            Controller.logger.log(LogActions.CLIENT_ADD_CAR.getText() + car, Levels.INFO);
+            Controller.logger.log(Levels.INFO, "Пользователь добавил автомобиль -> " + car.getBrand());
         } catch (DeliberateInterruptException ignored) {
             Printer.print("Операция отменена");
         }
@@ -87,7 +90,7 @@ public abstract class ActionHandler {
         if (Menu.areYouSure(Messages.DELETE_ACCOUNT_WARNING.getMessage())) {
             user.removeAccount();
             Printer.print("Аккаунт удален!");
-            Controller.logger.log(LogActions.USER_DELETE_ACCOUNT.getText() + user, Levels.INFO);
+            Controller.logger.log(Levels.INFO, LogActions.USER_DELETE_ACCOUNT.getText() + user);
             return Scenes.CHOOSING_ROLE;
         } else return Scenes.ACTIONS;
     }
@@ -98,7 +101,7 @@ public abstract class ActionHandler {
                 case "Имя" -> setName(Menu.getUserName(), id);
                 case "Номер телефона" -> setPhoneNumber(Menu.getUserPhoneNumber(), id);
             }
-            Controller.logger.log(LogActions.USER_SETUP_PROFILE.getText() + id, Levels.INFO);
+            Controller.logger.log(Levels.INFO, LogActions.USER_SETUP_PROFILE.getText() + id);
         } catch (DeliberateInterruptException ignored) {
             Printer.print(Messages.RETURN.getMessage());
         }
@@ -146,7 +149,7 @@ public abstract class ActionHandler {
 
     public static void getLogList() {
         Printer.printCentered("Список событий программы:");
-        Printer.print(Controller.logger.getLogs());
+        Printer.print(Controller.logger.getDataList());
     }
 
     public static void saveLogList() {
@@ -171,7 +174,6 @@ public abstract class ActionHandler {
                 case MANAGER -> managerActionHandler((Manager) user, Menu.managerChoosingActionInShowRoom());
             }
         }
-
 
         protected static void clientActionHandler(Client client, ClientCommands.CommandsInShowRoom command) {
             switch (command) {
@@ -237,7 +239,7 @@ public abstract class ActionHandler {
                     createServiceOrder(client);
                 client.createServiceOrder(Menu.getText("Сообщите, по какой причине вы хотите обслужить авто: "), Integer.parseInt(carRow.get(ClientCarDataFields.ID.getIndex())));
                 Printer.print("Заказ на обслуживание успешно создан и передан в автосалон");
-                //Controller.logger.log(LogActions.NEW_SERVICE_ORDER.getText() + OrderTypes.SERVICE + " " + car, Levels.INFO);
+                Controller.logger.log(Levels.INFO, LogActions.NEW_SERVICE_ORDER.getText() + OrderTypes.SERVICE);
             } catch (InvalidInputException | DeliberateInterruptException e) {
                 Printer.print(Messages.RETURN.getMessage());
             } catch (NoSuchElementException e) {
@@ -266,7 +268,7 @@ public abstract class ActionHandler {
                 }
                 client.createPurchaseOrder("Желаю приобрести автомобиль с id -> " + carRow.get(DealerCarDataFields.ID.getIndex()), id);
                 Printer.print("Заказ на покупку успешно создан и передан в автосалон");
-                //Controller.logger.log(LogActions.NEW_PURCHASE_ORDER.getText() + OrderTypes.PURCHASE + " " + car, Levels.INFO);
+                Controller.logger.log(Levels.INFO, LogActions.NEW_SERVICE_ORDER.getText() + OrderTypes.PURCHASE);
             } catch (InvalidInputException e) {
                 Printer.print(Messages.RETURN.getMessage());
             } catch (NoSuchElementException e) {
@@ -295,7 +297,7 @@ public abstract class ActionHandler {
             try {
                 Car car = Menu.getCar(manager);
                 DataBaseHandler.addDealerCar(car);
-                Controller.logger.log(LogActions.NEW_CAR_IN_DEALER.getText() + car, Levels.INFO);
+                Controller.logger.log(Levels.INFO, LogActions.NEW_CAR_IN_DEALER.getText());
             } catch (DeliberateInterruptException e) {
                 Printer.print(Messages.RETURN.getMessage());
             }
@@ -308,7 +310,7 @@ public abstract class ActionHandler {
                 int id = Menu.tryGetNumberFromUser();
                 if (!Menu.areYouSure("Вы точно хотите удалить? (Да/Нет) ")) return;
                 DataBaseHandler.removeRowById(DataBaseHandler.dealerCarTableName, id);
-                //Controller.logger.log(LogActions.CAR_DELETED.getText() + car, Levels.INFO);
+                Controller.logger.log(Levels.INFO, LogActions.CAR_DELETED.getText());
             } catch (NoSuchElementException e) {
                 Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
             } catch (Exception ignored) {
@@ -381,6 +383,7 @@ public abstract class ActionHandler {
                 status.getCommand(),
                 orderId
         );
+        Controller.logger.log(Levels.INFO, LogActions.ORDER_STATUS_CHANGED.getText() + status);
     }
 
     private static void dismissOrder(Manager manager, int orderId) {
@@ -401,6 +404,7 @@ public abstract class ActionHandler {
                     Integer.parseInt(orderRow.get(OrderDataFields.CLIENT_CAR_ID.getIndex()))
             );
             DataBaseHandler.checkOrderAndArchive();
+            Controller.logger.log(Levels.INFO, LogActions.ORDER_STATUS_CHANGED.getText() + "отклонено");
         } catch (NoSuchElementException e) {
             Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
         } catch (Exception ignored) {
@@ -431,6 +435,7 @@ public abstract class ActionHandler {
                     carId
             );
             DataBaseHandler.checkOrderAndArchive();
+            Controller.logger.log(Levels.INFO, LogActions.ORDER_STATUS_CHANGED.getText() + "одобрено");
         } catch (NoSuchElementException e) {
             Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
         } catch (Exception ignored) {
@@ -505,7 +510,7 @@ public abstract class ActionHandler {
                         DataBaseHandler.getUserParamById(id).get(UsersDataFields.NAME.getIndex()) +
                         "? (Да/Нет) ")) return;
                 ActionHandler.setUpUserParameters(id);
-                Controller.logger.log(LogActions.USER_SETUP_PROFILE.getText() + id, Levels.INFO);
+                Controller.logger.log(Levels.INFO, LogActions.USER_SETUP_PROFILE.getText() + id);
             } catch (NoSuchElementException | NoSuchUserException e) {
                 Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
             } catch (Exception ignored) {
@@ -528,7 +533,7 @@ public abstract class ActionHandler {
                     return;
                 DataBaseHandler.removeRowById(DataBaseHandler.usersTableName, id);
                 Printer.printCentered("Аккаунт удален");
-                Controller.logger.log(LogActions.USER_DELETE_ACCOUNT.getText() + id, Levels.INFO);
+                Controller.logger.log(Levels.INFO, LogActions.USER_DELETE_ACCOUNT.getText() + id);
             } catch (NoSuchElementException | NoSuchUserException e) {
                 Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
             } catch (Exception ignored) {

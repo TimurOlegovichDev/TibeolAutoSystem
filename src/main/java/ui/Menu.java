@@ -72,14 +72,6 @@ public abstract class Menu {
         }
     }
 
-    public static @NotNull String getDismissMessage(){
-        Printer.print(Messages.ENTER_MESSAGE.getMessage());
-        String text = scanner.nextLine();
-        if(text == null || text.trim().isEmpty())
-            return "Текст сообщения отсутствует";
-        return text;
-    }
-
     public static ClientCommands clientChoosingAction() {
         Printer.printCommands(StringCommands.CLIENT_COMMANDS.getCommands());
         while (true) {
@@ -323,7 +315,7 @@ public abstract class Menu {
     }
 
     public static String getPath() throws DeliberateInterruptException {
-        Printer.print("Введите путь к директории, где нужно создать файл и в конце пути укажите его название, в случае, если вы не укажете путь, файл будет сохранен в папке проекта (для отмены операции, введите \"Назад\"");
+        Printer.print("Введите путь к директории, где нужно создать файл или его название, но в этом случае, файл будет сохранен в папке проекта (для отмены операции, введите \"Назад\"");
         String input = scanner.nextLine();
         if("назад".startsWith(input.toLowerCase())) throw new DeliberateInterruptException();
         return input;

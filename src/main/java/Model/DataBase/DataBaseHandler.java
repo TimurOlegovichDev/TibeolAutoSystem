@@ -8,6 +8,8 @@ import Model.Entities.Order.Order;
 import Model.Entities.Order.StatusesOfOrder;
 import Model.Entities.Users.User;
 import Model.Exceptions.UserExc.NoSuchUserException;
+import Model.LoggerUtil.Levels;
+import Model.LoggerUtil.LogActions;
 import ui.out.Printer;
 
 import java.nio.charset.StandardCharsets;
@@ -260,6 +262,17 @@ public abstract class DataBaseHandler {
                 StatusesOfOrder.COMPLETED.getCommand(),
                 StatusesOfOrder.AGREED.getCommand(),
                 StatusesOfOrder.DISMISSED.getCommand()
+        );
+    }
+
+    public static void logMessage(Levels level, String message, String time){
+        executeUpdate(
+                "INSERT INTO " + logsTableName +
+                        " (type, description, created_at) " +
+                        "VALUES (?, ?, ?) ",
+                level.toString(),
+                message,
+                time
         );
     }
 }

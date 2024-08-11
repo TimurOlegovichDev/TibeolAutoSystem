@@ -55,6 +55,7 @@ public class Controller extends Thread {
 
     public void run() {
 
+        Controller.logger.log(Levels.INFO, "Система запущена!");
         for(Scenes scene = Scenes.GREETING; checkSceneCycle(scene); ){
             timeDelay(3000);
             switch (scene) {
@@ -77,7 +78,9 @@ public class Controller extends Thread {
     }
 
     private boolean checkSceneCycle(Scenes scene){
-        return !(scene.equals(Scenes.SHUT_DOWN) && Menu.areYouSure(Messages.SHUT_DOWN_WARNING.getMessage()));
+        boolean isShutDown = !(scene.equals(Scenes.SHUT_DOWN) && Menu.areYouSure(Messages.SHUT_DOWN_WARNING.getMessage()));
+        if(!isShutDown) Controller.logger.log(Levels.INFO, "Система отключается администратором!");
+        return isShutDown;
     }
 
     public Scenes greeting(){
@@ -95,7 +98,7 @@ public class Controller extends Thread {
             currentUser = registration();
             timeDelay(200);
             Printer.print("Вы создали аккаунт с ID " + currentUser.getID() + " и именем " + currentUser.getName() + " Ваша роль: " + currentUser.getAccessLevel().getValue());
-            logger.log(LogActions.USER_REGISTERED.getText() + currentUser.toString(), Levels.INFO);
+            logger.log(Levels.INFO, LogActions.USER_REGISTERED.getText() + currentUser.toString());
             return Scenes.ACTIONS;
         } catch (RegistrationInterruptException e) {
             Printer.print(Messages.ERROR.getMessage());
@@ -110,7 +113,7 @@ public class Controller extends Thread {
             authorization();
             timeDelay(2000);
             Printer.print("Вы вошли в аккаунт под ID " + currentUser.getID() + " и именем " + currentUser.getName() + " Ваша роль: " + currentUser.getAccessLevel().getValue());
-            logger.log(LogActions.USER_AUTHORIZED.getText() + currentUser.toString(), Levels.INFO);
+            logger.log(Levels.INFO, LogActions.USER_AUTHORIZED.getText() + currentUser.toString());
             return Scenes.ACTIONS;
         } catch (InvalidPasswordException e){
             Printer.print(Messages.INVALID_PASS.getMessage());
@@ -142,7 +145,7 @@ public class Controller extends Thread {
     }
 
     public Scenes logOut(){
-        logger.log(LogActions.USER_EXIT.getText() + currentUser.toString(), Levels.INFO);
+        logger.log(Levels.INFO, LogActions.USER_EXIT.getText() + currentUser.toString());
         currentUser = null;
         return Scenes.CHOOSING_ROLE;
     }
@@ -152,6 +155,7 @@ public class Controller extends Thread {
         try{
             Thread.sleep(ms);
         } catch (InterruptedException ignored){
+            logger.log(Levels.ERR, LogActions.ERROR.getText() + " прерывание искусственной задержки");
             System.err.println("Задержка прервана");
         }
     }
