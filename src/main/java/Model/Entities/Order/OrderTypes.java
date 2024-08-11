@@ -14,8 +14,9 @@ public enum OrderTypes {
     }
 
     public static OrderTypes getTypeFromString(String s) {
+        if(s == null) return null;
         for (OrderTypes parameter : OrderTypes.values()) {
-            if (parameter.title.equals(s)) {
+            if (parameter.title.equalsIgnoreCase(s)) {
                 return parameter;
             }
         }

@@ -4,17 +4,111 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
-        logicalFilePath="db/changelog/v.1.0/changelog.xmlog.xml">
+        logicalFilePath="db/changelog/v.1.0/changelog.xml">
+
     <changeSet id="insert-data" author="timbezh">
-        <insert tableName="userLiquibase">
-            <column name="id" value="1"/>
-            <column name="userName" value="Timur"/>
-            <column name="email" value="example.ru"/>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="GREETING"/>
+            <column name="message" value="Добро пожаловать в систему Автосалона TibeolAuto, для дальнейшего пользования программой, необязательно полностью вводить название действия, достаточно ввести начало названия, отличное от других, чтобы программа могла определить ваш ход мыслей."/>
         </insert>
-        <insert tableName="userLiquibase">
-            <column name="id" value="2"/>
-            <column name="userName" value="Alice"/>
-            <column name="email" value="example.com"/>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="ACTIONS_TO_ENTER"/>
+            <column name="message" value="Что желаете выполнить?:
+            - Зарегистрироваться
+            - Войти"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="ENTER_MESSAGE"/>
+            <column name="message" value="Введите причину, по которой произошел отказ, данное сообщение отправится пользователю (можете ничего не писать и нажать Enter):"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="ENTER_TEXT_TO_ORDER"/>
+            <column name="message" value="Введите текст вашего заказа:"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="RETURN"/>
+            <column name="message" value="Возврат на предыдущую страницу"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="NO_SUCH_ELEMENT"/>
+            <column name="message" value="Данный id не найден в базе данных, попробуйте снова или выполните другое действие"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="CHOOSE_U_ACTION"/>
+            <column name="message" value="Выберите дальнейшее действие: "/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="ENTER_NAME"/>
+            <column name="message" value="введите имя пользователя (от 8 до 30 символов):"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="ERROR"/>
+            <column name="message" value="Возникла ошибка, возврат к предыдущему действию"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="USER_ALREADY_EXISTS"/>
+            <column name="message" value="Пользователь с таким именем уже существует, попробуйте снова"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="EXIT"/>
+            <column name="message" value="Выполняется выход из системы"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="ENTER_PASSWORD"/>
+            <column name="message" value="Введите пароль (от 8 до 50 символов):"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="ENTER_PHONE_NUMBER"/>
+            <column name="message" value="Укажите контактный номер телефона:"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="NEW_MESSAGE"/>
+            <column name="message" value="Рекомендуется проверить новые сообщения, количество полученных: "/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="CHOOSE_ROLE"/>
+            <column name="message" value="Для успешной регистрации понадобится некоторые данные.
+            Укажите ваш статус:
+            - Администратор
+            - Менеджер
+            - Клиент"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="CAR_REGISTER"/>
+            <column name="message" value="Вы перешли на страницу добавления автомобиля, чтобы остановить действие, введите \Назад\"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="SHUT_DOWN_WARNING"/>
+            <column name="message" value="Вы уверены, что хотите остановить работу программы? Это приведет к потере всех данных! (Да/Нет)"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="LOG_OUT_WARNING"/>
+            <column name="message" value="Вы уверены, что хотите выйти из аккаунта? (Да/Нет)"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="DELETE_ACCOUNT_WARNING"/>
+            <column name="message" value="Вы уверены, что хотите удалить аккаунт? Это приведет к потере всех ваших данных! (Да/Нет)"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="INVALID_COMMAND"/>
+            <column name="message" value="Ошибочный ввод, проверьте корректность данных и повторите попытку"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="INVALID_PASS"/>
+            <column name="message" value="Неверный пароль, попробуйте войти снова"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="NO_SUCH_USER"/>
+            <column name="message" value="Данный пользователь не найден в системе, проверьте вводные данные или зарегистрируйтесь под новым именем"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="START"/>
+            <column name="message" value="Система запущена"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="END"/>
+            <column name="message" value="Выключение"/>
         </insert>
     </changeSet>
+
 </databaseChangeLog>

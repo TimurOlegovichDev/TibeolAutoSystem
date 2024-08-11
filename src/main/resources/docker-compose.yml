@@ -2,7 +2,7 @@ services:
   db:
     image: postgres:latest
     environment:
-      POSTGRES_DB: dealershipdb
+      POSTGRES_DB: dealerdb
       POSTGRES_USER: dealer
       POSTGRES_PASSWORD: 84627913
     ports:

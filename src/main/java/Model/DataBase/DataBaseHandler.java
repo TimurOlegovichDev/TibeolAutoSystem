@@ -68,24 +68,20 @@ public abstract class DataBaseHandler {
         return new ArrayList<>();
     }
 
-    public static List<List<String>> getTableByUser(String tableName, int userId) {
-        try {
-            return executeQuery(
-                    "SELECT * FROM " + tableName +
-                            " WHERE id = " + userId
-            );
-        } catch (SQLException e) {
-            System.out.println("Query canceled, got error" + e.getMessage());
-        }
-        return new ArrayList<>();
-    }
-
-    private static List<String> getCurrentUserParametersList(User user) throws SQLException, NoSuchUserException {
+    private static List<String> getCurrentUserParametersList(User user) throws NoSuchUserException {
         List<List<String>> table = DataBaseHandler.getData(usersTableName);
         for (List<String> list : table)
             if (list.contains(user.getName()))
                 return list;
         throw new NoSuchUserException();
+    }
+
+    public static List<String> getColumnByField(String tableName, DataFieldImp field, String condition) throws SQLException {
+        List<List<String>> lists = executeQuery("SELECT " + field.toString() + " FROM " + tableName + " " + condition);
+        List<String> result = new ArrayList<>();
+        for (List<String> list : lists)
+            result.add(list.get(0));
+        return result;
     }
 
     public static List<String> getColumnByField(String tableName, DataFieldImp field) throws SQLException {
@@ -110,19 +106,25 @@ public abstract class DataBaseHandler {
         );
     }
 
+    public static void removeRowByQuery(String tableName, String query) {
+        executeUpdate(
+                "DELETE FROM " + tableName + " " + query
+        );
+    }
+
     public static Order add(Order order) {
         executeUpdate(
                 "INSERT INTO " + ordersTableName +
                         " (type, client_id, client_car_id, client_phone_number, description, status, created_at) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?) ",
                 order.getOrderType().toString(),
+                order.getOwner().getID(),
                 order.getCarId(),
                 order.getOwner().getPhoneNumber(),
                 order.getOrderText(),
                 order.getStatus().getCommand(),
                 Timestamp.from(order.getDateOfCreation()).toString()
         );
-
         return order;
     }
 
@@ -130,7 +132,7 @@ public abstract class DataBaseHandler {
         try {
             return executeQuery(
                     "SELECT * FROM " + DataBaseHandler.ordersTableName +
-                            " WHERE status != " + StatusesOfOrder.ARCHIVED.getCommand()
+                            " WHERE status != 'Архивировано'"
             );
         } catch (SQLException e) {
             System.out.println("Query canceled, got error" + e.getMessage());
@@ -142,7 +144,7 @@ public abstract class DataBaseHandler {
         try {
             return executeQuery(
                     "SELECT * FROM " + DataBaseHandler.ordersTableName +
-                            " WHERE status = " + StatusesOfOrder.ARCHIVED.getCommand()
+                            " WHERE status = 'Архивировано'"
             );
         } catch (SQLException e) {
             System.out.println("Query canceled, got error" + e.getMessage());
@@ -165,28 +167,28 @@ public abstract class DataBaseHandler {
         );
     }
 
-    public static void addClientCar(Car car) {
+    public static void addClientCar(Car car, int client_id) {
         executeUpdate(
                 "INSERT INTO " + clientsCarTableName +
-                        " (client, brand, model, color) " +
+                        " (client_id, brand, model, color) " +
                         "VALUES (?, ?, ?, ?) ",
-                car.getOwner().getID(),
+                client_id,
                 car.getBrand(),
                 car.getModel(),
                 car.getColor()
         );
     }
 
-    public static List<String> getRowByIdFromTable(String tableName, int carId) throws NoSuchElementException, SQLException {
+    public static List<String> getRowByIdFromTable(String tableName, int id) throws NoSuchElementException, SQLException {
         List<List<String>> lists = executeQuery(
                 "SELECT * FROM " + tableName +
-                        " WHERE id = " + carId);
+                        " WHERE id = " + id);
         if (lists.size() != 1)
             throw new NoSuchElementException();
         return lists.get(0);
     }
 
-    private static List<List<String>> executeQuery(String query) throws SQLException {
+    public static List<List<String>> executeQuery(String query) throws SQLException {
         if (query == null || query.isEmpty())
             Printer.print("Ошибочный запрос к базе данных!");
         try (Connection connection = DriverManager.getConnection(

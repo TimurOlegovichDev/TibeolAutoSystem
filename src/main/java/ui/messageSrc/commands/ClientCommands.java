@@ -10,7 +10,6 @@ import lombok.Getter;
 public enum ClientCommands {
 
     VIEW_ORDERS("Просмотр моих заказов"),
-    VIEW_MESSAGES("Сообщения"),
     VIEW_USER_CARS("Мои автомобили"),
     ADD_USER_CAR("Добавить автомобиль"),
     REMOVE_USER_CAR("Удалить автомобиль"),

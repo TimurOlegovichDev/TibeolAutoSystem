@@ -189,7 +189,6 @@ public class Controller extends Thread {
                 case ADD_USER_CAR -> ActionHandler.addUserCar((Client) currentUser);
                 case REMOVE_USER_CAR -> ActionHandler.removeUserCar((Client) currentUser);
                 case GO_TO_SHOWROOM -> ActionHandler.goToShowRoom(currentUser);
-                case VIEW_MESSAGES -> ActionHandler.readMessages((Client) currentUser);
                 case SETUP_MY_PROFILE -> nextScene = ActionHandler.setUpUserParameters(currentUser.getID());
                 case EXIT_FROM_ACCOUNT -> nextScene = Scenes.EXIT_FROM_ACCOUNT;
                 case DELETE_ACCOUNT -> nextScene = ActionHandler.removeAccount(currentUser);

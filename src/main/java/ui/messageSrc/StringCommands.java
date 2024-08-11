@@ -19,9 +19,9 @@ public enum StringCommands {
     }),
 
     REG_OR_AUTHORIZE(new String[]{
-            
             "Войти",
-            "Зарегистрироваться"}
+            "Зарегистрироваться"
+    }
     ),
 
     CLIENT_COMMANDS(ClientCommands.getStringArray()),

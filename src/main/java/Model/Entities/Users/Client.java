@@ -4,13 +4,8 @@ import Model.DataBase.DealerCarDataFields;
 import Model.DataBase.DataBaseHandler;
 import Model.DataBase.OrderDataFields;
 import Model.Entities.Car.Car;
-import Model.Entities.Message;
 import Model.Entities.Order.Order;
 import Model.Entities.Order.OrderTypes;
-import Model.Entities.Order.StatusesOfOrder;
-import Model.Exceptions.CarExc.NoSuchCarException;
-import Model.Exceptions.UserExc.InvalidCommandException;
-import lombok.Data;
 import lombok.Getter;
 import ui.out.Printer;
 
@@ -37,13 +32,8 @@ public final class Client extends User {
     @Override
     public void removeAccount() {
         DataBaseHandler.removeRowById(DataBaseHandler.usersTableName, getID());
-        DataBaseHandler.removeRowById(DataBaseHandler.clientMessagesTableName, getID());
-        DataBaseHandler.removeRowById(DataBaseHandler.ordersTableName, getID());
-    }
-
-    public void receiveMessage(Message message) {
-        //messages.add(message);
-        //todo
+        DataBaseHandler.removeRowByQuery(DataBaseHandler.ordersTableName, "WHERE client_id = " + getID());
+        DataBaseHandler.removeRowByQuery(DataBaseHandler.clientsCarTableName, "WHERE client_id = " + getID());
     }
 
     public void createServiceOrder(String text, int carId) {
@@ -77,26 +67,17 @@ public final class Client extends User {
     }
 
     public void addCar(Car car) {
-        DataBaseHandler.addClientCar(car);
+        DataBaseHandler.addClientCar(car, getID());
     }
 
-    public void buyCar(Car car) {
-        DataBaseHandler.addClientCar(car);
-        DataBaseHandler.removeRowById(
-                DataBaseHandler.dealerCarTableName,
-                car.getID()
-        );
-        receiveMessage(new Message(null, "Поздравляем с приобретением автомобиля!"));
-    }
-
-    public void removeCar(int id) {
+    public void removeCar(int id) throws SQLException {
         if(
-                DataBaseHandler
-                        .getActiveOrders()
-                        .get(OrderDataFields.CLIENT_CAR_ID.getIndex())
-                        .contains(id)
+                !DataBaseHandler
+                        .getColumnByField(DataBaseHandler.ordersTableName, OrderDataFields.CLIENT_CAR_ID,"WHERE status != 'Архивировано'")
+                        .contains(String.valueOf(id))
         ){
             DataBaseHandler.removeRowById(DataBaseHandler.clientsCarTableName, id);
+            Printer.printCentered("Автомобиль успешно был удален!");
         }
         else Printer.printCentered("На машину есть активный заказ, дождитесь его завершения и повторите попытку!");
     }

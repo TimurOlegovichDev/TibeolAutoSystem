@@ -45,11 +45,7 @@ public class Car {
 
     private boolean booked = false;
 
-    private String getBookText(){
-        return booked ? "Забронирована" : "Есть в наличии";
-    }
-
-    public Car(@NotNull Client client,
+    public Car(@Nullable Client client,
                @NotNull String brand,
                @NotNull String model,
                @NotNull String color)
@@ -84,34 +80,4 @@ public class Car {
      * Методы для показа анкеты автомобиля, пользователю при просмотре своих авто не требуется много информации
      */
 
-    @Override
-    public String toString() {
-        return "| ID: " + ID +
-                " | Производитель: " + brand +
-                " | Модель: " + model + " | ";
-    }
-
-    public String getForm() {
-        return "| ID: " + ID +
-                " | Производитель: " + brand +
-                " | Модель: " + model +
-                " | Цвет: " + color +
-                " | Пробег: " + mileAge +
-                " | price: " + price +
-                " | " + getBookText() +
-                "\n Описание: " + description;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Car car = (Car) o;
-        return ID == car.ID;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(ID);
-    }
 }

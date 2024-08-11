@@ -1,14 +1,6 @@
-import Model.Entities.Car.Car;
-import Model.Entities.Message;
-import Model.Entities.Order.Order;
-import Model.Entities.Order.OrderTypes;
-import Model.Entities.Order.StatusesOfOrder;
-import Model.Entities.Users.Client;
-import Model.Entities.Users.Manager;
 import Model.Exceptions.UserExc.InvalidCommandException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class OrderTest {
 

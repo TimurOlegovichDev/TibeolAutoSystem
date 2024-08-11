@@ -2,7 +2,6 @@ package Controller;
 
 import Model.DataBase.*;
 import Model.Entities.Car.*;
-import Model.Entities.Message;
 import Model.Entities.Order.*;
 import Model.Entities.Users.*;
 import Model.Exceptions.CarExc.NoSuchCarException;
@@ -10,14 +9,12 @@ import Model.Exceptions.UserExc.*;
 import Model.LoggerUtil.Levels;
 import Model.LoggerUtil.LogActions;
 import ui.Menu;
-import ui.in.Validator;
 import ui.messageSrc.Messages;
 import ui.messageSrc.commands.*;
 import ui.out.Printer;
 
 import javax.xml.crypto.Data;
 import java.sql.SQLException;
-import java.time.Year;
 import java.util.*;
 
 /**
@@ -25,10 +22,11 @@ import java.util.*;
  * действий и взаимодействий в системе управления автосалоном.
  * Он содержит множество статических методов, которые выполняют различные действия
  * по распределению действий между ролями.
- *  @see  ShowRoomActionsHandler
- *  @see OrderPageActionsHandler
- *  @see UserListPageHandler
  *
+ * @see ShowRoomActionsHandler
+ * @see OrderPageActionsHandler
+ * @see UserListPageHandler
+ * <p>
  * Данные классы отвечает за переход между страницами и различными действиями
  */
 
@@ -40,61 +38,62 @@ public abstract class ActionHandler {
                 client.getID(),
                 OrderDataFields.CLIENT_ID
         ));
+        DataBaseHandler.checkOrderAndArchive();
     }
 
     static void viewUserCars(Client client) {
         Printer.print(DataBaseHandler.getTableByFieldAndValue(
                 DataBaseHandler.clientsCarTableName,
                 client.getID(),
-                ClientCarDataFields.CLIENT
+                ClientCarDataFields.CLIENT_ID
         ));
     }
 
-    public static void removeUserCar(Client client){
+    public static void removeUserCar(Client client) {
         try {
             viewUserCars(client);
             int id = Menu.tryGetNumberFromUser();
-            if(!DataBaseHandler.getColumnByField(DataBaseHandler.clientsCarTableName, ClientCarDataFields.ID).contains(id))
+            if (!DataBaseHandler.getColumnByField(DataBaseHandler.clientsCarTableName, ClientCarDataFields.ID, "WHERE client_id = " + client.getID()).contains(String.valueOf(id)))
                 throw new NoSuchCarException();
-            if(!Menu.areYouSure("Вы точно хотите удалить? (Да/Нет) "))
+            if (!Menu.areYouSure("Вы точно хотите удалить автомобиль? (Да/Нет) "))
                 return;
             client.removeCar(id);
-        }  catch (NoSuchElementException | NoSuchCarException e){
+        } catch (NoSuchElementException | NoSuchCarException e) {
             Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
-        } catch (Exception ignored){
+        } catch (InvalidInputException e) {
             Printer.print(Messages.INVALID_COMMAND.getMessage());
+        } catch (Exception e) {
+            Printer.print(Messages.ERROR.getMessage() + e.getMessage());
         }
     }
 
-    static void addUserCar(Client client)  {
+    static void addUserCar(Client client) {
         try {
             Car car = Menu.getCar(client);
             client.addCar(car);
             Controller.logger.log(LogActions.CLIENT_ADD_CAR.getText() + car, Levels.INFO);
-        }
-        catch (DeliberateInterruptException ignored){
+        } catch (DeliberateInterruptException ignored) {
             Printer.print("Операция отменена");
         }
     }
 
-    static Scenes removeAccount(User user){
-        if(Menu.areYouSure(Messages.DELETE_ACCOUNT_WARNING.getMessage())) {
+    static Scenes removeAccount(User user) {
+        if (Menu.areYouSure(Messages.DELETE_ACCOUNT_WARNING.getMessage())) {
             user.removeAccount();
             Printer.print("Аккаунт удален!");
             Controller.logger.log(LogActions.USER_DELETE_ACCOUNT.getText() + user, Levels.INFO);
             return Scenes.CHOOSING_ROLE;
-        }
-        else return Scenes.ACTIONS;
+        } else return Scenes.ACTIONS;
     }
 
-    static Scenes setUpUserParameters(int id){
+    static Scenes setUpUserParameters(int id) {
         try {
             switch (Menu.getSetParameterName(new String[]{"Имя", "Номер телефона"})) {
                 case "Имя" -> setName(Menu.getUserName(), id);
                 case "Номер телефона" -> setPhoneNumber(Menu.getUserPhoneNumber(), id);
             }
             Controller.logger.log(LogActions.USER_SETUP_PROFILE.getText() + id, Levels.INFO);
-        } catch (DeliberateInterruptException ignored){
+        } catch (DeliberateInterruptException ignored) {
             Printer.print(Messages.RETURN.getMessage());
         }
         return Scenes.ACTIONS;
@@ -124,15 +123,9 @@ public abstract class ActionHandler {
         );
     }
 
-    static void goToShowRoom(User user){
+    static void goToShowRoom(User user) {
         Printer.printCentered("Выполняется переход на страницу автосалона");
         ShowRoomActionsHandler.chooseAction(user);
-    }
-
-    public static void readMessages(Client currentUser) {
-        Printer.printCentered("Выполняется переход на страницу сообщений");
-        Printer.print(DataBaseHandler.getTableByFieldAndValue(DataBaseHandler.clientMessagesTableName, currentUser.getID(), MessagesDataFields.RECEIVER_ID));
-        DataBaseHandler.checkOrderAndArchive();
     }
 
     public static void gotoOrdersPage(Manager manager) {
@@ -161,40 +154,48 @@ public abstract class ActionHandler {
 
 
     /**
-     *  Обработчик команд на странице автосалона
+     * Обработчик команд на странице автосалона
      */
 
     private static class ShowRoomActionsHandler {
 
         static void chooseAction(User user) {
-            switch (user.getAccessLevel()){
+            switch (user.getAccessLevel()) {
                 case CLIENT -> clientActionHandler((Client) user, Menu.clientChoosingActionInShowRoom());
                 case MANAGER -> managerActionHandler((Manager) user, Menu.managerChoosingActionInShowRoom());
             }
         }
 
 
-        protected static void clientActionHandler(Client client, ClientCommands.CommandsInShowRoom command){
-                switch (command) {
-                    case VIEW_ALL_CARS -> Printer.printDealerCars(DataBaseHandler.getData(DataBaseHandler.dealerCarTableName));
-                    case CREATE_PURCHASE_ORDER -> createPurchaseOrder(client);
-                    case CREATE_SERVICE_ORDER -> createServiceOrder(client);
-                    case SEARCH_CAR -> Printer.print("ФУНКЦИЯ В РАЗРАБОТКЕ");
-                    case BACK -> {
-                        Printer.printCentered("Возврат на предыдущую страницу");
-                        return;
-                    }
+        protected static void clientActionHandler(Client client, ClientCommands.CommandsInShowRoom command) {
+            switch (command) {
+                case VIEW_ALL_CARS ->
+                        Printer.printDealerCars(DataBaseHandler.getData(DataBaseHandler.dealerCarTableName));
+                case CREATE_PURCHASE_ORDER -> createPurchaseOrder(client);
+                case CREATE_SERVICE_ORDER -> createServiceOrder(client);
+                case SEARCH_CAR -> Printer.print("ФУНКЦИЯ В РАЗРАБОТКЕ");
+                case BACK -> {
+                    Printer.printCentered("Возврат на предыдущую страницу");
+                    return;
                 }
-                chooseAction(client);
+            }
+            chooseAction(client);
         }
 
-        private static void createServiceOrder(Client client){
+        private static void chooseCarParamToSearch(){
+            
+        }
+
+        private static void createServiceOrder(Client client) {
             try {
-                Printer.print(DataBaseHandler.getData(DataBaseHandler.clientsCarTableName));
+                viewUserCars(client);
+                List<String> listValidId = DataBaseHandler.getColumnByField(DataBaseHandler.clientsCarTableName, ClientCarDataFields.ID, " WHERE client_id = " + client.getID());
                 Printer.print("Для заказа на обслуживание, введите ID вашего авто из списка, если нужного автомобиля нет, воспользуйтесь действием \"Добавить автомобиль\" (для отмены введите любое слово): ");
                 int id = Menu.tryGetNumberFromUser();
+                if (!listValidId.contains(String.valueOf(id)))
+                    throw new NoSuchElementException();
                 List<String> carRow = DataBaseHandler.getRowByIdFromTable(DataBaseHandler.clientsCarTableName, id);
-                if(!Menu.areYouSure("Вы выбрали автомобиль " + carRow.get(ClientCarDataFields.BRAND.getIndex()) + " " + carRow.get(ClientCarDataFields.MODEL.getIndex()) + "?"))
+                if (!Menu.areYouSure("Вы выбрали автомобиль " + carRow.get(ClientCarDataFields.BRAND.getIndex()) + " " + carRow.get(ClientCarDataFields.MODEL.getIndex()) + "?"))
                     createServiceOrder(client);
                 client.createServiceOrder(Menu.getText("Сообщите, по какой причине вы хотите обслужить авто: "), Integer.parseInt(carRow.get(ClientCarDataFields.ID.getIndex())));
                 Printer.print("Заказ на обслуживание успешно создан и передан в автосалон");
@@ -209,13 +210,13 @@ public abstract class ActionHandler {
             }
         }
 
-        private static void createPurchaseOrder(Client client){
+        private static void createPurchaseOrder(Client client) {
             try {
                 Printer.print(DataBaseHandler.getData(DataBaseHandler.dealerCarTableName));
                 Printer.print("Введите ID интересующего вас автомобиля (для отмены введите любое слово): ");
                 int id = Menu.tryGetNumberFromUser();
                 List<String> carRow = DataBaseHandler.getRowByIdFromTable(DataBaseHandler.dealerCarTableName, id);
-                if(!Menu.areYouSure(
+                if (!Menu.areYouSure(
                         "Вы хотите сделать заказ на автомобиль " +
                                 carRow.get(DealerCarDataFields.BRAND.getIndex()) +
                                 " " + carRow.get(DealerCarDataFields.BRAND.getIndex()) +
@@ -238,7 +239,7 @@ public abstract class ActionHandler {
             }
         }
 
-        protected static void managerActionHandler(Manager manager, ManagerCommands.CommandsInShowRoom command)  {
+        protected static void managerActionHandler(Manager manager, ManagerCommands.CommandsInShowRoom command) {
             switch (command) {
                 case VIEW_ALL_CARS -> Printer.print(DataBaseHandler.getData(DataBaseHandler.dealerCarTableName));
                 case ADD_CAR -> addCar(manager);
@@ -252,27 +253,27 @@ public abstract class ActionHandler {
             chooseAction(manager);
         }
 
-        private static void addCar(Manager manager){
+        private static void addCar(Manager manager) {
             try {
                 Car car = Menu.getCar(manager);
                 DataBaseHandler.addDealerCar(car);
                 Controller.logger.log(LogActions.NEW_CAR_IN_DEALER.getText() + car, Levels.INFO);
-            } catch (DeliberateInterruptException e){
+            } catch (DeliberateInterruptException e) {
                 Printer.print(Messages.RETURN.getMessage());
             }
         }
 
-        private static void removeCar(){
+        private static void removeCar() {
             try {
                 Printer.print(DataBaseHandler.getData(DataBaseHandler.dealerCarTableName));
                 Printer.print("Введите ID автомобиля подлежащего удалению (для отмены введите любое слово): ");
                 int id = Menu.tryGetNumberFromUser();
-                if(!Menu.areYouSure("Вы точно хотите удалить? (Да/Нет) ")) return;
+                if (!Menu.areYouSure("Вы точно хотите удалить? (Да/Нет) ")) return;
                 DataBaseHandler.removeRowById(DataBaseHandler.dealerCarTableName, id);
                 //Controller.logger.log(LogActions.CAR_DELETED.getText() + car, Levels.INFO);
-            }  catch (NoSuchElementException e){
+            } catch (NoSuchElementException e) {
                 Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
-            } catch (Exception ignored){
+            } catch (Exception ignored) {
                 Printer.print(Messages.INVALID_COMMAND.getMessage());
             }
         }
@@ -285,7 +286,7 @@ public abstract class ActionHandler {
 
     static class OrderPageActionsHandler {
 
-        protected static void managerActionHandler(Manager manager, ManagerCommands.CommandsInOrderList command)  {
+        protected static void managerActionHandler(Manager manager, ManagerCommands.CommandsInOrderList command) {
             switch (command) {
                 case VIEW_ACTIVE_ORDERS -> Printer.print(DataBaseHandler.getActiveOrders());
                 case VIEW_ARCHIVED_ORDERS -> Printer.print(DataBaseHandler.getArchivedOrders());
@@ -299,91 +300,105 @@ public abstract class ActionHandler {
         }
 
 
-        private static void setNewStatusOrder(Manager manager){
-            Printer.print(DataBaseHandler.getActiveOrders());
-            Printer.print("Введите номер заказа из этого списка или введите \"Назад\", чтобы вернуться");
+        private static void setNewStatusOrder(Manager manager) {
             while (true) {
                 try {
+                    Printer.print(DataBaseHandler.getActiveOrders());
+                    Printer.print("Введите номер заказа из этого списка или введите не число, чтобы вернуться");
                     int id = Menu.tryGetNumberFromUser();
-                    List<String> orderRow = DataBaseHandler.getRowByIdFromTable(DataBaseHandler.dealerCarTableName, id);
-                    if(!Menu.areYouSure("Вы выбрали заказ на " + orderRow.get(OrderDataFields.TYPE.getIndex()) +
-                            " автомобиля " +
-                            DataBaseHandler.getRowByIdFromTable(
-                                    DataBaseHandler.clientsCarTableName,
-                                    Integer.parseInt(
-                                            orderRow.get(OrderDataFields.CLIENT_CAR_ID.getIndex()))
-                            ).get(ClientCarDataFields.BRAND.getIndex()) +
-                            " " +
-                            DataBaseHandler.getRowByIdFromTable(
-                                    DataBaseHandler.clientsCarTableName,
-                                    Integer.parseInt(
-                                            orderRow.get(OrderDataFields.CLIENT_CAR_ID.getIndex()))
-                            ).get(ClientCarDataFields.MODEL.getIndex()) +
-                            " верно? (Да/Нет)")) continue;
-                    //todo
-                    chooseNewStatus(manager, OrderTypes.getTypeFromString(orderRow.get(OrderDataFields.STATUS.getIndex())), id);
-                    //Controller.logger.log(LogActions.ORDER_STATUS_CHANGED.getText() + currentOrder, Levels.INFO);
+                    List<String> validId = DataBaseHandler.getColumnByField(DataBaseHandler.ordersTableName, OrderDataFields.ID, " WHERE status != 'Архивировано'");
+                    if (!validId.contains(String.valueOf(id)))
+                        throw new NoSuchElementException();
+                    List<String> orderRow = DataBaseHandler.getRowByIdFromTable(DataBaseHandler.ordersTableName, id);
+                    if (!Menu.areYouSure("Вы выбрали заказ на " + orderRow.get(OrderDataFields.TYPE.getIndex()) +
+                            " автомобиля верно? (Да/Нет)")) continue;
+                    chooseNewStatus(manager, OrderTypes.getTypeFromString(orderRow.get(OrderDataFields.TYPE.getIndex())), id);
                     return;
-                } catch(NoSuchElementException e) {
+                } catch (NoSuchElementException e) {
                     Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
-                } catch (DeliberateInterruptException e) {
-                    Printer.print(Messages.RETURN.getMessage());
-                    return;
-                } catch (InvalidCommandException e) {
-                    Printer.print(Messages.INVALID_COMMAND.getMessage());
                 } catch (Exception e) {
-                    Printer.print(Messages.ERROR.getMessage());
+                    Printer.print(Messages.ERROR.getMessage() + e.getMessage());
+                    return;
                 }
             }
         }
 
-        private static void chooseNewStatus(Manager manager, OrderTypes status, int orderId) throws DeliberateInterruptException, InvalidCommandException {
-            switch (Menu.getNewOrderStatus(status)){
-                case "Выполняется" -> DataBaseHandler.setParameterById(
-                        OrderDataFields.STATUS.getValue(),
-                        DataBaseHandler.ordersTableName,
-                        StatusesOfOrder.EXECUTING.getCommand(),
-                        orderId
-                        );
-                case "Завершено" ->
-                    DataBaseHandler.setParameterById(
-                            OrderDataFields.STATUS.getValue(),
-                            DataBaseHandler.ordersTableName,
-                            StatusesOfOrder.COMPLETED.getCommand(),
-                            orderId
-                    );
+        private static void chooseNewStatus(Manager manager, OrderTypes type, int orderId) throws DeliberateInterruptException, InvalidCommandException {
+            switch (Menu.getNewOrderStatus(type)) {
+                case "Выполняется" -> setOrderStatus(StatusesOfOrder.EXECUTING, orderId);
+
+                case "Завершено" -> setOrderStatus(StatusesOfOrder.COMPLETED, orderId);
 
                 case "Отклонено" -> dismissOrder(manager, orderId);
 
-                case "Одобрено" ->
-                    DataBaseHandler.setParameterById(
-                            OrderDataFields.STATUS.getValue(),
-                            DataBaseHandler.ordersTableName,
-                            StatusesOfOrder.AGREED.getCommand(),
-                            orderId
-                    );
-                    //todo что то с буком авто
-                }
+                case "Одобрено" -> agreedOrder(manager, orderId);
             }
         }
+    }
 
-        private static void dismissOrder(Manager manager, int orderId){
-            try {
-                Printer.print("Отклоняемый заказ под номером: " + orderId);
-                if(!Menu.areYouSure("Вы точно хотите отклонить? (Да/Нет) ")) return;
-                DataBaseHandler.setParameterById(
-                        OrderDataFields.STATUS.getValue(),
-                        DataBaseHandler.ordersTableName,
-                        StatusesOfOrder.DISMISSED.getCommand(),
-                        orderId
-                );
-               //todo что то с буком авто
-            }  catch (NoSuchElementException e){
-                Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
-            } catch (Exception ignored){
-                Printer.print(Messages.INVALID_COMMAND.getMessage());
-            }
+    private static void setOrderStatus(StatusesOfOrder status, int orderId) {
+        DataBaseHandler.setParameterById(
+                OrderDataFields.STATUS.getValue(),
+                DataBaseHandler.ordersTableName,
+                status.getCommand(),
+                orderId
+        );
+    }
+
+    private static void dismissOrder(Manager manager, int orderId) {
+        try {
+            Printer.print("Отклоняемый заказ под номером: " + orderId);
+            if (!Menu.areYouSure("Вы точно хотите отклонить? (Да/Нет) ")) return;
+            List<String> orderRow = DataBaseHandler.getRowByIdFromTable(DataBaseHandler.ordersTableName, orderId);
+            DataBaseHandler.setParameterById(
+                    OrderDataFields.STATUS.getValue(),
+                    DataBaseHandler.ordersTableName,
+                    StatusesOfOrder.DISMISSED.getCommand(),
+                    orderId
+            );
+            DataBaseHandler.setParameterById(
+                    DealerCarDataFields.BOOKED.getValue(),
+                    DataBaseHandler.dealerCarTableName,
+                    "false",
+                    Integer.parseInt(orderRow.get(OrderDataFields.CLIENT_CAR_ID.getIndex()))
+            );
+            DataBaseHandler.checkOrderAndArchive();
+        } catch (NoSuchElementException e) {
+            Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
+        } catch (Exception ignored) {
+            Printer.print(Messages.INVALID_COMMAND.getMessage());
         }
+    }
+
+    private static void agreedOrder(Manager manager, int orderId) {
+        try {
+            Printer.print("Одобряется на покупку заказ под номером: " + orderId);
+            if (!Menu.areYouSure("Вы точно хотите одобрить? (Да/Нет) ")) return;
+            setOrderStatus(StatusesOfOrder.AGREED, orderId);
+            List<String> orderRow = DataBaseHandler.getRowByIdFromTable(DataBaseHandler.ordersTableName, orderId);
+            int carId = Integer.parseInt(orderRow.get(OrderDataFields.CLIENT_CAR_ID.getIndex()));
+            int userId = Integer.parseInt(orderRow.get(OrderDataFields.CLIENT_ID.getIndex()));
+            List<String> carRow = DataBaseHandler.getRowByIdFromTable(DataBaseHandler.dealerCarTableName, carId);
+            DataBaseHandler.addClientCar(
+                    new Car(
+                            null,
+                            carRow.get(DealerCarDataFields.BRAND.getIndex()),
+                            carRow.get(DealerCarDataFields.MODEL.getIndex()),
+                            carRow.get(DealerCarDataFields.COLOR.getIndex())
+                    ),
+                    userId
+            );
+            DataBaseHandler.removeRowById(
+                    DataBaseHandler.dealerCarTableName,
+                    carId
+            );
+            DataBaseHandler.checkOrderAndArchive();
+        } catch (NoSuchElementException e) {
+            Printer.print(Messages.NO_SUCH_ELEMENT.getMessage());
+        } catch (Exception ignored) {
+            Printer.print(Messages.INVALID_COMMAND.getMessage());
+        }
+    }
 
     static class UserListPageHandler {
 

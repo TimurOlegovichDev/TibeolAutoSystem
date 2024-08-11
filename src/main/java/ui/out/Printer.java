@@ -24,6 +24,7 @@ public abstract class Printer {
     private static final String bottomLine = "\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n";
 
     public static void print(String text){
+        if(text==null) return;
         System.out.println(line + TextFormatter.formatText(text.split(" ")) + bottomLine);
     }
 

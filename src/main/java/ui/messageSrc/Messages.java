@@ -1,7 +1,11 @@
 package ui.messageSrc;
 
 
+import Model.DataBase.DataBaseHandler;
+import Model.DataBase.dbconfig.DataBaseConfiguration;
 import lombok.Getter;
+
+import java.sql.*;
 
 /**
  * Перечисление крупных сообщений, сделано для удобства и лаконичности кода
@@ -10,63 +14,31 @@ import lombok.Getter;
 @Getter
 public enum Messages {
 
-    GREETING("\"Добро пожаловать в систему Автосалона \"TibeolAuto\", " +
-            "для дальнейшего пользования программой, необязательно полностью вводить название действия, достаточно ввести начало названия, отличное от других, чтобы программа могла определить ваш ход мыслей.\n"),
-
-    ACTIONS_TO_ENTER("""
-            Что желаете выполнить?:
-            - Зарегистрироваться
-            - Войти\n"""),
-
-    ENTER_MESSAGE("Введите причину, по которой произошел отказ, данное сообщение отправится пользователю (можете ничего не писать и нажать Enter):\n"),
-
-    ENTER_TEXT_TO_ORDER("Введите текст вашего заказа:\n"),
-
-    RETURN("Возврат на предыдущую страницу"),
-
-    NO_SUCH_ELEMENT("Данный id не найден в базе данных, попробуйте снова или выполните другое действие\n"),
-
-    CHOOSE_U_ACTION("Выберите дальнейшее действие: "),
-
-    ENTER_NAME("введите имя пользователя (от 8 до 30 символов):\n"),
-
-    ERROR("Операция отменена, возврат к предыдущему действию\n"),
-
-    USER_ALREADY_EXISTS("Пользователь с таким именем уже существует, попробуйте снова"),
-
-    EXIT("Выполняется выход из системы\n"),
-
-    ENTER_PASSWORD("Введите пароль (от 8 до 50 символов):\n"),
-
-    ENTER_PHONE_NUMBER("Укажите номер телефона, начиная с \"8\", если не хотите, то можете выбрать команду \"Пропустить\":\n"),
-
-    NEW_MESSAGE("Рекомендуется проверить новые сообщения, количество полученных: "),
-
-    CHOOSE_ROLE("""
-            Для успешной регистрации понадобится некоторые данные.
-            
-            Укажите ваш статус:
-            - Администратор
-            - Менеджер
-            - Клиент\n"""),
-
-    CAR_REGISTER("Вы перешли на страницу добавления автомобиля, чтобы остановить действие, введите \"Назад\""),
-
-    SHUT_DOWN_WARNING("Вы уверены, что хотите остановить работу программы? Это приведет к потере всех данных! (Да/Нет)"),
-
-    LOG_OUT_WARNING("Вы уверены, что хотите выйти из аккаунта? (Да/Нет)"),
-
-    DELETE_ACCOUNT_WARNING("Вы уверены, что хотите удалить аккаунт? Это приведет к потере всех ваших данных! (Да/Нет)"),
-
-    INVALID_COMMAND("Ошибочный ввод, проверьте корректность данных и повторите попытку\n"),
-
-    INVALID_PASS("Неверный пароль, попробуйте войти снова\n"),
-
-    NO_SUCH_USER("Данный пользователь не найден в системе, проверьте вводные данные или зарегистрируйтесь под новым именем\n"),
-
-    START("Система запущена\n"),
-
-    END("Выключение\n");
+    GREETING(getFromDB("GREETING")),
+    ACTIONS_TO_ENTER(getFromDB("ACTIONS_TO_ENTER")),
+    ENTER_MESSAGE(getFromDB("ENTER_MESSAGE")),
+    ENTER_TEXT_TO_ORDER(getFromDB("ENTER_TEXT_TO_ORDER")),
+    RETURN(getFromDB("RETURN")),
+    NO_SUCH_ELEMENT(getFromDB("NO_SUCH_ELEMENT")),
+    CHOOSE_U_ACTION(getFromDB("CHOOSE_U_ACTION")),
+    ENTER_NAME(getFromDB("ENTER_NAME")),
+    ERROR(getFromDB("ERROR")),
+    USER_ALREADY_EXISTS(getFromDB("USER_ALREADY_EXISTS")),
+    EXIT(getFromDB("EXIT")),
+    ENTER_PASSWORD(getFromDB("ENTER_PASSWORD")),
+    ENTER_PHONE_NUMBER(getFromDB("ENTER_PHONE_NUMBER")),
+    NEW_MESSAGE(getFromDB("NEW_MESSAGE")),
+    CHOOSE_ROLE(getFromDB("CHOOSE_ROLE")),
+    CAR_REGISTER(getFromDB("CAR_REGISTER")),
+    SHUT_DOWN_WARNING(getFromDB("SHUT_DOWN_WARNING")),
+    LOG_OUT_WARNING(getFromDB("LOG_OUT_WARNING")),
+    DELETE_ACCOUNT_WARNING(getFromDB("DELETE_ACCOUNT_WARNING")),
+    INVALID_COMMAND(getFromDB("INVALID_COMMAND")),
+    INVALID_PASS(getFromDB("INVALID_PASS")),
+    NO_SUCH_USER(getFromDB("NO_SUCH_USER")),
+    START(getFromDB("START")),
+    EXAMPLE(getFromDB("EXAMPLE")),
+    END(getFromDB("END"));
 
     private final String message;
 
@@ -77,5 +49,19 @@ public enum Messages {
     @Override
     public String toString() {
         return message;
+    }
+
+    public static String getFromDB(String id){
+        try (Connection connection = DriverManager.getConnection(DataBaseConfiguration.URL,DataBaseConfiguration.USER_NAME,DataBaseConfiguration.PASSWORD)) {
+            PreparedStatement statement = connection.prepareStatement("SELECT message FROM service_schema.messages WHERE id = ?");
+            statement.setString(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            String message = null;
+            if (resultSet.next())
+                message = resultSet.getString("message");
+            return message;
+        } catch (SQLException e) {
+            return "Здесь должно быть сообщение, но SQL нас подвела, вот так: " + e.getMessage();
+        }
     }
 }

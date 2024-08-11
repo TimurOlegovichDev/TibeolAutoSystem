@@ -60,8 +60,8 @@ public enum ManagerCommands {
     @Getter
     public enum CommandsInOrderList {
 
-        VIEW_ARCHIVED_ORDERS("Активные заказы"),
-        VIEW_ACTIVE_ORDERS("Заказы в архиве"),
+        VIEW_ARCHIVED_ORDERS("Заказы в архиве"),
+        VIEW_ACTIVE_ORDERS("Активные заказы"),
         SET_STATUS("Изменить статус заказа"),
         BACK("Назад");
 
