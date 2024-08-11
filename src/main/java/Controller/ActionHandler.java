@@ -1,6 +1,10 @@
 package Controller;
 
 import Model.DataBase.*;
+import Model.DataBase.DataFields.ClientCarDataFields;
+import Model.DataBase.DataFields.DealerCarDataFields;
+import Model.DataBase.DataFields.OrderDataFields;
+import Model.DataBase.DataFields.UsersDataFields;
 import Model.Entities.Car.*;
 import Model.Entities.Order.*;
 import Model.Entities.Users.*;
@@ -9,13 +13,15 @@ import Model.Exceptions.UserExc.*;
 import Model.LoggerUtil.Levels;
 import Model.LoggerUtil.LogActions;
 import ui.Menu;
+import ui.in.Validator;
 import ui.messageSrc.Messages;
 import ui.messageSrc.commands.*;
 import ui.out.Printer;
 
-import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.util.*;
+
+import static Model.DataBase.DataBaseHandler.executeQuery;
 
 /**
  * Является центральным хабом для обработки различных
@@ -173,7 +179,7 @@ public abstract class ActionHandler {
                         Printer.printDealerCars(DataBaseHandler.getData(DataBaseHandler.dealerCarTableName));
                 case CREATE_PURCHASE_ORDER -> createPurchaseOrder(client);
                 case CREATE_SERVICE_ORDER -> createServiceOrder(client);
-                case SEARCH_CAR -> Printer.print("ФУНКЦИЯ В РАЗРАБОТКЕ");
+                case SEARCH_CAR -> getFilterList();
                 case BACK -> {
                     Printer.printCentered("Возврат на предыдущую страницу");
                     return;
@@ -182,8 +188,40 @@ public abstract class ActionHandler {
             chooseAction(client);
         }
 
-        private static void chooseCarParamToSearch(){
-            
+        private static void getFilterList() {
+            while(true) {
+                String command = "";
+                try {
+                    Printer.printCommandsWithCustomQuestion(new String[] {"Марка", "Модель", "Цвет"}, "Введите параметр, по которому будет сортировка");
+                    command = Validator.validCommand(Menu.getInput(), "Марка", "Модель", "Цвет");
+                    filterList(command);
+                    return;
+                } catch (InvalidInputException e) {
+                    Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
+                } catch (Exception e) {
+                    Printer.printCentered(Messages.ERROR.getMessage());
+                }
+            }
+        }
+
+        private static void filterList(String command) throws DeliberateInterruptException, NullPointerException, SQLException {
+            switch (Objects.requireNonNull(CarParameters.getCarParameterFromString(command))) {
+                case BRAND -> {
+                    String filter = Menu.getText("Введите интересующий брэнд: ");
+                    Printer.print(executeQuery( "SELECT * FROM " + DataBaseHandler.dealerCarTableName +
+                            " WHERE brand LIKE '" + filter.toLowerCase() + "%'"));
+                }
+                case MODEL -> {
+                    String filter = Menu.getText("Введите интересующую марку: ");
+                    Printer.print(executeQuery( "SELECT * FROM " + DataBaseHandler.dealerCarTableName +
+                            " WHERE model LIKE '" + filter.toLowerCase() + "%'"));
+                }
+                case COLOR -> {
+                    String filter = Menu.getText("Введите интересующий цвет: ");
+                    Printer.print(executeQuery( "SELECT * FROM " + DataBaseHandler.dealerCarTableName +
+                            " WHERE color LIKE '" + filter.toLowerCase() + "%'"));
+                }
+            }
         }
 
         private static void createServiceOrder(Client client) {
@@ -244,7 +282,7 @@ public abstract class ActionHandler {
                 case VIEW_ALL_CARS -> Printer.print(DataBaseHandler.getData(DataBaseHandler.dealerCarTableName));
                 case ADD_CAR -> addCar(manager);
                 case REMOVE_CAR -> removeCar();
-                case SEARCH_CAR -> Printer.print("ФУНКЦИЯ В РАЗРАБОТКЕ");
+                case SEARCH_CAR -> getFilterList();
                 case BACK -> {
                     Printer.printCentered("Возврат на предыдущую страницу");
                     return;
@@ -405,9 +443,7 @@ public abstract class ActionHandler {
         protected static void adminActionHandler(Administrator administrator, AdminCommands.CommandsInUserList command) {
             switch (command) {
                 case USER_LIST -> Printer.print(DataBaseHandler.getData(DataBaseHandler.usersTableName));
-                case GET_FILTER_LIST -> {
-                    Printer.print("ФУНКЦИЯ В РАЗРАБОТКЕ");
-                }
+                case GET_FILTER_LIST -> getFilterList();
                 case SET_USER_PARAM -> setUserParameters(administrator);
                 case DELETE_USER -> deleteUser(administrator);
                 case BACK -> {
@@ -416,6 +452,46 @@ public abstract class ActionHandler {
                 }
             }
             adminActionHandler(administrator, Menu.adminChoosingActionInUserList());
+        }
+
+        private static void getFilterList() {
+            while(true) {
+                String command = "";
+                try {
+                    command = Validator.validCommand(Menu.getText(
+                                    """
+                                    Введите параметр, по которому будет отсортирован список:            \s
+                                    - Имя
+                                    - Статус
+                                    - Номер телефона"""),
+                            "Имя", "Статус", "Номер телефона");
+                    filterList(command);
+                    return;
+                } catch (InvalidInputException e) {
+                    Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
+                } catch (Exception e) {
+                    Printer.printCentered(Messages.ERROR.getMessage());
+                }
+            }
+        }
+
+        private static void filterList(String command) throws DeliberateInterruptException, SQLException {
+            switch (command) {
+                case "Имя" -> {
+                    String filter = Menu.getText("Введите имя (или его начало) для сортировки: ");
+                    Printer.print(executeQuery(
+                            "SELECT * FROM " + DataBaseHandler.usersTableName +
+                                    " WHERE name LIKE '" + filter + "%'"
+                    ));
+                }
+                case "Статус" -> {
+                    String filter = Menu.getText("Введите статус пользователя (или его начало) для сортировки: ");
+                    Printer.print(executeQuery(
+                            "SELECT * FROM " + DataBaseHandler.usersTableName +
+                                    " WHERE status LIKE '" + filter + "%'"
+                    ));
+                }
+            }
         }
 
         private static void setUserParameters(Administrator administrator) {

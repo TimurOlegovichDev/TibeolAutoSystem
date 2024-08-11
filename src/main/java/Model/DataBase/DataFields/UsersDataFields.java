@@ -1,21 +1,20 @@
-package Model.DataBase;
+package Model.DataBase.DataFields;
 
 import lombok.Getter;
 
 @Getter
-public enum ClientCarDataFields implements DataFieldImp {
-
+public enum UsersDataFields implements DataFieldImp {
     ID("id",0),
-    CLIENT_ID("client_id",2),
-    BRAND("brand",3),
-    MODEL("model",4),
-    COLOR("color",5);
+    NAME("name",1),
+    PASSWORD("password",2),
+    PHONE_NUMBER("phone_number",3),
+    ROLE("role",4);
 
     private final String value;
 
     private final int index;
 
-    ClientCarDataFields(String value, int index) {
+    UsersDataFields(String value, int index) {
         this.value = value;
         this.index = index;
     }

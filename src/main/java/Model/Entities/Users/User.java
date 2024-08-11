@@ -1,12 +1,11 @@
 package Model.Entities.Users;
 
 import Model.DataBase.DataBaseHandler;
-import Model.DataBase.UsersDataFields;
+import Model.DataBase.DataFields.UsersDataFields;
 import Model.UserManagement.Encryptor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;

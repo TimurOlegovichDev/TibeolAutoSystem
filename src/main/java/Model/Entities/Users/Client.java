@@ -1,8 +1,8 @@
 package Model.Entities.Users;
 
-import Model.DataBase.DealerCarDataFields;
+import Model.DataBase.DataFields.DealerCarDataFields;
 import Model.DataBase.DataBaseHandler;
-import Model.DataBase.OrderDataFields;
+import Model.DataBase.DataFields.OrderDataFields;
 import Model.Entities.Car.Car;
 import Model.Entities.Order.Order;
 import Model.Entities.Order.OrderTypes;

@@ -1,7 +1,7 @@
 package Model.UserManagement;
 
 import Model.DataBase.DataBaseHandler;
-import Model.DataBase.UsersDataFields;
+import Model.DataBase.DataFields.UsersDataFields;
 import Model.Entities.Users.*;
 import Model.Exceptions.UserExc.RegistrationInterruptException;
 import Model.Exceptions.UserExc.UserAlreadyExistsException;

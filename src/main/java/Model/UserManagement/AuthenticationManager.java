@@ -1,14 +1,12 @@
 package Model.UserManagement;
 
 import Model.DataBase.DataBaseHandler;
-import Model.DataBase.UsersDataFields;
+import Model.DataBase.DataFields.UsersDataFields;
 import Model.Entities.Users.*;
 import Model.Exceptions.UserExc.InvalidPasswordException;
 import Model.Exceptions.UserExc.NoSuchUserException;
-import Model.Exceptions.UserExc.RegistrationInterruptException;
 
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
