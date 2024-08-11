@@ -2,6 +2,12 @@ package Model.DataBase.DataFields;
 
 import lombok.Getter;
 
+/**
+ * Поля таблицы пользователей, данное перечисление помогает при создании запросов к БД >
+ * {@link #index} - index индекс колонны |
+ * {@link #value} - хранит название колонны
+ */
+
 @Getter
 public enum UsersDataFields implements DataFieldImp {
     ID("id",0),

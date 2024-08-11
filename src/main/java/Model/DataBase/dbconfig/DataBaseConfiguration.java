@@ -5,11 +5,15 @@ import java.io.IOException;
 import java.util.Properties;
 
 public abstract class DataBaseConfiguration {
-
+    /**
+     * Статический блок кода для получения параметров БД до запуска программы
+     */
     static {
         FileInputStream fileInputStream;
         Properties property = new Properties();
-
+        /*
+         * Получаем из файла нужные данные и получаем строку url, а также пароль и имя пользователя
+         */
         try {
             fileInputStream = new FileInputStream("src/main/resources/configs/database.properties");
             property.load(fileInputStream);

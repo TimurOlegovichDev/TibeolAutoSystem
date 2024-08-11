@@ -2,6 +2,12 @@ package Model.DataBase.DataFields;;
 
 import lombok.Getter;
 
+/**
+ * Поля таблицы заказов клиентов, данное перечисление помогает при создании запросов к БД >
+ * {@link #index} - index индекс колонны |
+ * {@link #value} - хранит название колонны
+ */
+
 @Getter
 public enum OrderDataFields implements DataFieldImp {
     ID("id",0),

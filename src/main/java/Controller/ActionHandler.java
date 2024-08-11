@@ -32,8 +32,6 @@ import static Model.DataBase.DataBaseHandler.executeQuery;
  * @see ShowRoomActionsHandler
  * @see OrderPageActionsHandler
  * @see UserListPageHandler
- * <p>
- * Данные классы отвечает за переход между страницами и различными действиями
  */
 
 public abstract class ActionHandler {

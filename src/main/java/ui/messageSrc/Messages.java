@@ -48,6 +48,10 @@ public enum Messages {
         return message;
     }
 
+    /**
+     * Так как все сообщения хранятся в базе данных, то в конструкторе получаем нужное сообщение
+     */
+
     public static String getFromDB(String id){
         try (Connection connection = DriverManager.getConnection(DataBaseConfiguration.URL,DataBaseConfiguration.USER_NAME,DataBaseConfiguration.PASSWORD)) {
             PreparedStatement statement = connection.prepareStatement("SELECT message FROM service_schema.messages WHERE id = ?");

@@ -24,7 +24,6 @@ import java.util.*;
 public abstract class DataBaseHandler {
 
     public static final String clientsCarTableName = "dealer_schema.client_cars";
-    public static final String clientMessagesTableName = "dealer_schema.client_messages";
     public static final String dealerCarTableName = "dealer_schema.dealer_cars";
     public static final String logsTableName = "dealer_schema.logs";
     public static final String ordersTableName = "dealer_schema.orders";
@@ -72,7 +71,7 @@ public abstract class DataBaseHandler {
         return new ArrayList<>();
     }
 
-    private static List<String> getCurrentUserParametersList(User user) throws NoSuchUserException {
+    public static List<String> getCurrentUserParametersList(User user) throws NoSuchUserException {
         List<List<String>> table = DataBaseHandler.getData(usersTableName);
         for (List<String> list : table)
             if (list.contains(user.getName()))
@@ -230,19 +229,6 @@ public abstract class DataBaseHandler {
         } catch (SQLException e) {
             System.out.println(e.getMessage() + " executeUpdateError");
         }
-    }
-
-    private static Object execute(String query) {
-        try (Connection connection = DriverManager.getConnection(DataBaseConfiguration.URL,
-                DataBaseConfiguration.USER_NAME,
-                DataBaseConfiguration.PASSWORD
-        )) {
-            Statement statement = connection.createStatement();
-            return statement.execute(query);
-        } catch (SQLException e) {
-            Printer.print("SQL ERROR EXCEPTION!");
-        }
-        return null;
     }
 
     public static List<String> getUserParamById(int id) throws SQLException, NoSuchUserException {

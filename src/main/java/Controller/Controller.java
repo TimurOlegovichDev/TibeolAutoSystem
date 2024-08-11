@@ -49,8 +49,7 @@ public class Controller extends Thread {
 
     /**
      * Основной переключатель, который с помощью сцен переключается между действиями
-     *
-     *
+     * @see Scenes
      */
 
     public void run() {
@@ -160,6 +159,10 @@ public class Controller extends Thread {
         }
     }
 
+
+    /**
+     * Основной контроллер, который переключает действия в зависимости от уровня доступа
+     */
 
     private class ActionController {
 

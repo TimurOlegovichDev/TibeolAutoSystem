@@ -25,7 +25,7 @@ public class Logger {
 
     /**
      * Логирует действие
-     *
+     * @param level уровень сообщения
      * @param message сообщение для логирования
      */
 
@@ -43,7 +43,6 @@ public class Logger {
 
     /**
      * Сохраняет логи в файл
-     *
      * @param filePath путь к файлу
      */
     public void saveLogsToFile(String filePath) {

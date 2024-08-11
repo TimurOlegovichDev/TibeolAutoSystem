@@ -11,6 +11,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Класс миграции базы данных, запускает процесс создания таблиц и заполнением констант, необходимых для работы программы
+ */
+
 public class DBMigration {
 
     public static void main(String[] args) {

@@ -2,6 +2,12 @@ package Model.DataBase.DataFields;
 
 import lombok.Getter;
 
+/**
+ * Поля таблицы автомобилей автосалона, данное перечисление помогает при создании запросов к БД >
+ * {@link #index} - index индекс колонны |
+ * {@link #value} - хранит название колонны
+ */
+
 @Getter
 public enum DealerCarDataFields implements DataFieldImp {
     ID("id",0),

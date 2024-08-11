@@ -9,24 +9,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class RegistrationManagerTest {
 
     @Test
-    @DisplayName("Проверка регистрации клиента")
-    public void testRegistrationSuccessfulClient() throws UserAlreadyExistsException, RegistrationInterruptException {
-
-    }
-
-    @Test
-    @DisplayName("Проверка регистрации менеджера")
-    public void testRegistrationSuccessfulManager() throws UserAlreadyExistsException, RegistrationInterruptException {
-
-    }
-
-    @Test
-    @DisplayName("Проверка регистрации администратора")
-    public void testRegistrationSuccessfulAdministrator() throws UserAlreadyExistsException, RegistrationInterruptException {
-
-    }
-
-    @Test
     @DisplayName("Тестирование выбрасывания исключения при существующем пользователе")
     public void testRegistrationUserAlreadyExists() throws UserAlreadyExistsException, RegistrationInterruptException {
         String name = "existingUser";
