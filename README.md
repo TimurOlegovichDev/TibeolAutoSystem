@@ -1,4 +1,4 @@
-# Y_LAB_HW_TIMBEZH
+# Car showroom system
 
 Это репозиторий для хранения домашних заданий по курсу Y_LAB.
 
@@ -17,4 +17,4 @@ Maven 3.5.8
 * [Задание 1](/)
 ## Автор
 
-* [TimurOlegovichDev]([https://github.com/TimurOlegovichDev](https://github.com/TimurOlegovichDev/Y_LAB_HW_TIMBEZH/pull/7)
+* [TimurOlegovichDev]([https://github.com/TimurOlegovichDev])
