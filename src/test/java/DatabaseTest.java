@@ -1,5 +1,6 @@
-import Model.DataBase.DataBaseHandler;
-import Model.DataBase.DataFields.UsersDataFields;
+import Model.DataBaseHandler;
+import Model.DataFields.UsersDataFields;
+import DataBase.dbconfig.DBMigration;
 import Model.Entities.Car.Car;
 import Model.Entities.Order.Order;
 import Model.Entities.Order.OrderTypes;
@@ -7,11 +8,6 @@ import Model.Entities.Users.Client;
 import Model.Entities.Users.User;
 import Model.Exceptions.UserExc.NoSuchUserException;
 import Model.LoggerUtil.Levels;
-import liquibase.Liquibase;
-import liquibase.database.Database;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.resource.ClassLoaderResourceAccessor;
 import org.apache.log4j.BasicConfigurator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -59,23 +55,7 @@ public class DatabaseTest {
         String username = postgresContainer.getUsername();
         String password = postgresContainer.getPassword();
 
-        Assertions.assertDoesNotThrow(() -> migration(url, username, password));
-    }
-
-    public static void migration(String url, String username, String password) throws Exception {
-        Connection connection = DriverManager.getConnection(url, username, password);
-        Database database = DatabaseFactory.getInstance()
-                .findCorrectDatabaseImplementation(
-                        new JdbcConnection(connection)
-                );
-        Liquibase liquibase =
-                new Liquibase(
-                        "db/changelog/v.1.0/changelog.xml",
-                        new ClassLoaderResourceAccessor(),
-                        database
-                );
-        liquibase.update();
-        connection.close();
+        Assertions.assertDoesNotThrow(() -> DBMigration.main(null));
     }
 
     @Test

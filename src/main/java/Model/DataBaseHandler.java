@@ -1,15 +1,14 @@
-package Model.DataBase;
+package Model;
 
-import Model.DataBase.DataFields.DataFieldImp;
-import Model.DataBase.DataFields.UsersDataFields;
-import Model.DataBase.dbconfig.DataBaseConfiguration;
+import Model.DataFields.DataFieldImp;
+import DataBase.dbconfig.DataBaseConfiguration;
+import Model.DataFields.UsersDataFields;
 import Model.Entities.Car.Car;
 import Model.Entities.Order.Order;
 import Model.Entities.Order.StatusesOfOrder;
 import Model.Entities.Users.User;
 import Model.Exceptions.UserExc.NoSuchUserException;
 import Model.LoggerUtil.Levels;
-import Model.LoggerUtil.LogActions;
 import ui.out.Printer;
 
 import java.nio.charset.StandardCharsets;

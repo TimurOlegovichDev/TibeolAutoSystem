@@ -1,8 +1,8 @@
 package Controller.ActionHandlers;
 
 import Controller.Controller;
-import Model.DataBase.*;
-import Model.DataBase.DataFields.UsersDataFields;
+import Model.DataBaseHandler;
+import Model.DataFields.UsersDataFields;
 import Model.Entities.Users.*;
 import Model.Exceptions.UserExc.*;
 import Model.LoggerUtil.Levels;
@@ -21,16 +21,15 @@ import Controller.Scenes;
 
 public abstract class BaseActionsHandler {
 
-    static Scenes removeAccount(User user) {
-        if (Menu.areYouSure(Messages.DELETE_ACCOUNT_WARNING.getMessage())) {
-            user.removeAccount();
-            Printer.print("Аккаунт удален!");
-            Controller.logger.log(Levels.INFO, LogActions.USER_DELETE_ACCOUNT.getText() + user);
-            return Scenes.CHOOSING_ROLE;
-        } else return Scenes.ACTIONS;
+    public static void removeAccount(User user) {
+        if (!Menu.areYouSure(Messages.DELETE_ACCOUNT_WARNING.getMessage())) return;
+        user.removeAccount();
+        Printer.print("Account deleted successfully.");
+        Controller.logger.log(Levels.INFO, LogActions.USER_DELETE_ACCOUNT.getText() + user);
+        Scenes.currentScene = Scenes.CHOOSING_ROLE;
     }
 
-    public static Scenes setUpUserParameters(int id) {
+    public static void setUpUserParameters(int id) {
         try {
             switch (Menu.getSetParameterName(new String[]{"Имя", "Номер телефона"})) {
                 case "Имя" -> setName(Menu.getUserName(), id);
@@ -40,7 +39,6 @@ public abstract class BaseActionsHandler {
         } catch (DeliberateInterruptException ignored) {
             Printer.print(Messages.RETURN.getMessage());
         }
-        return Scenes.ACTIONS;
     }
 
     private static void setName(String userName, int id) {

@@ -1,4 +1,4 @@
-package Model.DataBase.dbconfig;
+package DataBase.dbconfig;
 
 import liquibase.Liquibase;
 import liquibase.database.Database;

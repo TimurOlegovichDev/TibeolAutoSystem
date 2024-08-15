@@ -13,14 +13,14 @@ import ui.messageSrc.commands.ManagerCommands;
 public enum StringCommands {
 
     ROLES(new String[]{
-            "Администратор",
-            "Менеджер",
-            "Клиент"
+            "Administrator",
+            "Manager",
+            "Client"
     }),
 
     REG_OR_AUTHORIZE(new String[]{
-            "Войти",
-            "Зарегистрироваться"
+            "Register",
+            "Log in",
     }
     ),
 

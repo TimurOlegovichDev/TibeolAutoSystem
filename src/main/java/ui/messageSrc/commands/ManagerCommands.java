@@ -11,11 +11,11 @@ import lombok.Getter;
 @Getter
 public enum ManagerCommands {
 
-    GO_TO_SHOWROOM("Перейти в автосалон"),
-    ORDERS("К заказам"),
-    SETUP_MY_PROFILE("Изменить личные данные"),
-    EXIT_FROM_ACCOUNT("Выйти из аккаунта"),
-    DELETE_ACCOUNT("Удалить аккаунт");
+    GO_TO_SHOWROOM("Dealer page"),
+    ORDERS("Orders page"),
+    SETUP_MY_PROFILE("Setup my profile"),
+    EXIT_FROM_ACCOUNT("Exit from account"),
+    DELETE_ACCOUNT("Delete account"),;
 
     private final String command;
 
@@ -34,12 +34,12 @@ public enum ManagerCommands {
     @Getter
     public enum CommandsInShowRoom {
 
-        VIEW_ALL_CARS("Автомобили в продаже"),
-        ADD_CAR("Добавить автомобиль"),
-        REMOVE_CAR("Удалить автомобиль"),
-        SEARCH_CAR("Поиск автомобиля"),
-        SETUP_CAR("Настроить автомобиль"),
-        BACK("Назад");
+        VIEW_ALL_CARS("Cars for Sale"),
+        ADD_CAR("Add Car"),
+        REMOVE_CAR("Remove Car"),
+        SEARCH_CAR("Search Car"),
+        SETUP_CAR("Configure Car"),
+        BACK("Back");
 
         private final String command;
 
@@ -60,10 +60,10 @@ public enum ManagerCommands {
     @Getter
     public enum CommandsInOrderList {
 
-        VIEW_ARCHIVED_ORDERS("Заказы в архиве"),
-        VIEW_ACTIVE_ORDERS("Активные заказы"),
-        SET_STATUS("Изменить статус заказа"),
-        BACK("Назад");
+        VIEW_ARCHIVED_ORDERS("Archived Orders"),
+        VIEW_ACTIVE_ORDERS("Active Orders"),
+        SET_STATUS("Change Order Status"),
+        BACK("Back");
 
         private final String command;
 

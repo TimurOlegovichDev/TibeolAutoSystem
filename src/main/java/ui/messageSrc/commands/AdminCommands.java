@@ -9,13 +9,13 @@ import lombok.Getter;
 @Getter
 public enum AdminCommands {
 
-    GO_TO_USER_LIST("К списку пользователей"),
-    GET_LOG_LIST("Показать события"),
-    SAVE_LOG_LIST("Сохранить события в файл"),
-    SETUP_MY_PROFILE("Изменить личные данные"),
-    EXIT_FROM_ACCOUNT("Выйти из аккаунта"),
-    SHUT_DOWN("Завершить работу системы"),
-    DELETE_ACCOUNT("Удалить аккаунт");
+    GO_TO_USER_LIST("Go to User List"),
+    GET_LOG_LIST("Show Events"),
+    SAVE_LOG_LIST("Save Events to File"),
+    SETUP_MY_PROFILE("Edit Personal Data"),
+    EXIT_FROM_ACCOUNT("Log Out of Account"),
+    SHUT_DOWN("Shut Down System"),
+    DELETE_ACCOUNT("Delete Account");
 
     private final String command;
 
@@ -34,12 +34,11 @@ public enum AdminCommands {
     @Getter
     public enum CommandsInUserList {
 
-
-        USER_LIST("Список пользователей"),
-        GET_FILTER_LIST("Фильтровать список"),
-        DELETE_USER("Удалить пользователя"),
-        SET_USER_PARAM("Изменить параметры пользователя"),
-        BACK("Назад");
+        USER_LIST("User List"),
+        GET_FILTER_LIST("Filter List"),
+        DELETE_USER("Delete User"),
+        SET_USER_PARAM("Edit User Parameters"),
+        BACK("Back");
 
         private final String command;
         CommandsInUserList(String command) {

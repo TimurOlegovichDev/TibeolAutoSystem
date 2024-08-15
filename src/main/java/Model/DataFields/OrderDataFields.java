@@ -1,4 +1,4 @@
-package Model.DataBase.DataFields;;
+package Model.DataFields;;
 
 import lombok.Getter;
 

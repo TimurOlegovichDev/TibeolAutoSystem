@@ -18,7 +18,7 @@ public enum Scenes {
     SHUT_DOWN(7);
 
     @Getter
-    private int number;
+    private final int number;
     @Getter
     public static Scenes currentScene = GREETING;
     Scenes(int number){
@@ -34,6 +34,6 @@ public enum Scenes {
 
     void nextStep(){
         if(!currentScene.equals(SHUT_DOWN))
-            currentScene = Scenes.values()[currentScene.ordinal()];
+            currentScene = Scenes.values()[currentScene.getNumber()];
     }
 }

@@ -1,16 +1,11 @@
 package Model.Entities.Car;
 
-import Model.DataBase.DataBaseHandler;
 import Model.Entities.Users.Client;
-import Model.Entities.Users.Id;
 import Model.Entities.Users.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Имеет 2 конструктора, для клиента и менеджера, чтобы не перегружать действиями по регистрации автомобиля обычного пользователя

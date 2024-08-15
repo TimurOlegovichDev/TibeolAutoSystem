@@ -1,4 +1,4 @@
-package Model.DataBase.dbconfig;
+package DataBase.dbconfig;
 
 import java.io.FileInputStream;
 import java.io.IOException;

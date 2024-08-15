@@ -1,8 +1,7 @@
 package Model.Entities.Users;
 
-import Model.DataBase.DataBaseHandler;
+import Model.DataBaseHandler;
 import lombok.Setter;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 

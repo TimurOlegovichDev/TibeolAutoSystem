@@ -1,7 +1,8 @@
 package Controller;
 
-import Controller.ActionHandlers.ClientMainActionHandler;
-import Controller.ActionHandlers.ManagerMainActionHandler;
+import Controller.ActionHandlers.AdminHandlers.AdminMainActionHandler;
+import Controller.ActionHandlers.ClientHandler.ClientMainActionHandler;
+import Controller.ActionHandlers.ManagerHandler.ManagerMainActionHandler;
 import Model.Entities.Users.*;
 import Model.Exceptions.UserExc.*;
 import Model.LoggerUtil.Levels;
@@ -44,17 +45,15 @@ public class Controller extends Thread {
     @Getter
     volatile User currentUser;
 
-    public static Scenes currentScene = Scenes.currentScene;
-
     /**
      * Основной переключатель, который с помощью сцен переключается между действиями
      * @see Scenes
      */
 
     public void run() {
-        Controller.logger.log(Levels.INFO, "Система запущена!");
+        Controller.logger.log(Levels.INFO, "Starting system!");
         for (; ; ) {
-            switch (currentScene) {
+            switch (Scenes.currentScene) {
 
                 case GREETING -> greeting();
 
@@ -73,7 +72,7 @@ public class Controller extends Thread {
 
     public void greeting() {
         Menu.greeting();
-        currentScene.nextStep();
+        Scenes.currentScene.nextStep();
     }
 
     public void chooseRegistrationOrAuth() {
@@ -83,15 +82,15 @@ public class Controller extends Thread {
 
     public void signHandler() {
         try {
-            currentUser = (Menu.chooseRegistrationOrAuth().equals("Sing in")) ? authorization() : registration();
+            currentUser = (Menu.chooseRegistrationOrAuth().equals("Log in")) ? authorization() : registration();
             Printer.print("Successfully! Your ID " + currentUser.getID() + "\t Name: " + currentUser.getName() + "\t Role: " + currentUser.getAccessLevel().getValue());
             logger.log(Levels.INFO, LogActions.USER_REGISTERED.getText() + currentUser.toString());
-            currentScene = Scenes.ACTIONS;
+            Scenes.currentScene = Scenes.ACTIONS;
             return;
         } catch (Exception e) {
             Printer.print("Invalid input data, try again!");
         }
-        currentScene = Scenes.CHOOSING_ROLE;
+        Scenes.currentScene = Scenes.CHOOSING_ROLE;
     }
 
     private User registration() throws RegistrationInterruptException, UserAlreadyExistsException {
@@ -115,7 +114,7 @@ public class Controller extends Thread {
     public void logOut() {
         logger.log(Levels.INFO, LogActions.USER_EXIT.getText() + currentUser.toString());
         currentUser = null;
-        currentScene = Scenes.CHOOSING_ROLE;
+        Scenes.currentScene = Scenes.CHOOSING_ROLE;
     }
 
     /**
@@ -125,11 +124,11 @@ public class Controller extends Thread {
     private class ActionController {
 
         private void distributeActionsByRoots() {
-            currentScene = Scenes.ACTIONS;
+            Scenes.currentScene = Scenes.ACTIONS;
             switch (currentUser.getAccessLevel()) {
                 case CLIENT -> ClientMainActionHandler.distribute(Menu.clientChoosingAction());
                 case MANAGER -> ManagerMainActionHandler.distribute(Menu.managerChoosingAction());
-//                case ADMINISTRATOR ->
+                case ADMINISTRATOR -> AdminMainActionHandler.distribute(Menu.adminChoosingAction());
             }
         }
 

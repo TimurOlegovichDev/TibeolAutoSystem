@@ -1,6 +1,6 @@
 package Model.Entities.Users;
 
-import Model.DataBase.DataBaseHandler;
+import Model.DataBaseHandler;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package Model.Entities.Users;
 
-import Model.DataBase.DataBaseHandler;
-import Model.DataBase.DataFields.UsersDataFields;
+import Model.DataBaseHandler;
+import Model.DataFields.UsersDataFields;
 import Model.UserManagement.Encryptor;
 import lombok.Getter;
 import lombok.Setter;

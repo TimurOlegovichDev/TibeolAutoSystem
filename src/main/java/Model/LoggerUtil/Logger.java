@@ -1,6 +1,6 @@
 package Model.LoggerUtil;
 
-import Model.DataBase.DataBaseHandler;
+import Model.DataBaseHandler;
 import lombok.Getter;
 
 import java.io.FileWriter;

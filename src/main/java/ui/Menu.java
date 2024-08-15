@@ -153,7 +153,7 @@ public abstract class Menu {
         Printer.print(message);
         while (true) {
             try {
-                return Validator.validCommand(scanner.nextLine(), "да", "нет").equals("да");
+                return Validator.validCommand(scanner.nextLine(), "yes", "no").equals("yes");
             } catch (InvalidInputException | DeliberateInterruptException e) {
                 Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
@@ -184,71 +184,48 @@ public abstract class Menu {
                 getColor(),
                 getYearOfProduction(),
                 getMileAge(),
-                getText("Введите описание автомобиля (до 1000 символов): "),
+                getText("Enter car description (up to 1000 characters): "),
                 getPrice()
         );
     }
 
     private static String getBrand() throws DeliberateInterruptException {
-        Printer.print("Введите маркy автомобиля:");
-        while (true) {
-            try {
-                return Validator.validLength(scanner.nextLine(), 15);
-            } catch (InvalidInputException e) {
-                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
-            }
-        }
+        return getText("Enter brand of the car");
     }
+
     private static String getModel() throws DeliberateInterruptException {
-        Printer.print("Введите модель:");
-        while (true) {
-            try {
-                return Validator.validLength(scanner.nextLine(), 15);
-            } catch (InvalidInputException e) {
-                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
-            }
-        }
+        return getText("Enter model of the car");
     }
+
     private static String getColor() throws DeliberateInterruptException{
-        Printer.print("Введите цвет:");
-        while (true) {
-            try {
-                return Validator.validLength(scanner.nextLine(), 15);
-            } catch (InvalidInputException e) {
-                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
-            }
-        }
+        return getText("Enter color of the car");
     }
+
     private static Integer getYearOfProduction() throws DeliberateInterruptException {
         Printer.print("Введите год производства:");
-        while (true) {
-            try {
-                return Validator.validIntCarParameter(scanner.nextLine(), CarParameters.YEAR);
-            } catch (InvalidInputException e) {
-                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
-            }
-        }
+        return getCarParam(CarParameters.YEAR);
     }
+
     private static Integer getPrice() throws DeliberateInterruptException {
-        Printer.print("Введите цену:");
-        while (true) {
-            try {
-                return Validator.validIntCarParameter(scanner.nextLine(), CarParameters.PRICE);
-            } catch (InvalidInputException e) {
-                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
-            }
-        }
+        Printer.print("Price:");
+        return getCarParam(CarParameters.PRICE);
     }
+
     private static Integer getMileAge() throws DeliberateInterruptException {
-        Printer.print("Введите пробег:");
+        Printer.print("Mileage:");
+        return getCarParam(CarParameters.MILEAGE);
+    }
+
+    private static Integer getCarParam(CarParameters parameter) throws DeliberateInterruptException {
         while (true) {
             try {
-                return Validator.validIntCarParameter(scanner.nextLine(), CarParameters.MILEAGE);
+                return Validator.validIntCarParameter(scanner.nextLine(), parameter);
             } catch (InvalidInputException e) {
                 Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
             }
         }
     }
+
 
     public static String getText(String message) throws DeliberateInterruptException {
         Printer.print(message);
@@ -262,23 +239,14 @@ public abstract class Menu {
     }
 
     public static String getInput() throws DeliberateInterruptException {
-        return scanner.nextLine();
-    }
-
-    public static Integer getNumberGreaterZero(int maxValue) throws DeliberateInterruptException {
-        Printer.print("Введите число: ");
-        while (true) {
-            try {
-                int value =  Validator.validNumber(scanner.nextLine());
-                if(value <= maxValue && value > 0) return value;
-            } catch (InvalidInputException e) {
-                Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
-            }
-        }
+        String input = scanner.nextLine();
+        if ("back".equalsIgnoreCase(input))
+            throw new DeliberateInterruptException();
+        return input;
     }
 
     public static String getNewOrderStatus(OrderTypes type) throws DeliberateInterruptException{
-        Printer.printCommandsWithCustomQuestion(StatusesOfOrder.getStringArray(type), "Какой статус заказа вы желаете установить?");
+        Printer.printCommandsWithCustomQuestion(StatusesOfOrder.getStringArray(type), "What order status do you want to set?");
         while (true) {
             try {
                 return Validator.validCommand(scanner.nextLine(), StatusesOfOrder.getStringArray(type));
@@ -289,12 +257,12 @@ public abstract class Menu {
     }
 
     public static String getUserPhoneNumber() {
-        Printer.print("Введите ваш контактный номер телефона (аналогично 89998887766 без сторонних символов: ");
+        Printer.print("Enter your contact phone number (e.g. 89998887766 without extra symbols: ");
         String number;
         do {
             number = scanner.nextLine();
-            if(!PhoneNumberValidator.isValidPhoneNumber(number))
-                Printer.printCentered("Похоже, что вы совершили ошибку при вводе номера, попробуйте снова: ");
+            if (!PhoneNumberValidator.isValidPhoneNumber(number))
+                Printer.printCentered("It seems you made a mistake while entering the number, try again: ");
             else return number;
         } while (true);
     }
@@ -304,7 +272,7 @@ public abstract class Menu {
     }
 
     public static String getSetParameterName(String[] commands) throws DeliberateInterruptException {
-        Printer.printCommandsWithCustomQuestion(commands, "Какой параметр вы хотите изменить? (Введите \"Назад\" для отмены действия)");
+        Printer.printCommandsWithCustomQuestion(commands, "Which parameter do you want to change? (Enter \"Back\" to cancel the action)");
         while (true) {
             try {
                 return Validator.validCommand(scanner.nextLine(), commands);
@@ -315,9 +283,9 @@ public abstract class Menu {
     }
 
     public static String getPath() throws DeliberateInterruptException {
-        Printer.print("Введите путь к директории, где нужно создать файл или его название, но в этом случае, файл будет сохранен в папке проекта (для отмены операции, введите \"Назад\"");
+        Printer.print("Enter the path to the directory where you want to create a file or its name, but in this case, the file will be saved in the project folder (to cancel the operation, enter \"Back\"");
         String input = scanner.nextLine();
-        if("назад".startsWith(input.toLowerCase())) throw new DeliberateInterruptException();
+        if("back".startsWith(input.toLowerCase())) throw new DeliberateInterruptException();
         return input;
     }
 

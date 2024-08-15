@@ -1,12 +1,11 @@
 package Model.Entities.Users;
 
-import Model.DataBase.DataFields.DealerCarDataFields;
-import Model.DataBase.DataBaseHandler;
-import Model.DataBase.DataFields.OrderDataFields;
+import Model.DataFields.DealerCarDataFields;
+import Model.DataBaseHandler;
+import Model.DataFields.OrderDataFields;
 import Model.Entities.Car.Car;
 import Model.Entities.Order.Order;
 import Model.Entities.Order.OrderTypes;
-import lombok.Data;
 import lombok.Getter;
 import ui.messageSrc.Messages;
 import ui.out.Printer;

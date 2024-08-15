@@ -1,9 +1,9 @@
-package Controller.ActionHandlers;
+package Controller.ActionHandlers.ManagerHandler;
 
 import Controller.Controller;
-import Model.DataBase.DataBaseHandler;
-import Model.DataBase.DataFields.DealerCarDataFields;
-import Model.DataBase.DataFields.OrderDataFields;
+import Model.DataBaseHandler;
+import Model.DataFields.DealerCarDataFields;
+import Model.DataFields.OrderDataFields;
 import Model.Entities.Car.Car;
 import Model.Entities.Order.OrderTypes;
 import Model.Entities.Order.StatusesOfOrder;
@@ -14,7 +14,6 @@ import Model.LoggerUtil.Levels;
 import Model.LoggerUtil.LogActions;
 import ui.Menu;
 import ui.messageSrc.Messages;
-import ui.messageSrc.commands.ManagerCommands;
 import ui.out.Printer;
 
 import java.util.List;
@@ -22,17 +21,22 @@ import java.util.NoSuchElementException;
 
 public class ManagerActionsHandlerInOrders {
 
-    protected static void managerActionHandler(Manager manager, ManagerCommands.CommandsInOrderList command) {
-        switch (command) {
+    static void gotoOrderPage(){
+        Printer.printCentered("Go to the ordes page");
+        distribute();
+    }
+
+    protected static void distribute() {
+        switch (Menu.managerChoosingActionInOrderList()) {
             case VIEW_ACTIVE_ORDERS -> Printer.print(DataBaseHandler.getActiveOrders());
             case VIEW_ARCHIVED_ORDERS -> Printer.print(DataBaseHandler.getArchivedOrders());
-            case SET_STATUS -> setNewStatusOrder(manager);
+            case SET_STATUS -> setNewStatusOrder((Manager) Controller.getController().getCurrentUser());
             case BACK -> {
-                Printer.printCentered("Возврат на предыдущую страницу");
+                Printer.printCentered("Go to previous page");
                 return;
             }
         }
-        managerActionHandler(manager, Menu.managerChoosingActionInOrderList());
+        distribute();
     }
 
 

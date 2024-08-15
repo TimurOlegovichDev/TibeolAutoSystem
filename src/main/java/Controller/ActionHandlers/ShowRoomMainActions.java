@@ -1,10 +1,7 @@
 package Controller.ActionHandlers;
 
-import Model.DataBase.DataBaseHandler;
+import Model.DataBaseHandler;
 import Model.Entities.Car.CarParameters;
-import Model.Entities.Users.Client;
-import Model.Entities.Users.Manager;
-import Model.Entities.Users.User;
 import Model.Exceptions.UserExc.DeliberateInterruptException;
 import Model.Exceptions.UserExc.InvalidInputException;
 import ui.Menu;
@@ -15,20 +12,23 @@ import ui.out.Printer;
 import java.sql.SQLException;
 import java.util.Objects;
 
-import static Model.DataBase.DataBaseHandler.executeQuery;
+import static Model.DataBaseHandler.executeQuery;
 
 public abstract class ShowRoomMainActions {
 
-    static void getFilterList() {
+    public static void getFilterList() {
         while(true) {
             String command = "";
             try {
-                Printer.printCommandsWithCustomQuestion(new String[] {"Марка", "Модель", "Цвет"}, "Введите параметр, по которому будет сортировка");
-                command = Validator.validCommand(Menu.getInput(), "Марка", "Модель", "Цвет");
+                Printer.printCommandsWithCustomQuestion(new String[] {"Brand", "Model", "Color"}, "Enter the parameter by which the sorting will be done");
+                command = Validator.validCommand(Menu.getInput(), "Brand", "Model", "Color");
                 filterList(command);
                 return;
             } catch (InvalidInputException e) {
                 Printer.printCentered(Messages.INVALID_COMMAND.getMessage());
+            } catch (DeliberateInterruptException e) {
+                Printer.printCentered(Messages.RETURN.getMessage());
+                return;
             } catch (Exception e) {
                 Printer.printCentered(Messages.ERROR.getMessage());
             }

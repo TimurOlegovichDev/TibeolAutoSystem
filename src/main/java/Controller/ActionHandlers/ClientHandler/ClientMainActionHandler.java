@@ -1,9 +1,10 @@
-package Controller.ActionHandlers;
+package Controller.ActionHandlers.ClientHandler;
 
+import Controller.ActionHandlers.BaseActionsHandler;
 import Controller.Controller;
-import Model.DataBase.DataBaseHandler;
-import Model.DataBase.DataFields.ClientCarDataFields;
-import Model.DataBase.DataFields.OrderDataFields;
+import Model.DataBaseHandler;
+import Model.DataFields.ClientCarDataFields;
+import Model.DataFields.OrderDataFields;
 import Model.Entities.Car.Car;
 import Model.Entities.Users.Client;
 import Model.Exceptions.CarExc.NoSuchCarException;
@@ -29,7 +30,7 @@ public abstract class ClientMainActionHandler {
             case REMOVE_USER_CAR -> removeUserCar((Client) currentUser);
             case GO_TO_SHOWROOM -> ClientActionsInShowRoomHandler.gotoShowRoom((Client) currentUser);
             case SETUP_MY_PROFILE -> BaseActionsHandler.setUpUserParameters(currentUser.getID());
-            case EXIT_FROM_ACCOUNT -> Controller.currentScene = Scenes.EXIT_FROM_ACCOUNT;
+            case EXIT_FROM_ACCOUNT -> Scenes.currentScene = Scenes.EXIT_FROM_ACCOUNT;
             case DELETE_ACCOUNT -> BaseActionsHandler.removeAccount(currentUser);
         }
     }
