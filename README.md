@@ -1,8 +1,5 @@
 # Car showroom system
-
-Это репозиторий для хранения домашних заданий по курсу Y_LAB.
-
-## Содержание
+Система управления автосалоном, подразумевает под собой разделение управления на 3 роли: Клиент, Менеджер, Администратор. Каждая роль наделена собственным функционалом, таким как редактирование личной информации, создание заказов на покупку или обслуживание автомобиля, управление списками пользователей и другое. Данные сохраняется в базе данных, так что система может быть перезапущена без каких-либо потерь данных. 
 
 ## Требования для запуска
 JDK 17+
@@ -10,11 +7,10 @@ Maven 3.5.8
 
 ## Запуск
 
-1. git clone https://github.com/TimurOlegovichDev/Y_LAB_HW_TIMBEZH.git
+1. git clone https://github.com/TimurOlegovichDev/TibeolAutoSystem.git
 2. cd Y_LAB_HW_TIMBEZH/target/classes
 3. java DealerShipApplication
 
-* [Задание 1](/)
 ## Автор
 
 * [TimurOlegovichDev]([https://github.com/TimurOlegovichDev])
