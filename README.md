@@ -5,12 +5,6 @@
 JDK 17+
 Maven 3.5.8
 
-## Запуск
-
-1. git clone https://github.com/TimurOlegovichDev/TibeolAutoSystem.git
-2. cd Y_LAB_HW_TIMBEZH/target/classes
-3. java DealerShipApplication
-
 ## Автор
 
 * [TimurOlegovichDev]([https://github.com/TimurOlegovichDev])
