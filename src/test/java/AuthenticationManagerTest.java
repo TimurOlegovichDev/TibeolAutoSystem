@@ -1,6 +1,3 @@
-import Model.Entities.Users.User;
-import Model.Entities.Users.UserParameters;
-import Model.Exceptions.UserExc.InvalidPasswordException;
 import Model.Exceptions.UserExc.NoSuchUserException;
 import Model.UserManagement.AuthenticationManager;
 import org.junit.jupiter.api.DisplayName;

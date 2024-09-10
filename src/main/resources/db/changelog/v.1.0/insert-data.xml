@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        logicalFilePath="db/changelog/v.1.0/changelog.xml">
+
+    <changeSet id="insert-data" author="timbezh">
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="GREETING"/>
+            <column name="message" value="Welcome to TibeolAuto car dealership system, to further use the program, you don't need to fully enter the action name, just enter the beginning of the name, different from others, so the program can determine your thought process."/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="ACTIONS_TO_ENTER"/>
+            <column name="message" value="What would you like to do?:
+            - Register
+            - Log in"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="ENTER_MESSAGE"/>
+            <column name="message" value="Enter the reason for the refusal, this message will be sent to the user (you can leave it blank and press Enter):"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="ENTER_TEXT_TO_ORDER"/>
+            <column name="message" value="Enter your order text:"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="RETURN"/>
+            <column name="message" value="Return to previous page"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="NO_SUCH_ELEMENT"/>
+            <column name="message" value="This id was not found in the database, try again or perform another action"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="CHOOSE_U_ACTION"/>
+            <column name="message" value="Choose your next action: "/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="ENTER_NAME"/>
+            <column name="message" value="Enter your username (between 8 and 30 characters):"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="ERROR"/>
+            <column name="message" value="An error occurred, returning to previous action"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="USER_ALREADY_EXISTS"/>
+            <column name="message" value="A user with this name already exists, try again"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="EXIT"/>
+            <column name="message" value="Exiting the system"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="ENTER_PASSWORD"/>
+            <column name="message" value="Enter your password (between 8 and 50 characters):"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="ENTER_PHONE_NUMBER"/>
+            <column name="message" value="Enter your contact phone number:"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="NEW_MESSAGE"/>
+            <column name="message" value="It is recommended to check new messages, the number of received messages: "/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="CHOOSE_ROLE"/>
+            <column name="message" value="To successfully register, some data is required.
+            Enter your status: | Administrator | Manager | Client"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="CAR_REGISTER"/>
+            <column name="message" value="You have moved to the car registration page, to stop the action, enter 'Back'"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="SHUT_DOWN_WARNING"/>
+            <column name="message" value="Are you sure you want to shut down the program? This will result in the loss of all data! (Yes/No)"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="LOG_OUT_WARNING"/>
+            <column name="message" value="Are you sure you want to log out of your account? (Yes/No)"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="DELETE_ACCOUNT_WARNING"/>
+            <column name="message" value="Are you sure you want to delete your account? This will result in the loss of all your data! (Yes/No)"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="INVALID_COMMAND"/>
+            <column name="message" value="Invalid input, please check the correctness of the data and try again"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="INVALID_PASS"/>
+            <column name="message" value="Invalid password, please try again"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="NO_SUCH_USER"/>
+            <column name="message" value="The user was not found in the system, please check the input data or register with a new name"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="START"/>
+            <column name="message" value="System started"/>
+        </insert>
+        <insert tableName="messages" schemaName="service_schema">
+            <column name="id" value="END"/>
+            <column name="message" value="Shutdown"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

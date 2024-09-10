@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        logicalFilePath="db/changelog/v.1.0/changelog.xml">
+    <changeSet id="create-table" author="timbezh">
+        <sql>
+            CREATE SCHEMA IF NOT EXISTS dealer_schema;
+            CREATE SCHEMA IF NOT EXISTS service_schema;
+            CREATE SEQUENCE dealers_car_seq START 1;
+            CREATE SEQUENCE user_seq START 1;
+            CREATE SEQUENCE orders_seq START 1;
+            CREATE SEQUENCE client_car_seq START 1;
+        </sql>
+
+        <createSequence sequenceName="dealers_car_seq" schemaName="dealer_schema"/>
+        <createTable tableName="dealer_cars" schemaName="dealer_schema">
+            <column name="id" type="INTEGER" defaultValue="NEXTVAL('dealers_car_seq')">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="brand" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="model" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="color" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="year" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+            <column name="price" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+            <column name="mile_age" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+            <column name="description" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="booked" type="VARCHAR(10)" defaultValue="false"/>
+        </createTable>
+
+        <createSequence sequenceName="user_seq" schemaName="dealer_schema"/>
+        <createTable tableName="users" schemaName="dealer_schema">
+            <column name="id" type="INTEGER" defaultValue="NEXTVAL('user_seq')">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone_number" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="role" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createSequence sequenceName="client_car_seq" schemaName="dealer_schema"/>
+        <createTable tableName="client_cars" schemaName="dealer_schema">
+            <column name="id" type="INTEGER" defaultValue="NEXTVAL('client_car_seq')">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="client_id" type="INTEGER">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="brand" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="model" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="color" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createSequence sequenceName="orders_seq" schemaName="dealer_schema"/>
+        <createTable tableName="orders" schemaName="dealer_schema">
+            <column name="id" type="INTEGER" defaultValue="NEXTVAL('orders_seq')">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="client_id"  type="INTEGER">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="client_car_id"  type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="client_phone_number" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="VARCHAR(255)"/>
+        </createTable>
+
+        <createTable tableName="logs" schemaName="dealer_schema">
+            <column name="type" type="VARCHAR(50)"/>
+            <column name="description" type="TEXT"/>
+            <column name="created_at" type="VARCHAR(100)"/>
+        </createTable>
+
+        <createTable tableName="messages" schemaName="service_schema">
+            <column name="id" type="VARCHAR(50)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="message" type="TEXT"/>
+        </createTable>
+
+    </changeSet>
+</databaseChangeLog>

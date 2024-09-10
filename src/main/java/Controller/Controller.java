@@ -1,19 +1,24 @@
 package Controller;
 
+import Controller.ActionHandlers.AdminHandlers.AdminMainActionHandler;
+import Controller.ActionHandlers.ClientHandler.ClientMainActionHandler;
+import Controller.ActionHandlers.ManagerHandler.ManagerMainActionHandler;
 import Model.Entities.Users.*;
 import Model.Exceptions.UserExc.*;
+import Model.LoggerUtil.Levels;
 import Model.LoggerUtil.LogActions;
 import Model.LoggerUtil.Logger;
 import Model.UserManagement.AuthenticationManager;
 import Model.UserManagement.Encryptor;
 import Model.UserManagement.RegistrationManager;
+import lombok.Getter;
 import ui.Menu;
-import ui.messageSrc.commands.*;
 import ui.out.Printer;
 import ui.messageSrc.Messages;
 
 /**
  * Главный класс, который отвечает за переключение и контроль сцен.
+ *
  * @see Scenes
  * Контроллер взаимодействует с классом Menu для отображения меню и подсказок пользователю.
  */
@@ -35,191 +40,97 @@ public class Controller extends Thread {
     private Controller() {
     }
 
-    public final ActionController actionController = new ActionController();
+    private final ActionController actionController = new ActionController();
 
+    @Getter
     volatile User currentUser;
 
     /**
-     * Переключатель задержки, она нужна для создания "анимации" и более привычного обращения с программой
-     */
-
-    boolean timeDelayOn = false;
-
-    /**
      * Основной переключатель, который с помощью сцен переключается между действиями
-     *
-     *
+     * @see Scenes
      */
 
     public void run() {
+        Controller.logger.log(Levels.INFO, "Starting system!");
+        for (; ; ) {
+            switch (Scenes.currentScene) {
 
-        for(Scenes scene = Scenes.GREETING; checkSceneCycle(scene); ){
-            timeDelay(300);
-            switch (scene) {
+                case GREETING -> greeting();
 
-                case GREETING -> scene = greeting();
+                case CHOOSING_ROLE -> chooseRegistrationOrAuth();
 
-                case CHOOSING_ROLE -> scene = chooseRegistrationOrAuth();
+                case ACTIONS -> actionController.distributeActionsByRoots();
 
-                case REGISTRATION -> scene = registrationHandler();
+                case EXIT_FROM_ACCOUNT -> logOut();
 
-                case AUTHORIZATION -> scene = authorizationHandler();
-
-                case ACTIONS -> scene = actionController.distributeActions();
-
-                case EXIT_FROM_ACCOUNT -> scene = logOut();
-
-                case SHUT_DOWN -> scene = Scenes.ACTIONS;
+                case SHUT_DOWN -> {
+                    return;
+                }
             }
         }
     }
 
-    private boolean checkSceneCycle(Scenes scene){
-        return !(scene.equals(Scenes.SHUT_DOWN) && Menu.areYouSure(Messages.SHUT_DOWN_WARNING.getMessage()));
-    }
-
-    public Scenes greeting(){
+    public void greeting() {
         Menu.greeting();
-        return Scenes.GREETING.nextStep();
+        Scenes.currentScene.nextStep();
     }
 
-    public Scenes chooseRegistrationOrAuth(){
+    public void chooseRegistrationOrAuth() {
         Printer.print(Messages.ACTIONS_TO_ENTER.getMessage());
-        return (Menu.chooseRegistrationOrAuth().equals("Войти")) ? Scenes.AUTHORIZATION : Scenes.REGISTRATION;
+        signHandler();
     }
 
-    public Scenes registrationHandler(){
+    public void signHandler() {
         try {
-            registration();
-            timeDelay(200);
-            Printer.print("Вы создали аккаунт с ID " + currentUser.getUserParameters().getID() + " и именем " + currentUser.getUserParameters().getName() + " Ваша роль: " + currentUser.getAccessLevel().getValue());
-            logger.log(LogActions.USER_REGISTERED.getText() + currentUser.toString());
-            return Scenes.ACTIONS;
-        } catch (RegistrationInterruptException e) {
-            Printer.print(Messages.ERROR.getMessage());
-        } catch (UserAlreadyExistsException e) {
-            Printer.print(Messages.USER_ALREADY_EXISTS.getMessage());
-        }
-        return Scenes.CHOOSING_ROLE;
-    }
-
-    public Scenes authorizationHandler(){
-        try {
-            authorization();
-            timeDelay(200);
-            Printer.print("Вы вошли в аккаунт под ID " + currentUser.getUserParameters().getID() + " и именем " + currentUser.getUserParameters().getName() + " Ваша роль: " + currentUser.getAccessLevel().getValue());
-            userNotification();
-            logger.log(LogActions.USER_AUTHORIZED.getText() + currentUser.toString());
-            return Scenes.ACTIONS;
-        } catch (InvalidPasswordException e){
-            Printer.print(Messages.INVALID_PASS.getMessage());
-        } catch (NoSuchUserException e) {
-            Printer.print(Messages.NO_SUCH_USER.getMessage());
+            currentUser = (Menu.chooseRegistrationOrAuth().equals("Log in")) ? authorization() : registration();
+            Printer.print("Successfully! Your ID " + currentUser.getID() + "\t Name: " + currentUser.getName() + "\t Role: " + currentUser.getAccessLevel().getValue());
+            logger.log(Levels.INFO, LogActions.USER_REGISTERED.getText() + currentUser.toString());
+            Scenes.currentScene = Scenes.ACTIONS;
+            return;
         } catch (Exception e) {
-            Printer.print(Messages.ERROR.getMessage());
+            Printer.print("Invalid input data, try again!");
         }
-        return Scenes.CHOOSING_ROLE;
+        Scenes.currentScene = Scenes.CHOOSING_ROLE;
     }
 
-    private void userNotification(){
-        if(currentUser instanceof Client && !((Client) currentUser).getMessages().isEmpty())
-           Printer.notify(((Client) currentUser).getMessages().size());
-    }
-
-    private void registration() throws RegistrationInterruptException, UserAlreadyExistsException {
-        currentUser = RegistrationManager.registration(
+    private User registration() throws RegistrationInterruptException, UserAlreadyExistsException {
+        User user = RegistrationManager.registration(
                 Menu.chooseRole(),
                 Menu.getUserName(),
                 Menu.getUserPassword()
         );
-        if(currentUser instanceof Client || currentUser instanceof Manager)
-            currentUser.setPhoneNumber(Menu.getUserPhoneNumber());
+        if (user instanceof Client || user instanceof Manager)
+            user.setPhoneNumber(Menu.getUserPhoneNumber());
+        return user;
     }
 
-    private void authorization() throws Exception, InvalidPasswordException {
-        Printer.printCentered("Добро пожаловать!");
-        currentUser = AuthenticationManager.authentication(
+    private User authorization() throws Exception {
+        return AuthenticationManager.authentication(
                 Menu.getUserName(),
                 Encryptor.encrypt(Menu.getUserPassword())
         );
     }
 
-    public Scenes logOut(){
-        logger.log(LogActions.USER_EXIT.getText() + currentUser.toString());
+    public void logOut() {
+        logger.log(Levels.INFO, LogActions.USER_EXIT.getText() + currentUser.toString());
         currentUser = null;
-        return Scenes.CHOOSING_ROLE;
+        Scenes.currentScene = Scenes.CHOOSING_ROLE;
     }
 
-    private void timeDelay(int ms){
-        if(!timeDelayOn) return;
-        try{
-            Thread.sleep(ms);
-        } catch (InterruptedException ignored){
-            System.err.println("Задержка прервана");
-        }
-    }
-
+    /**
+     * Основной контроллер, который переключает действия в зависимости от уровня доступа
+     */
 
     private class ActionController {
 
-        private Scenes distributeActions(){
-            Scenes nextScene = Scenes.ACTIONS;
-            try {
-                switch (currentUser.getAccessLevel()) {
-                    case CLIENT -> nextScene = clientActionHandler(Menu.clientChoosingAction());
-                    case MANAGER -> nextScene = managerActionHandler(Menu.managerChoosingAction());
-                    case ADMINISTRATOR -> nextScene = adminActionHandler(Menu.adminChoosingAction());
-                }
-            } catch (NotEnoughRightsException rightsException){
-                Printer.print("Неверное действие, проверьте корректность введенных данных и попробуйте снова");
-                distributeActions();
+        private void distributeActionsByRoots() {
+            Scenes.currentScene = Scenes.ACTIONS;
+            switch (currentUser.getAccessLevel()) {
+                case CLIENT -> ClientMainActionHandler.distribute(Menu.clientChoosingAction());
+                case MANAGER -> ManagerMainActionHandler.distribute(Menu.managerChoosingAction());
+                case ADMINISTRATOR -> AdminMainActionHandler.distribute(Menu.adminChoosingAction());
             }
-            return nextScene;
         }
 
-        private Scenes clientActionHandler(ClientCommands action) throws NotEnoughRightsException {
-            if(!currentUser.getAccessLevel().equals(AccessLevels.CLIENT)) throw new NotEnoughRightsException();
-            Scenes nextScene = Scenes.ACTIONS;
-            switch (action) {
-                case VIEW_ORDERS -> ActionHandler.viewUserOrders((Client) currentUser);
-                case VIEW_USER_CARS -> ActionHandler.viewUserCars((Client) currentUser);
-                case ADD_USER_CAR -> ActionHandler.addUserCar((Client) currentUser);
-                case REMOVE_USER_CAR -> ActionHandler.removeUserCar((Client) currentUser);
-                case GO_TO_SHOWROOM -> ActionHandler.goToShowRoom(currentUser);
-                case VIEW_MESSAGES -> ActionHandler.readMessages((Client) currentUser);
-                case SETUP_MY_PROFILE -> nextScene = ActionHandler.setUpUserParameters(currentUser);
-                case EXIT_FROM_ACCOUNT -> nextScene = Scenes.EXIT_FROM_ACCOUNT;
-                case DELETE_ACCOUNT -> nextScene = ActionHandler.removeAccount(currentUser);
-                default -> throw new NotEnoughRightsException();
-            }
-            return nextScene;
-        }
-
-        private Scenes managerActionHandler(ManagerCommands action) throws NotEnoughRightsException {
-            Scenes nextScene = Scenes.ACTIONS;
-            switch (action) {
-                case ORDERS -> ActionHandler.gotoOrdersPage((Manager) currentUser);
-                case EXIT_FROM_ACCOUNT -> nextScene = Scenes.EXIT_FROM_ACCOUNT;
-                case GO_TO_SHOWROOM -> ActionHandler.goToShowRoom(currentUser);
-                case SETUP_MY_PROFILE -> nextScene = ActionHandler.setUpUserParameters(currentUser);
-                case DELETE_ACCOUNT -> nextScene = ActionHandler.removeAccount(currentUser);
-            }
-            return nextScene;
-        }
-
-        private Scenes adminActionHandler(AdminCommands action) throws NotEnoughRightsException {
-            Scenes nextScene = Scenes.ACTIONS;
-            switch (action) {
-                case GO_TO_USER_LIST ->  ActionHandler.gotoUserListPage((Administrator) currentUser);
-                case GET_LOG_LIST -> ActionHandler.getLogList();
-                case SAVE_LOG_LIST -> ActionHandler.saveLogList();
-                case DELETE_ACCOUNT -> nextScene = ActionHandler.removeAccount(currentUser);
-                case SETUP_MY_PROFILE -> nextScene = ActionHandler.setUpUserParameters(currentUser);
-                case EXIT_FROM_ACCOUNT -> nextScene = Scenes.EXIT_FROM_ACCOUNT;
-                case SHUT_DOWN -> nextScene = Scenes.SHUT_DOWN;
-            }
-            return nextScene;
-        }
     }
-
 }

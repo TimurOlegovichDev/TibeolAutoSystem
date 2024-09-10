@@ -29,13 +29,8 @@ public abstract class Validator {
     }
 
     public static Integer validNumber(String input) throws InvalidInputException, DeliberateInterruptException {
-        if("назад".startsWith(input.toLowerCase())) throw new DeliberateInterruptException();
-        try {
-            return Integer.parseInt(input);
-        } catch (NumberFormatException e){
-            Printer.print(Messages.INVALID_COMMAND.getMessage());
-        }
-        throw new InvalidInputException();
+        if("back".startsWith(input.toLowerCase())) throw new DeliberateInterruptException();
+        return isNumber(input);
     }
 
     public static Integer isNumber(String input) throws InvalidInputException {
@@ -48,7 +43,7 @@ public abstract class Validator {
     }
 
     public static Integer validIntCarParameter(String input, CarParameters carParameter) throws InvalidInputException, DeliberateInterruptException {
-        if("назад".startsWith(input.toLowerCase())) throw new DeliberateInterruptException();
+        if("back".startsWith(input.toLowerCase())) throw new DeliberateInterruptException();
         switch (carParameter){
             case MILEAGE, PRICE -> {
                 try {
@@ -68,13 +63,13 @@ public abstract class Validator {
 
     public static String validLength(String input, int validLen) throws InvalidInputException, DeliberateInterruptException {
         if(input == null || input.length() > validLen) throw new InvalidInputException();
-        if("назад".startsWith(input.toLowerCase())) throw new DeliberateInterruptException();
+        if("back".startsWith(input.toLowerCase())) throw new DeliberateInterruptException();
         return input;
     }
 
     public static String validCommand(String input, String ... commands) throws InvalidInputException, DeliberateInterruptException {
         if(input == null) throw new InvalidInputException();
-        if("назад".startsWith(input.toLowerCase()) && input.length() <= 5) throw new DeliberateInterruptException();
+        if("back".startsWith(input.toLowerCase()) && input.length() <= 5) throw new DeliberateInterruptException();
         for(String validCommands : commands)
             if(validCommands.toLowerCase().startsWith(input.toLowerCase())) return validCommands;
         throw new InvalidInputException();
@@ -135,13 +130,13 @@ public abstract class Validator {
 
     public static AccessLevels validLevel(String command) throws InvalidInputException {
         switch (command) {
-            case "Клиент" -> {
+            case "Client" -> {
                 return AccessLevels.CLIENT;
             }
-            case "Менеджер" -> {
+            case "Manager" -> {
                 return AccessLevels.MANAGER;
             }
-            case "Администратор" -> {
+            case "Administrator" -> {
                 return AccessLevels.ADMINISTRATOR;
             }
         }
@@ -154,6 +149,7 @@ public abstract class Validator {
      * @param filePath путь к файлу
      * @return true, если путь к файлу валиден, false иначе
      */
+
     public static boolean isValidFilePath(String filePath) {
         if (filePath == null || filePath.isEmpty())
             return false;

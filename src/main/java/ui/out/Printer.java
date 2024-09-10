@@ -24,6 +24,7 @@ public abstract class Printer {
     private static final String bottomLine = "\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n";
 
     public static void print(String text){
+        if(text==null) return;
         System.out.println(line + TextFormatter.formatText(text.split(" ")) + bottomLine);
     }
 
@@ -32,6 +33,13 @@ public abstract class Printer {
         System.out.println(TextFormatter.formatText(list));
         System.out.print(bottomLine);
     }
+
+    public static void printDoubleList(List<List<String>> list){
+        System.out.print(line);
+        System.out.println(TextFormatter.formatList(list));
+        System.out.print(bottomLine);
+    }
+
 
     public static void print(Map<?,?> map){
         System.out.print(line);
@@ -75,29 +83,13 @@ public abstract class Printer {
         print(Messages.NEW_MESSAGE.getMessage() + countNewMessages);
     }
 
-    public static void print(List<?> list, boolean numbered) {
-        if(!numbered) print(list);
-        else {
-            int index = 1;
-            for(Object o : list){
-                print( " " + index++ + ".  | " + o.toString());
-            }
-        }
-    }
-
     public static void printCentered(String s) {
         System.out.println(line + TextFormatter.centerText(s) + bottomLine);
     }
 
-    public static void printDealerCars(Map<Integer, Car> carData) {
+    public static void printDealerCars(List<List<String>> lists) {
         System.out.print(line);
-        System.out.println(TextFormatter.formatForm(carData));
-        System.out.print(bottomLine);
-    }
-
-    public static void printDealerCars(List<Map.Entry<Integer, Car>> carData) {
-        System.out.print(line);
-        System.out.println(TextFormatter.formatForm(carData));
+        System.out.println(TextFormatter.formatList(lists));
         System.out.print(bottomLine);
     }
 }

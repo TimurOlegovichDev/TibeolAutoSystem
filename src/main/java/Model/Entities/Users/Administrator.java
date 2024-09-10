@@ -1,6 +1,8 @@
 package Model.Entities.Users;
 
-import Model.DataBase.DataBaseHandler;
+import Model.DataBaseHandler;
+
+import java.util.List;
 
 public final class Administrator extends User{
     public Administrator(String name, byte[] password){
@@ -8,8 +10,13 @@ public final class Administrator extends User{
         setAccessLevel(AccessLevels.ADMINISTRATOR);
     }
 
+    public Administrator(List<String> parameters) {
+        super(parameters);
+        setAccessLevel(AccessLevels.ADMINISTRATOR);
+    }
+
     @Override
     public void removeAccount() {
-        DataBaseHandler.remove(this);
+        DataBaseHandler.removeRowById(DataBaseHandler.usersTableName, getID());
     }
 }

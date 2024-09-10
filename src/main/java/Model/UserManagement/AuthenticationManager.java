@@ -1,13 +1,13 @@
 package Model.UserManagement;
 
-import Model.DataBase.DataBaseHandler;
-import Model.DataBase.UserDataBase;
-import Model.Entities.Users.User;
-import Model.Entities.Users.UserParameters;
+import Model.DataBaseHandler;
+import Model.DataFields.UsersDataFields;
+import Model.Entities.Users.*;
 import Model.Exceptions.UserExc.InvalidPasswordException;
 import Model.Exceptions.UserExc.NoSuchUserException;
 
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * Данный класс служит для входа в систему, он сравнивает введенные данные с существующими. Пароль передается уже зашифрованным
@@ -15,17 +15,40 @@ import java.util.Arrays;
 
 public abstract class AuthenticationManager {
     public static User authentication(String name, byte[] cryptoPass) throws InvalidPasswordException, NoSuchUserException {
-        if(!UserDataBase.getCredentials().containsKey(name))
-            throw new NoSuchUserException();
-        if(!Arrays.equals(UserDataBase.getCredentials().get(name).getPassword(), cryptoPass))
-            throw new InvalidPasswordException();
-        return AuthorizationManager.authorization(UserDataBase.getCredentials().get(name));
+        List<List<String>> table = DataBaseHandler.getData(DataBaseHandler.usersTableName);
+        return AuthorizationManager.authorization(name, cryptoPass,  getUserParamIfExists(name, cryptoPass, table));
     }
 
 
     protected abstract static class AuthorizationManager {
-        public static User authorization(UserParameters userParameters){
-            return DataBaseHandler.getUserData().get(userParameters.getID());
+        public static User authorization(String name, byte[] cryptoPass, List<String> parameters) throws NoSuchUserException {
+            switch (AccessLevels.getAccessLevelByValue(parameters.get(UsersDataFields.ROLE.getIndex()))){
+                case CLIENT -> {
+                    return new Client(parameters);
+                }
+                case MANAGER -> {
+                    return new Manager(parameters);
+                }
+                case ADMINISTRATOR -> {
+                    return new Administrator(parameters);
+                }
+                default -> throw new NoSuchUserException();
+            }
         }
+    }
+
+    private static List<String> getUserParamIfExists(String name, byte[] cryptoPass, List<List<String>> table) throws InvalidPasswordException, NoSuchUserException {
+        for(List<String> list :  table) {
+            if(list.contains(name))
+                if (list.contains(bytesToString(cryptoPass)))
+                    return list;
+                else
+                    throw new InvalidPasswordException();
+        }
+        throw new NoSuchUserException();
+    }
+
+    private static String bytesToString(byte[] bytes){
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 }
